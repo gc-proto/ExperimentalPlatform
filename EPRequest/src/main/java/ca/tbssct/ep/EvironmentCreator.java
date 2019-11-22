@@ -4,60 +4,87 @@ import java.io.BufferedReader;
 
 import java.io.File;
 
-
 import java.io.IOException;
 
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import ca.tbssct.ep.web.EPRequest;
 
 public class EvironmentCreator {
 
 	public static final String HELM_SCRIPTS = "/home/hyma/helm-drupal/drupal/";
 
-	public static void main(String[] args) throws Exception {
-		new EvironmentCreator().create(args[0], args[1], args[2], args[3]);
-	}
-	
-	
-	public void create(String mode, String instanceName, String password, String siteEmail ) throws Exception {
-		if (mode.equals("full")) {
-			String output = this.ExecuteCommand(HELM_SCRIPTS,
-					"cp " + HELM_SCRIPTS + "values-template.yaml " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
-			System.out.println(output);
-			this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml", password, siteEmail);
-			this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName);
-			this.ExecuteCommand(HELM_SCRIPTS, "kubectl config set-context --current --namespace=" + instanceName);
-			System.out.println(this.ExecuteCommand(HELM_SCRIPTS, "helm install --name " + instanceName + " -f values-"
-					+ instanceName + ".yaml --timeout 1200 --wait ."));
-			// wait for the public IP to be assigned
-		}
-		this.ExecuteCommand(HELM_SCRIPTS, "kubectl config set-context --current --namespace=" + instanceName);
-		if (mode.equals("full") || mode.equals("assignIP")) {
-			boolean keepGoing = true;
-			int count = 0;
-			String publicIP = "null";
-			while (keepGoing) {
-				publicIP = this.ExecuteCommand(HELM_SCRIPTS, "kubectl get svc " + instanceName
-						+ "-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"").trim();
-				if (!publicIP.equals("null") && !publicIP.contains("Error")) {
-					keepGoing = false;
-					System.out.println(publicIP);
-				} else {
-					Thread.sleep(30000);
-					if (count >= 20) {
-						keepGoing = false;
-					} else {
-						count++;
-					}
-				}
+	public EvironmentCreator() {
 
+	}
+
+	public void create(String mode, EPRequest epRequest) throws Exception {
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					String instanceName = epRequest.getDomainNamePrefix();
+					if (mode.equals("full")) {
+						String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
+								+ "values-template.yaml " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
+						System.out.println(output);
+						EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
+								epRequest.getPassword(), epRequest.getEmailAddress());
+						EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName);
+						EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+								"kubectl config set-context --current --namespace=" + instanceName);
+						System.out.println(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install --name "
+								+ instanceName + " -f values-" + instanceName + ".yaml --timeout 1200 --wait ."));
+						// wait for the public IP to be assigned
+					}
+					EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+							"kubectl config set-context --current --namespace=" + instanceName);
+					if (mode.equals("full") || mode.equals("assignIP")) {
+						boolean keepGoing = true;
+						int count = 0;
+						String publicIP = "null";
+						while (keepGoing) {
+							publicIP = EvironmentCreator.this
+									.ExecuteCommand(HELM_SCRIPTS,
+											"kubectl get svc " + instanceName
+													+ "-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"")
+									.trim();
+							if (!publicIP.equals("null") && !publicIP.contains("Error")) {
+								keepGoing = false;
+								System.out.println(publicIP);
+							} else {
+								Thread.sleep(30000);
+								if (count >= 20) {
+									keepGoing = false;
+								} else {
+									count++;
+								}
+							}
+
+						}
+						if (!publicIP.equals("null")) {
+							// now use the command line to add a DNS entry using the azure command line.
+							System.out.println(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+									"az network dns record-set a add-record -g DNSZone -z ryanhyma.com -n "
+											+ instanceName + " -a " + publicIP));
+							Map<String, String> personalisation = new HashMap<>();
+							personalisation.put("username", "admin");
+							personalisation.put("password",epRequest.getPassword());
+							personalisation.put("loginURL", "http://" + instanceName + ".ryanhyma.com/en/user/login");
+							Notification.getNotificationClient().sendEmail("a32135a9-2088-461c-8ea5-8044207497a3",
+									epRequest.getEmailAddress(), personalisation,null);
+						}
+					}
+				} catch (Exception e) {
+
+				}
 			}
-			if (!publicIP.equals("null")) {
-				// now use the command line to add a DNS entry using the azure command line.
-				System.out.println(this.ExecuteCommand(HELM_SCRIPTS,
-						"az network dns record-set a add-record -g DNSZone -z ryanhyma.com -n " + instanceName + " -a "
-								+ publicIP + " --ttl 600"));
-			}
-		}
+
+		};
+
+		thread.start();
+
 	}
 
 	public void updateValuesFile(String path, String password, String siteEmail) throws Exception {
@@ -66,10 +93,6 @@ public class EvironmentCreator {
 		content = content.replace("##siteEmail##", siteEmail);
 		Util.writeFile(path, content);
 	}
-
-	
-
-	
 
 	public String ExecuteCommand(String workingDirectory, String command) {
 		System.out.println("Working Directory: " + workingDirectory);
@@ -105,9 +128,5 @@ public class EvironmentCreator {
 		}
 		return "";
 	}
-	
-	
-	
-	
 
 }

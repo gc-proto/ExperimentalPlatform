@@ -12,18 +12,21 @@ import ca.tbssct.ep.EvironmentCreator;
 
 @Controller
 public class EPVerificationController {
-	
-		@GetMapping("/verification")
-		public String greetingForm(String id) throws Exception {
-			XMLDecoder decoder=null;
-			try {
-				decoder=new XMLDecoder(new BufferedInputStream(new FileInputStream(EPRequestController.SERVER+id)));
-			} catch (FileNotFoundException e) {
-				System.out.println("ERROR: File dvd.xml not found");
-			}
-			EPRequest request=(EPRequest)decoder.readObject();
-			new EvironmentCreator().create("full", request.getDomainNamePrefix(), request.getPassword(), request.getEmailAddress());
-		
-			return "verified";
+
+	public static final String REQUEST_PATH = "/home/hyma/ExperimentalPlatform/requests/";
+
+	@GetMapping("/verification")
+	public String greetingForm(String id) throws Exception {
+		XMLDecoder decoder = null;
+		try {
+			String path = REQUEST_PATH + id;
+			decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(path)));
+		} catch (FileNotFoundException e) {
+			System.out.println("ERROR: File dvd.xml not found");
 		}
+		EPRequest request = (EPRequest) decoder.readObject();
+		new EvironmentCreator().create("assignIP",request);
+
+		return "verified";
+	}
 }
