@@ -1,6 +1,6 @@
 package ca.tbssct.ep.web;
 
-public class Request {
+public class EPRequest {
 
 	private String domainNamePrefix;
 	private String emailAddress;
@@ -9,6 +9,7 @@ public class Request {
 	private String experimentDesc;
 	private String department;
 	private String yourName;
+	private String password;
 	
 	public String getDomainNamePrefix() {
 		return domainNamePrefix;
@@ -51,6 +52,12 @@ public class Request {
 	}
 	public void setYourName(String yourName) {
 		this.yourName = yourName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 	

@@ -9,15 +9,16 @@ import java.io.IOException;
 
 import java.io.InputStreamReader;
 
-public class Main {
+public class EvironmentCreator {
 
 	public static final String HELM_SCRIPTS = "/home/hyma/helm-drupal/drupal/";
 
 	public static void main(String[] args) throws Exception {
-		new Main(args[0], args[1], args[2], args[3]);
+		new EvironmentCreator().create(args[0], args[1], args[2], args[3]);
 	}
-
-	public Main(String mode, String instanceName, String password, String siteEmail) throws Exception {
+	
+	
+	public void create(String mode, String instanceName, String password, String siteEmail ) throws Exception {
 		if (mode.equals("full")) {
 			String output = this.ExecuteCommand(HELM_SCRIPTS,
 					"cp " + HELM_SCRIPTS + "values-template.yaml " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");

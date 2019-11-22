@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="11.0.4" class="java.beans.XMLDecoder">
+ <object class="ca.tbssct.ep.web.Request">
+  <void property="department">
+   <string>TBS</string>
+  </void>
+  <void property="domainNamePrefix">
+   <string>test5555</string>
+  </void>
+  <void property="emailAddress">
+   <string>ryan.hyma@gmail.com</string>
+  </void>
+  <void property="endDate">
+   <string>2019-11-29</string>
+  </void>
+  <void property="experimentDesc">
+   <string>This is the test to get this working</string>
+  </void>
+  <void property="experimentName">
+   <string>Something Something</string>
+  </void>
+  <void property="yourName">
+   <string>Ryan Hyma</string>
+  </void>
+ </object>
+</java>
