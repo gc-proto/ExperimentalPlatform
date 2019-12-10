@@ -4,7 +4,7 @@ import uk.gov.service.notify.NotificationClient;
 
 public class Notification {
 
-	public static String KEY_PATH = "/home/hyma/ExperimentalPlatform/secrets/notification.key";
+	public static String KEY_PATH = "/home/secrets/notification.key";
 
 	public static NotificationClient getNotificationClient() {
 		NotificationClient client = new NotificationClient(getAPIKey(), "https://api.notification.alpha.canada.ca"); 

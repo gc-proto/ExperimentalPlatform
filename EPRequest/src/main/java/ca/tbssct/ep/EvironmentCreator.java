@@ -10,11 +10,15 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ca.tbssct.ep.web.EPRequest;
 
 public class EvironmentCreator {
-
-	public static final String HELM_SCRIPTS = "/home/hyma/helm-drupal/drupal/";
+	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	public static final String HELM_SCRIPTS = "/home/helm-drupal/drupal/";
 
 	public EvironmentCreator() {
 
@@ -28,13 +32,13 @@ public class EvironmentCreator {
 					if (mode.equals("full")) {
 						String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
 								+ "values-template.yaml " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
-						System.out.println(output);
+						logger.info(output);
 						EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
 								epRequest.getPassword(), epRequest.getEmailAddress());
 						EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName);
 						EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 								"kubectl config set-context --current --namespace=" + instanceName);
-						System.out.println(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install --name "
+						logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install --name "
 								+ instanceName + " -f values-" + instanceName + ".yaml --timeout 1200 --wait ."));
 						// wait for the public IP to be assigned
 					}
@@ -52,7 +56,7 @@ public class EvironmentCreator {
 									.trim();
 							if (!publicIP.equals("null") && !publicIP.contains("Error")) {
 								keepGoing = false;
-								System.out.println(publicIP);
+								logger.info(publicIP);
 							} else {
 								Thread.sleep(30000);
 								if (count >= 20) {
@@ -65,7 +69,7 @@ public class EvironmentCreator {
 						}
 						if (!publicIP.equals("null")) {
 							// now use the command line to add a DNS entry using the azure command line.
-							System.out.println(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+							logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 									"az network dns record-set a add-record -g DNSZone -z ryanhyma.com -n "
 											+ instanceName + " -a " + publicIP));
 							Map<String, String> personalisation = new HashMap<>();
@@ -95,8 +99,8 @@ public class EvironmentCreator {
 	}
 
 	public String ExecuteCommand(String workingDirectory, String command) {
-		System.out.println("Working Directory: " + workingDirectory);
-		System.out.println(command);
+		logger.info("Working Directory: " + workingDirectory);
+		logger.info(command);
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		processBuilder.directory(new File(workingDirectory));
 		processBuilder.command("bash", "-c", command);

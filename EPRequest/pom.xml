@@ -19,7 +19,39 @@
 		<java.version>1.8</java.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>bintray-gov-uk-notify-maven</id>
+			<name>bintray</name>
+			<url>https://dl.bintray.com/gov-uk-notify/maven</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>bintray-gov-uk-notify-maven</id>
+			<name>bintray-plugins</name>
+			<url>https://dl.bintray.com/gov-uk-notify/maven</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<dependencies>
+		<dependency>
+			<groupId>uk.gov.service.notify</groupId>
+			<artifactId>notifications-java-client</artifactId>
+			<version>3.15.1-RELEASE</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>uk.gov.service.notify</groupId>
+			<artifactId>notifications-java-client</artifactId>
+			<version>3.15.1-RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -46,12 +78,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>uk.gov.service.notify</groupId>
-			<artifactId>notifications-java-client</artifactId>
-			<version>3.15.1-RELEASE</version>
-			<type>pom.lastUpdated</type>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
@@ -61,9 +88,40 @@
 
 	<build>
 		<plugins>
+			
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.handlers</resource>
+								</transformer>
+								<transformer
+									implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
+									<resource>META-INF/spring.factories</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.schemas</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>ca.tbssct.ep.EpRequestApplication</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

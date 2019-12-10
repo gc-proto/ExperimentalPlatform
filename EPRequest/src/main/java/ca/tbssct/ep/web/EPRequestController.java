@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +20,13 @@ import ca.tbssct.ep.Notification;
 
 @Controller
 public class EPRequestController {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public static String SERVER = "http://localhost:8888/verification?id=";
 
 	@GetMapping("/request")
 	public String greetingForm(Model model) {
+		logger.info("Vistor has accessed the form.");
 		model.addAttribute("request", new EPRequest());
 		return "index";
 	}
@@ -35,20 +39,21 @@ public class EPRequestController {
 		personalisation.put("link", SERVER + requestName);
 		
 		try {
+			logger.info("Sending email through notify:"+request.getEmailAddress());
 			Notification.getNotificationClient().sendEmail(this.getConfirmationTemplateId(),
 					request.getEmailAddress(), personalisation, requestName);
 			XMLEncoder encoder = null;
 			try {
+				logger.info("Writing file:"+requestName);
 				encoder = new XMLEncoder(new BufferedOutputStream(
-						new FileOutputStream("/home/hyma/ExperimentalPlatform/requests/" + requestName)));
+						new FileOutputStream("/home/requests/" + requestName)));
 			} catch (FileNotFoundException fileNotFound) {
-				System.out.println("ERROR: While Creating or Opening the File dvd.xml");
-				
+				logger.error("ERROR: While Creating or Opening the request file: "+requestName);
 			}
 			encoder.writeObject(request);
 			encoder.close();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return "result";
 	}
