@@ -33,7 +33,11 @@ public class EPRequestController {
 
 	@PostMapping("/requestPost")
 	public String greetingSubmit(@ModelAttribute EPRequest request) throws Exception {
-		request.setDomainNamePrefix(request.getDomainNamePrefix().toLowerCase());
+		// avoid long domain names cap it to 30 characters
+		String domainNamePrefix = request.getDomainNamePrefix().toLowerCase();
+		domainNamePrefix = domainNamePrefix.substring(0, Math.min(domainNamePrefix.length(), 30));
+		request.setDomainNamePrefix(domainNamePrefix);
+		
 		String requestName = request.getDomainNamePrefix() + "_" + System.currentTimeMillis();
 		
 		Map<String, String> personalisation = new HashMap<>();
