@@ -151,7 +151,8 @@
 							href="http://international.gc.ca/world-monde/index.aspx?lang=eng">Canada
 								and the world</a></li>
 						<li role="presentation"><a role="menuitem"
-				https://developer.github.com/v4/object/pullrequest/#fields			href="https://www.canada.ca/en/services/finance.html">Money
+							https://developer.github.com/v4/object/pullrequest/#fields
+							href="https://www.canada.ca/en/services/finance.html">Money
 								and finances</a></li>
 						<li role="presentation"><a role="menuitem"
 							href="https://www.canada.ca/en/services/finance.html">Science
@@ -187,69 +188,79 @@
 		class="container">
 	<h1 property="name" id="wb-cont" th:text="#{greeting}"></h1>
 	<div class="wb-frmvld">
-	<form method="post" action="requestPost" class="form-horizontal">
-		<div class="form-group">
-			<label for="domainNamePrefix" class="col-sm-3 control-label">Domain Name
-				Prefix</label>
-			<div class="col-sm-8">
-				<input type="text" id="domainNamePrefix" name="domainNamePrefix" class="form-control" pattern="[A-Za-z0-9\s]{6,}" data-rule-alphanumeric="true" data-rule-minlength="6">
+		<form method="post" action="requestPost" class="form-horizontal">
+			<div class="form-group">
+				<label for="domainNamePrefix" class="col-sm-3 control-label">Domain
+					Name Prefix</label>
+				<div class="col-sm-8">
+					<input type="text" id="domainNamePrefix" name="domainNamePrefix"
+						class="form-control" pattern="[A-Za-z0-9\s]{6,}"
+						data-rule-alphanumeric="true" data-rule-minlength="6">
+				</div>
 			</div>
-			<div class="col-sm-1">.alpha.canada.ca</div>
-		</div>
-		<div class="form-group">
-			<label for="emailAddress" class="col-sm-3 control-label">Email
-				Address</label>
-			<div class="col-sm-9">
-				<input type="email" id="emailAddress" name="emailAddress" class="form-control">
+
+			<div class="form-group">
+				<label for="emailAddress" class="col-sm-3 control-label">Email
+					Address</label>
+				<div class="col-sm-9">
+					<input type="email" id="emailAddress" name="emailAddress"
+						class="form-control">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="endDate" class="col-sm-3 control-label">Approximate end date of experiment
-				<span
-					class="datepicker-format"> (<abbr
+			<div class="form-group">
+				<label for="endDate" class="col-sm-3 control-label">Approximate
+					end date of experiment <span class="datepicker-format"> (<abbr
 						title="Four digits year, dash, two digits month, dash, two digits day">YYYY-MM-DD</abbr>)
 				</span>
-			</label> 
-			<div class="col-sm-9">
-				<input class="form-control" type="date" id="endDate" name="endDate" />
+				</label>
+				<div class="col-sm-9">
+					<input class="form-control" type="date" id="endDate" name="endDate" />
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="data1" class="col-sm-3 control-label">Experiment Name</label>
-			<div class="col-sm-8">
-				<input type="text" id="experimentName" name="experimentName" class="form-control">
+			<div class="form-group">
+				<label for="data1" class="col-sm-3 control-label">Experiment
+					Name</label>
+				<div class="col-sm-8">
+					<input type="text" id="experimentName" name="experimentName"
+						class="form-control">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="data1" class="col-sm-3 control-label">Experiment Description</label>
-			<div class="col-sm-8">
-				<textarea id="experimentDesc" name="experimentDesc" class="form-control"></textarea>
+			<div class="form-group">
+				<label for="data1" class="col-sm-3 control-label">Experiment
+					Description</label>
+				<div class="col-sm-8">
+					<textarea id="experimentDesc" name="experimentDesc"
+						class="form-control"></textarea>
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="data1" class="col-sm-3 control-label">Department</label>
-			<div class="col-sm-8">
-				<input type="text" id="department" name="department" class="form-control">
+			<div class="form-group">
+				<label for="data1" class="col-sm-3 control-label">Department</label>
+				<div class="col-sm-8">
+					<input type="text" id="department" name="department"
+						class="form-control">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="data1" class="col-sm-3 control-label">Your Name</label>
-			<div class="col-sm-8">
-				<input type="text" id="yourName" name="yourName" class="form-control">
+			<div class="form-group">
+				<label for="data1" class="col-sm-3 control-label">Your Name</label>
+				<div class="col-sm-8">
+					<input type="text" id="yourName" name="yourName"
+						class="form-control">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="data1" class="col-sm-3 control-label">Drupal Admin Password</label>
-			<div class="col-sm-8">
-				<input type="text" id="password" name="password" class="form-control">
+			<div class="form-group">
+				<label for="data1" class="col-sm-3 control-label">Drupal
+					Admin Password</label>
+				<div class="col-sm-8">
+					<input type="text" id="password" name="password"
+						class="form-control">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-3 col-sm-9">
-				<button type="submit" class="btn btn-primary">Submit</button>
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
 			</div>
-		</div>
-	</form>
+		</form>
 	</div>
 	<div id="def-preFooter">
 		<!-- Write closure fall-back static file -->

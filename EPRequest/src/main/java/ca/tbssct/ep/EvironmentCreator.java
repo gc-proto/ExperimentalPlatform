@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import ca.tbssct.ep.web.EPRequest;
 
 public class EvironmentCreator {
-	
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	public static final String HELM_SCRIPTS = "/home/helm-drupal/drupal/";
 
@@ -35,24 +35,25 @@ public class EvironmentCreator {
 						logger.info(output);
 						EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
 								epRequest.getPassword(), epRequest.getEmailAddress());
-						EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName);
-						EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-								"kubectl config set-context --current --namespace=" + instanceName);
-						logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install --name "
-								+ instanceName + " -f values-" + instanceName + ".yaml --timeout 1200 --wait ."));
+						// EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace
+						// " + instanceName);
+						// EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+						// "kubectl config set-context --current --namespace=" + instanceName);
+						logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+								"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
+										+ instanceName + ".yaml --timeout 1200 --wait ."));
 						// wait for the public IP to be assigned
 					}
-					EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-							"kubectl config set-context --current --namespace=" + instanceName);
+					// EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+					// "kubectl config set-context --current --namespace=" + instanceName);
 					if (mode.equals("full") || mode.equals("assignIP")) {
 						boolean keepGoing = true;
 						int count = 0;
 						String publicIP = "null";
 						while (keepGoing) {
-							publicIP = EvironmentCreator.this
-									.ExecuteCommand(HELM_SCRIPTS,
-											"kubectl get svc " + instanceName
-													+ "-drupal-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"")
+							publicIP = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+									"kubectl get svc --namespace " + instanceName + " " + instanceName
+											+ "-drupal-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"")
 									.trim();
 							if (!publicIP.equals("null") && !publicIP.contains("Error")) {
 								keepGoing = false;
@@ -74,21 +75,20 @@ public class EvironmentCreator {
 											+ instanceName + " -a " + publicIP));
 							Map<String, String> personalisation = new HashMap<>();
 							personalisation.put("username", "admin");
-							personalisation.put("password",epRequest.getPassword());
+							personalisation.put("password", epRequest.getPassword());
 							personalisation.put("loginURL", "http://" + instanceName + ".ryanhyma.com/en/user/login");
+							personalisation.put("contactEmail", "ryan.hyma@tbs-sct.gc.ca");
 							Notification.getNotificationClient().sendEmail("a32135a9-2088-461c-8ea5-8044207497a3",
-									epRequest.getEmailAddress(), personalisation,null);
+									epRequest.getEmailAddress(), personalisation, null);
 						}
 					}
 				} catch (Exception e) {
 
 				}
 			}
-
 		};
 
 		thread.start();
-
 	}
 
 	public void updateValuesFile(String path, String password, String siteEmail) throws Exception {

@@ -22,7 +22,7 @@ import ca.tbssct.ep.Notification;
 public class EPRequestController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public static String SERVER = "http://eprequestform.canadacentral.cloudapp.azure.com/verification?id=";
+	public static String SERVER = "http://requestform.canadacentral.cloudapp.azure.com//verification?id=";
 
 	@GetMapping("/request")
 	public String greetingForm(Model model) {
@@ -33,7 +33,9 @@ public class EPRequestController {
 
 	@PostMapping("/requestPost")
 	public String greetingSubmit(@ModelAttribute EPRequest request) throws Exception {
+		request.setDomainNamePrefix(request.getDomainNamePrefix().toLowerCase());
 		String requestName = request.getDomainNamePrefix() + "_" + System.currentTimeMillis();
+		
 		Map<String, String> personalisation = new HashMap<>();
 		personalisation.put("name", request.getYourName());
 		personalisation.put("link", SERVER + requestName);
