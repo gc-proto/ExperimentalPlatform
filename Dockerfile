@@ -31,16 +31,17 @@ RUN apt-get update && \
 # Make port 8080 available to the world outside this container
 EXPOSE 8888
 
-# The application's jar file
-ARG JAR_FILE=./EPRequest/target/EPRequest-0.0.1-SNAPSHOT.jar
-
-# Add the application's jar to the container
-ADD ${JAR_FILE} EPRequest.jar
 
 RUN mkdir /home/requests
 RUN mkdir /home/secrets
 COPY ./secrets/notification.key /home/secrets
 COPY ./helm-drupal /home/helm-drupal
+
+# The application's jar file
+ARG JAR_FILE=./EPRequest/target/EPRequest-0.0.1-SNAPSHOT.jar
+
+# Add the application's jar to the container
+ADD ${JAR_FILE} EPRequest.jar
 
 # Run the jar file 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/EPRequest.jar"]

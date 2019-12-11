@@ -52,7 +52,7 @@ public class EvironmentCreator {
 							publicIP = EvironmentCreator.this
 									.ExecuteCommand(HELM_SCRIPTS,
 											"kubectl get svc " + instanceName
-													+ "-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"")
+													+ "-drupal-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"")
 									.trim();
 							if (!publicIP.equals("null") && !publicIP.contains("Error")) {
 								keepGoing = false;

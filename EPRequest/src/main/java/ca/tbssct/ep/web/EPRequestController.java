@@ -22,7 +22,7 @@ import ca.tbssct.ep.Notification;
 public class EPRequestController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public static String SERVER = "http://localhost:8888/verification?id=";
+	public static String SERVER = "http://eprequestform.canadacentral.cloudapp.azure.com/verification?id=";
 
 	@GetMapping("/request")
 	public String greetingForm(Model model) {

@@ -186,12 +186,13 @@
 	<main property="mainContentOfPage" typeof="WebPageElement"
 		class="container">
 	<h1 property="name" id="wb-cont" th:text="#{greeting}"></h1>
+	<div class="wb-frmvld">
 	<form method="post" action="requestPost" class="form-horizontal">
 		<div class="form-group">
 			<label for="domainNamePrefix" class="col-sm-3 control-label">Domain Name
 				Prefix</label>
 			<div class="col-sm-8">
-				<input type="text" id="domainNamePrefix" name="domainNamePrefix" class="form-control">
+				<input type="text" id="domainNamePrefix" name="domainNamePrefix" class="form-control" pattern="[A-Za-z0-9\s]{6,}" data-rule-alphanumeric="true" data-rule-minlength="6">
 			</div>
 			<div class="col-sm-1">.alpha.canada.ca</div>
 		</div>
@@ -199,7 +200,7 @@
 			<label for="emailAddress" class="col-sm-3 control-label">Email
 				Address</label>
 			<div class="col-sm-9">
-				<input type="text" id="emailAddress" name="emailAddress" class="form-control">
+				<input type="email" id="emailAddress" name="emailAddress" class="form-control">
 			</div>
 		</div>
 		<div class="form-group">
@@ -249,6 +250,7 @@
 			</div>
 		</div>
 	</form>
+	</div>
 	<div id="def-preFooter">
 		<!-- Write closure fall-back static file -->
 		<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_31/cdts/static/preFooter-en.html -->
