@@ -41,7 +41,7 @@ public class EvironmentCreator {
 						// "kubectl config set-context --current --namespace=" + instanceName);
 						logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 								"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
-										+ instanceName + ".yaml --timeout 1200 --wait ."));
+										+ instanceName + ".yaml --timeout 3600 --wait ."));
 						// wait for the public IP to be assigned
 					}
 					// EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
