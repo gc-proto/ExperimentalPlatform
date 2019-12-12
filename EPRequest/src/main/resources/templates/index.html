@@ -193,9 +193,7 @@
 				<label for="domainNamePrefix" class="col-sm-3 control-label">Domain
 					Name Prefix</label>
 				<div class="col-sm-8">
-					<input type="text" id="domainNamePrefix" name="domainNamePrefix"
-						class="form-control" pattern="[A-Za-z0-9\s]{6,30}"
-						data-rule-alphanumeric="true" maxlength="30" data-rule-minlength="6" data-rule-maxlength="30" required="required">
+					<input class="form-control" id="domainNamePrefix" name="domainNamePrefix" type="text" maxlength="30" pattern="[A-Za-z\s]" data-rule-lettersonly="true" data-rule-minlength="6" />
 				</div>
 			</div>
 

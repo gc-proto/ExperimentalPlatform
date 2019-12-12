@@ -14,9 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.view.RedirectView;
 
 import ca.tbssct.ep.Notification;
-
 
 @Controller
 public class EPRequestController {
@@ -32,41 +32,46 @@ public class EPRequestController {
 	}
 
 	@PostMapping("/requestPost")
-	public String greetingSubmit(@ModelAttribute EPRequest request) throws Exception {
+	public RedirectView handleRequest(@ModelAttribute EPRequest request) throws Exception {
 		// avoid long domain names cap it to 30 characters
 		String domainNamePrefix = request.getDomainNamePrefix().toLowerCase();
 		domainNamePrefix = domainNamePrefix.substring(0, Math.min(domainNamePrefix.length(), 30));
 		request.setDomainNamePrefix(domainNamePrefix);
-		
+
 		String requestName = request.getDomainNamePrefix() + "_" + System.currentTimeMillis();
-		
+
 		Map<String, String> personalisation = new HashMap<>();
 		personalisation.put("name", request.getYourName());
 		personalisation.put("link", SERVER + requestName);
-		
+
 		try {
-			logger.info("Sending email through notify:"+request.getEmailAddress());
-			Notification.getNotificationClient().sendEmail(this.getConfirmationTemplateId(),
-					request.getEmailAddress(), personalisation, requestName);
+			logger.info("Sending email through notify:" + request.getEmailAddress());
+			Notification.getNotificationClient().sendEmail(this.getConfirmationTemplateId(), request.getEmailAddress(),
+					personalisation, requestName);
 			XMLEncoder encoder = null;
 			try {
-				logger.info("Writing file:"+requestName);
-				encoder = new XMLEncoder(new BufferedOutputStream(
-						new FileOutputStream("/home/requests/" + requestName)));
+				logger.info("Writing file:" + requestName);
+				encoder = new XMLEncoder(
+						new BufferedOutputStream(new FileOutputStream("/home/requests/" + requestName)));
 			} catch (FileNotFoundException fileNotFound) {
-				logger.error("ERROR: While Creating or Opening the request file: "+requestName);
+				logger.error("ERROR: While Creating or Opening the request file: " + requestName);
 			}
 			encoder.writeObject(request);
 			encoder.close();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
+		RedirectView view = new RedirectView("result");
+		return view;
+	}
+
+	@GetMapping("/result")
+	public String handleGetRequest() {
 		return "result";
 	}
 
 	public String getConfirmationTemplateId() {
 		return "d5604c35-5a3c-4b3d-b084-6fc5c2abad2f";
 	}
-	
 
 }

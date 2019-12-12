@@ -43,6 +43,11 @@ ARG JAR_FILE=./EPRequest/target/EPRequest-0.0.1-SNAPSHOT.jar
 # Add the application's jar to the container
 ADD ${JAR_FILE} EPRequest.jar
 
+EXPOSE 8000
+
+RUN yes | apt-get install dnsutils
+
+ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
 # Run the jar file 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/EPRequest.jar"]
 

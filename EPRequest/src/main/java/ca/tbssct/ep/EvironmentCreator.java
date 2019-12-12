@@ -66,13 +66,34 @@ public class EvironmentCreator {
 									count++;
 								}
 							}
-
 						}
+
 						if (!publicIP.equals("null")) {
 							// now use the command line to add a DNS entry using the azure command line.
 							logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 									"az network dns record-set a add-record -g DNSZone -z ryanhyma.com -n "
 											+ instanceName + " -a " + publicIP));
+							// check that the DNS record is available.
+							keepGoing = true;
+							count = 0;
+							while (keepGoing) {
+								String response = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+										"nslookup " + instanceName + ".ryanhyma.com");
+								logger.info(response);
+								if (response.contains(publicIP)) {
+									logger.info("DNS entry found. Confirmation will be sent");
+									keepGoing = false;
+								} else {
+									
+									Thread.sleep(60000);
+									if (count >= 240) {
+										keepGoing = false;
+									} else {
+										count++;
+									}
+								}
+							}
+
 							Map<String, String> personalisation = new HashMap<>();
 							personalisation.put("username", "admin");
 							personalisation.put("password", epRequest.getPassword());
