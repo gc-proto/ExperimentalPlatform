@@ -30,7 +30,7 @@ public class EPVerificationController {
 		}
 		EPRequest request = (EPRequest) decoder.readObject();
 		logger.info("Request found and read...");
-		new EvironmentCreator().create("full", request);
+		new EvironmentCreator().create(request);
 
 		return new RedirectView("verified");
 	}

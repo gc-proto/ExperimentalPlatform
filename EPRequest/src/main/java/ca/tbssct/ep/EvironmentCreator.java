@@ -24,33 +24,27 @@ public class EvironmentCreator {
 
 	}
 
-	public void create(String mode, EPRequest epRequest) throws Exception {
+	public void create(EPRequest epRequest) throws Exception {
 		Thread thread = new Thread() {
 			public void run() {
 				try {
 					String instanceName = epRequest.getDomainNamePrefix();
-					if (mode.equals("full")) {
-						String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
-								+ "values-template.yaml " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
-						logger.info(output);
-						EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
-								epRequest.getPassword(), epRequest.getEmailAddress());
-						// EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace
-						// " + instanceName);
-						// EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-						// "kubectl config set-context --current --namespace=" + instanceName);
-						logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-								"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
-										+ instanceName + ".yaml --timeout 3600 --wait ."));
-						// wait for the public IP to be assigned
-					}
-					// EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-					// "kubectl config set-context --current --namespace=" + instanceName);
-					if (mode.equals("full") || mode.equals("assignIP")) {
+					String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
+							+ "values-template.yaml " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
+					logger.info(output);
+					EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
+							epRequest.getPassword(), epRequest.getEmailAddress());
+					String helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+							"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
+									+ instanceName + ".yaml --timeout 3600 --wait .");
+					logger.info(helmMsg);
+					if (!helmMsg.toUpperCase().contains("ERROR")) {
+						logger.info("Helm complete... finishing install");
 						boolean keepGoing = true;
 						int count = 0;
 						String publicIP = "null";
 						while (keepGoing) {
+							// wait for the public IP to be assigned
 							publicIP = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 									"kubectl get svc --namespace " + instanceName + " " + instanceName
 											+ "-drupal-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"")
@@ -84,7 +78,7 @@ public class EvironmentCreator {
 									logger.info("DNS entry found. Confirmation will be sent");
 									keepGoing = false;
 								} else {
-									
+
 									Thread.sleep(60000);
 									if (count >= 240) {
 										keepGoing = false;
@@ -103,6 +97,7 @@ public class EvironmentCreator {
 									epRequest.getEmailAddress(), personalisation, null);
 						}
 					}
+
 				} catch (Exception e) {
 
 				}
@@ -110,6 +105,7 @@ public class EvironmentCreator {
 		};
 
 		thread.start();
+
 	}
 
 	public void updateValuesFile(String path, String password, String siteEmail) throws Exception {
