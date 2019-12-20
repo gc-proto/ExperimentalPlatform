@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2019-12-16T14:35:54Z"
+  labels:
+    app.kubernetes.io/instance: anotherone
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: drupal
+    helm.sh/chart: drupal-0.1.7
+  name: anotherone-drupal-nginx
+  namespace: anotherone
+  resourceVersion: "5973671"
+  selfLink: /api/v1/namespaces/anotherone/services/anotherone-drupal-nginx
+  uid: 7f2da5ab-17a3-4585-9ee3-ee74e6f96c85
+spec:
+  clusterIP: 10.0.7.89
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    nodePort: 32065
+    port: 80
+    protocol: TCP
+    targetPort: http
+  - name: https
+    nodePort: 30459
+    port: 443
+    protocol: TCP
+    targetPort: https
+  selector:
+    app.kubernetes.io/instance: anotherone
+    app.kubernetes.io/name: drupal
+    tier: frontend
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 52.233.56.213

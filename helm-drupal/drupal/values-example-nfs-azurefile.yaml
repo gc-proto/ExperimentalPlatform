@@ -31,11 +31,11 @@ drupal:
     - name: files-public
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-public
+        shareName: drupalmedia
     - name: files-private
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-private
+        shareName: drupalmedia
 
   volumeMounts:
     - name: files-public

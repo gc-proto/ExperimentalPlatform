@@ -27,7 +27,7 @@ RUN mv ./linux-amd64/helm /usr/local/bin/helm
 COPY ./secrets/init.sh /
 RUN chmod +x init.sh
 RUN /init.sh
-RUN az aks get-credentials --resource-group tbstest-aks --name tbstest-aks --admin --overwrite-existing
+RUN az aks get-credentials --resource-group tbs-development-rg --name tbs-development-aks --admin --overwrite-existing
 RUN helm init --service-account tiller
 RUN rm helm.tar.gz
 

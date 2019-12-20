@@ -1,0 +1,1 @@
+az aks update -n tbs-development-aks -g tbs-development-rg --attach-acr tbsdevelopmentcr

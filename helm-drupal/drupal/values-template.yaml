@@ -163,6 +163,7 @@ nginx:
   resolver: 10.0.0.10
 
   serviceType: LoadBalancer
+  #serviceType: ClusterIP
 
   persistence:
     enabled: false
