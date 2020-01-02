@@ -24,18 +24,20 @@ RUN curl https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz --output helm.tar.g
 RUN tar -xvzf helm.tar.gz
 RUN chmod +x ./linux-amd64/helm
 RUN mv ./linux-amd64/helm /usr/local/bin/helm
+RUN rm helm.tar.gz
 COPY ./secrets/init.sh /
 RUN chmod +x init.sh
 RUN /init.sh
-RUN az aks get-credentials --resource-group tbs-development-rg --name tbs-development-aks --admin --overwrite-existing
+ARG CLUSTER_ENV
+RUN echo ARG:${CLUSTER_ENV}
+RUN az aks get-credentials --resource-group ${CLUSTER_ENV}-rg --name ${CLUSTER_ENV}-aks --admin --overwrite-existing
 RUN helm init --service-account tiller
-RUN rm helm.tar.gz
+
 
 RUN mkdir /home/requests
 RUN mkdir /home/secrets
 COPY ./secrets/notification.key /home/secrets
 COPY ./helm-drupal /home/helm-drupal
-
 
 EXPOSE 8888
 EXPOSE 8000
@@ -50,6 +52,11 @@ RUN /init.sh
 ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
 # Run the jar file 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/EPRequest.jar"]
+
+
+
+
+
 
 
 

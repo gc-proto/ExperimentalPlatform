@@ -37,7 +37,18 @@ public class EvironmentCreator {
 					String helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 							"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
 									+ instanceName + ".yaml --timeout 3600 --wait .");
+					boolean tryAgain = true;
 					logger.info(helmMsg);
+					if (helmMsg.toUpperCase().contains("ERROR") && tryAgain) {
+						logger.info("Trying again once...");
+						tryAgain = false;
+						helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+								"helm delete " + instanceName + " --purge");
+						helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+								"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
+										+ instanceName + ".yaml --timeout 3600 --wait .");
+						logger.info(helmMsg);
+					}
 					if (!helmMsg.toUpperCase().contains("ERROR")) {
 						logger.info("Helm complete... finishing install");
 						boolean keepGoing = true;
