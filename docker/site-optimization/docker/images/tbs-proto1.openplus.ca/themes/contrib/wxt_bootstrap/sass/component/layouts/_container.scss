@@ -1,0 +1,145 @@
+.page-node-type-landing-page,
+.path-user,
+.theme-gcweb {
+    .dialog-off-canvas-main-canvas {
+        &>.container {
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .region-content-footer .row {
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0;
+            max-width: 100%;
+        }
+
+        .node--type-landing_page {
+            h1#wb-cont {
+                // max-width: 1176px;
+                // margin: 0 auto;
+                // margin-top: 20px;
+                // margin-bottom: 20px;
+            }
+
+            .field--name-body {
+                // padding-top: 25px;
+                padding-bottom: 75px;
+            }
+        }
+
+        &>footer#wb-info {
+            background: transparent;
+
+            &>.landscape {
+                // display: none;
+                // background: none;    
+                // background-image: inherit;
+                background: #26374a url(../../../../libraries/theme-gcweb/assets/landscape.png) no-repeat right bottom;
+
+                footer#wb-info {
+                    background: transparent;
+
+                    .landscape {
+                        // display: none;
+                        // background: none;    
+                        background: transparent;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//Targeting drupal blocks to have fixed width since overriding container at top level to be fluid
+.messages__wrapper,
+.block-user-account-block,
+.container-fixed {
+    max-width: 1176px;
+    margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.container-fixed {
+    float: none;
+}
+
+.content-suffix {
+    .container {
+        .row {
+            // max-width: 1170px;
+            // margin: 0 auto;
+        }
+    }
+}
+
+
+// main {
+//     @media (min-width: 768px) and (max-width: 1215px) {
+//         width: 100%;
+//         max-width: 750px;
+//     }
+// }
+
+
+// .path-frontpage {
+
+//     main {
+//         width: 100%;
+//     }
+
+//     .region-content-footer {
+//         width: 100%;
+//         padding-left: 0;
+//         padding-right: 0;
+//     }
+
+// }
+
+.path-frontpage .bs-region--main {
+    // max-width: 970px;
+    // margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+
+    // .promo {
+    //     padding-left: 15px;
+    //     padding-right: 15px;
+    // }
+}
+
+.path-frontpage .row.bs-1col {
+    margin-left: 0;
+    margin-right: 0;
+
+    // width: 100%;
+    // max-width: inherit;
+    // padding-left: 0;
+    // padding-right: 0;
+}
+
+// .region-content {
+//     // max-width: 1170px;
+//     margin: 0 auto;
+// }
+
+.path-frontpage main.col-md-12 {
+    width: 100%;
+
+    @media (min-width: 768px) {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.region-header.container {
+    width: 100%;
+}
+
+.region-content-footer {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}

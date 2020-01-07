@@ -1,0 +1,153 @@
+.well, .bkg-currentsellers, .home-banner {
+  background-color: #F2F2F2 !important;
+}
+
+.btn-login {
+  background-color: #26374a;
+  border: 1px solid #26374a;
+	font-weight: 600;
+	font-family: "Lato";
+  font-size: 17px;
+	padding-top: 7px;
+	padding-bottom: 7px;
+  padding-left: 16px;
+  padding-right: 16px;
+	margin-top: 3px;
+}
+
+.home-banner {
+  background-image: url(none) !important;
+}
+
+
+
+.form-control {
+  border-radius: 0;
+  height: 2.7em;
+}
+
+
+.btn-cb {
+  background-color: #e17127 !important;
+  border-radius: 0;
+  border: none;
+}
+
+.btn-cb:hover {
+  background-color: #874112 !important;
+}
+
+.btn-cb .glyphicon {
+  font-size: 1.2em;
+}
+
+.notice {
+  background-color: #2471e5;
+  text-align: center;
+  padding: .5em .5em .5em .5em;
+}
+
+.notice a {
+  color: white;
+}
+
+.notice a:visited {
+  color: white;
+}
+
+.cb-hero {
+  background-color: #1e4789;
+  padding: 2.5em 3em 3em 3em;
+}
+
+.tagline {
+  font-size: 1.1em;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  padding: 1.7em 1.7em 1.7em 1.7em;
+
+}
+
+.indent {
+  margin-left: 2em;
+}
+
+.cb-steps {
+  margin-bottom: 2em;
+}
+
+.cb-steps p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.cb-steps h3 {
+  font-size: 22px;
+}
+
+
+.cb-home h2 {
+  font-size: 1.5em;
+}
+
+.bkg-gettingstarted {
+
+  background-image: url(http://gc-proto.github.io/eps-pspc/landing/get-started.jpg);
+  background-position: right center;
+  background-repeat: no-repeat;
+
+}
+
+.bkg-currentsellers {
+
+  background-image: url(http://gc-proto.github.io/eps-pspc/landing/current-sellers.jpg);
+  background-position: right center;
+  background-repeat: no-repeat;
+}
+
+  .cb-foot li {
+  display: inline-block;
+  float: left;
+  margin-right: 4.5em;
+  padding: 1em 0 1.3em 0;
+  }
+  .cb-foot li a {
+    color: #fff !important;
+}
+
+  .cb-foot li a:hover {
+    border-bottom: .2em solid  #e17127;
+
+}
+
+.bg-primary {
+    background-color: #f0f0f0 !important;
+    color: #333 !important;
+    font-weight: 100 !important;
+}
+
+.datemod {
+  margin-bottom: 10px !important;
+}
+
+h1 {
+  display: block;
+  padding-bottom: .55em;
+  position: relative;
+  border-bottom: none;
+  }
+  
+.home-banner h1:before {
+  width: 25% !important;
+}
+  
+h1:before{
+    content: "";
+    position: absolute;
+    width: 10%;
+    height: 1px;
+    bottom: 0;
+    left: 0%;
+    border-bottom: .3em solid #e17127;
+  }

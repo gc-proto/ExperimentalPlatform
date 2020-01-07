@@ -1,0 +1,28 @@
+{
+  "name": "wxt_bootstrap",
+  "version": "0.0.1",
+  "description": "WxT theme(s) support leveraging Bootstrap.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "autoprefixer": "^9.5.1",
+    "browser-sync": "^2.6.5",
+    "grunt-sass": "^1.1.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^2.0.4",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-watch": "^4.3.3",
+    "mappy-breakpoints": "^0.2.3"
+  },
+  "scripts": {
+    "postinstall": "find node_modules/ -name '*.info' -type f -delete"
+  },
+  "author": "Sami Malik",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "none"
+  }
+}

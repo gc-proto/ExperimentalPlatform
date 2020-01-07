@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
 import ca.tbssct.ep.Notification;
+import ca.tbssct.ep.Util;
 
 @Controller
 public class EPRequestController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public static String SERVER = "http://requestform.canadacentral.cloudapp.azure.com//verification?id=";
+	
 
 	@GetMapping("/request")
 	public String greetingForm(Model model) {
@@ -42,7 +43,7 @@ public class EPRequestController {
 
 		Map<String, String> personalisation = new HashMap<>();
 		personalisation.put("name", request.getYourName());
-		personalisation.put("link", SERVER + requestName);
+		personalisation.put("link", "<a href=\""+Util.GetVerificationURL() + requestName+"\">Verify</a>");
 
 		try {
 			logger.info("Sending email through notify:" + request.getEmailAddress());

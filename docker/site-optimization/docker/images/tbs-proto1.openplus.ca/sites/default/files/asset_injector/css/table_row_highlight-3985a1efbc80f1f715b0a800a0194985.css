@@ -1,0 +1,6 @@
+tr:hover {
+    background-color: #eee;
+}
+ td:hover {
+    cursor: pointer;
+}

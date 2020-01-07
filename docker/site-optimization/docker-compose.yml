@@ -1,0 +1,58 @@
+version: "3"
+services:
+  db:
+    image: "ryanhyma/sitewxt_db:latest"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=wxt
+    volumes:
+      - dbdata:/var/lib/mysql
+      
+    ports:
+      - "3306"
+    container_name: sitewxt_db
+    command: mysqld --max_allowed_packet=32M
+    build:
+      context: .
+      dockerfile: docker/images/mysql/Dockerfile
+  nginx:
+    image: "ryanhyma/sitewxt_nginx:latest"
+    build:
+      context: .
+      dockerfile: docker/images/nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+    restart: always
+    container_name: sitewxt_nginx
+    volumes:
+      - ~/Downloads/tbs-proto1.openplus.ca:/var/www/html
+      - filesdata:/var/www/html/sites/default/files
+  web:
+    image: "ryanhyma/sitewxt_web:latest"
+    build:
+      context: .
+      dockerfile: docker/images/ci/Dockerfile
+      args:
+        - http_proxy=${HTTP_PROXY}
+        - https_proxy=${HTTP_PROXY}
+        - HTTP_PROXY=${HTTP_PROXY}
+        - HTTPS_PROXY=${HTTP_PROXY}
+    environment:
+      - DRUPAL_SETTINGS=development
+      - http_proxy=${HTTP_PROXY}
+      - https_proxy=${HTTP_PROXY}
+      - HTTP_PROXY=${HTTP_PROXY}
+      - HTTPS_PROXY=${HTTP_PROXY}
+    volumes:
+      - ~/Downloads/tbs-proto1.openplus.ca:/var/www/html
+      - filesdata:/var/www/html/sites/default/files
+    depends_on:
+      - db
+    ports:
+      - "9000"
+    container_name: sitewxt_web
+volumes:
+  dbdata:
+  filesdata:

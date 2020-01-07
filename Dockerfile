@@ -47,6 +47,8 @@ ARG JAR_FILE=./EPRequest/target/EPRequest-0.0.1-SNAPSHOT.jar
 # Add the application's jar to the container
 ADD ${JAR_FILE} EPRequest.jar
 
+COPY ./EPRequest/config/${CLUSTER_ENV}.eprequest.properties /home/config/eprequest.properties
+
 RUN /init.sh
 
 ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n

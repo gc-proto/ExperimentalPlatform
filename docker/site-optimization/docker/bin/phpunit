@@ -1,0 +1,43 @@
+#!/bin/bash
+# strict mode http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if ! type docker > /dev/null; then
+  echo "Docker is required to be present on $PATH"
+  exit 0
+fi
+
+. "${dir}/parse_yml"
+
+if [ -f "${dir}/../config.yml" ]; then
+  eval $(parse_yml ${dir}/../config.yml "config_")
+  site="${config_docker_site}"
+  volume="${config_docker_volume}"
+  network="${config_docker_network}"
+else
+  site="drupal_cli"
+  volume="drupal_web"
+  network="drupal_default"
+fi
+
+if [[ "${CI:-}" ]] ; then
+  image="${site}_scripts"
+  vol="${PWD}/docker/conf/phpunit.xml:/var/www/html/core/phpunit.xml"
+else
+  image="${site}"
+  vol="${PWD}:/var/www"
+fi
+
+docker run -i \
+  --entrypoint=/var/www/vendor/bin/phpunit \
+  -v $vol \
+  -v /tmp/:/tmp/ \
+  -w "/var/www/html/core" \
+  --sig-proxy=true \
+  --pid=host \
+  --net "${network}" \
+  --rm \
+  "${image}" "$@"
