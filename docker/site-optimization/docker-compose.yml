@@ -7,7 +7,6 @@ services:
       - MYSQL_DATABASE=wxt
     volumes:
       - dbdata:/var/lib/mysql
-      
     ports:
       - "3306"
     container_name: sitewxt_db
@@ -27,7 +26,6 @@ services:
     restart: always
     container_name: sitewxt_nginx
     volumes:
-      - ~/Downloads/tbs-proto1.openplus.ca:/var/www/html
       - filesdata:/var/www/html/sites/default/files
   web:
     image: "ryanhyma/sitewxt_web:latest"
@@ -46,7 +44,6 @@ services:
       - HTTP_PROXY=${HTTP_PROXY}
       - HTTPS_PROXY=${HTTP_PROXY}
     volumes:
-      - ~/Downloads/tbs-proto1.openplus.ca:/var/www/html
       - filesdata:/var/www/html/sites/default/files
     depends_on:
       - db

@@ -1,3 +1,5 @@
 secrets/
 **/*.log
 requests/
+**/*.sql
+**/*.mysql
