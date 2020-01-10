@@ -1,0 +1,13 @@
+version: "3"
+services:
+  nginx:
+    image: "ryanhyma/designsystemnginx:latest"
+    build:
+      context: .
+      dockerfile: docker/images/design_system_nginx/Dockerfile
+    ports:
+      - "80:80"
+    restart: always
+    container_name: design_system_nginx
+    
+      
