@@ -1,3 +1,5 @@
+ingress:
+  enabled: false
 drupal:
   ## Site configuration
   ##
@@ -5,6 +7,11 @@ drupal:
   siteEmail: admin@example.com
   siteName: Drupal Install Profile (WxT)
 
+  ## Version of the application
+  ##
+  ## Supported versions: d8
+  ##
+  version: d8
   # Default WxT Library theme (only used if install and/or reconfigure are enabled)
   # Common options include: theme-wet-boew, theme-gcweb-legacy, theme-gcweb, ...
   wxtTheme: theme-gcweb
@@ -27,6 +34,14 @@ drupal:
   # Allows custom /var/www/html/sites/default/files and /var/www/private mounts
   disableDefaultFilesMount: true
 
+  # Configure the Drupal cron
+  cron:
+    # When enabled, a CronJob will run the job based on the schedule
+    enabled: true
+
+  persistence:
+    enabled: false
+
   volumes:
     - name: files-public
       azureFile:
@@ -42,11 +57,22 @@ drupal:
       mountPath: /var/www/html/sites/default/files
     - name: files-private
       mountPath: /var/www/private
-
+  smtp:
+    host: mail
+    tls: true
+    starttls: true
+    auth:
+      enabled: false
+      user: ''
+      password: ''
+      # Note: sSMTP only supports LOGIN and CRAM-MD5
+      method: LOGIN
 nginx:
   # Set your cluster's DNS resolution service here
   resolver: 10.0.0.10
 
+  persistence:
+    enabled: false
   # kubectl create secret generic drupal-storage --from-literal=azurestorageaccountname=$STORAGE_ACCOUNT_NAME --from-literal=azurestorageaccountkey=$STORAGE_KEY
   volumes:
     - name: files-public
@@ -57,6 +83,12 @@ nginx:
   volumeMounts:
     - name: files-public
       mountPath: /var/www/html/sites/default/files
+  
+  securityContext:
+    enabled: true
+    fsGroup: 33
+
+  serviceType: ClusterIP
 
 mysql:
   imageTag: 5.7.28
@@ -82,4 +114,11 @@ files:
 ## MINIO
 ##
 minio:
+  enabled: false
+  defaultBucket:
+    enabled: true
+
+# Use a managed instance from the Open Service Broker
+# (example here is for Azure)
+osb:
   enabled: false
