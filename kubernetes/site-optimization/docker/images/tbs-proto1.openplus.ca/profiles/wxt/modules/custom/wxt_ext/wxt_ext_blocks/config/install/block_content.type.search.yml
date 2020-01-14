@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: search
-label: 'Search block'
-revision: 1
-description: 'A search block contains a placeholder, link and filters.'

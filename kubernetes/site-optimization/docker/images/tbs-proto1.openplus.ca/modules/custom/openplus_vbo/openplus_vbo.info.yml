@@ -1,8 +1,0 @@
-name: OpenPlus VBO Module
-description: Custom VBO actions 
-package: Custom
-type: module
-version: 1.0
-core: 8.x
-dependencies:
-  - drupal:views_bulk_operations
