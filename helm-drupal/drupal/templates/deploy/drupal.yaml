@@ -45,6 +45,13 @@ spec:
           periodSeconds: 5
 {{- end  }}
         env:
+{{- if .Values.external.enabled }}
+        - name: EXTERNAL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "drupal.fullname" . }}
+              key: databasePassword
+{{- end }}
 {{- if .Values.osb.enabled }}
         - name: OSB_HOST
           valueFrom:
@@ -152,8 +159,9 @@ spec:
       - name: ssmtp
         secret:
           secretName: {{ include "drupal.fullname" . }}-ssmtp
-        items:
-          - key: ssmtp.conf
+          items:
+            - key: ssmtp.conf
+              path: ssmtp.conf
       - name: twig-cache
         emptyDir: {}
       - name: config-sync

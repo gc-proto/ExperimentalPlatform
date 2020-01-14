@@ -150,9 +150,9 @@ nginx:
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   ##
-  # imagePullSecrets:
-  #   - name: myRegistryKeySecretName
-
+  # imagePullSecrets:image: ryanhyma/sitewxt_nginx
+  ## Note that by default we use appVersion to get image tag
+  tag: latest
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##

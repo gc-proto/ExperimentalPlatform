@@ -87,7 +87,18 @@
 * @endcode
 */
 
-{{- if .Values.osb.enabled }}
+{{- if .Values.external.enabled }}
+$databases['default']['default'] = array (
+  'database' => {{ .Values.external.database | quote }},
+  'username' => {{ .Values.external.user | quote }},
+  'password' => getenv('EXTERNAL_PASSWORD') ?: '',
+  'host' => {{ .Values.external.host | quote }},
+  'port' => {{ .Values.external.port }},
+  'prefix' => '',
+  'namespace' => 'Drupal\Core\Database\Driver\{{ .Values.external.driver }}',
+  'driver' => '{{ .Values.external.driver }}',
+);
+{{- else if .Values.osb.enabled }}
 $databases['default']['default'] = array (
   'database' => getenv('OSB_DATABASE') ?: '',
   'username' => getenv('OSB_USERNAME') ?: '',
@@ -108,6 +119,17 @@ $databases['default']['default'] = array (
   'prefix' => '',
   'namespace' => 'Drupal\Core\Database\Driver\mysql',
   'driver' => 'mysql',
+);
+{{- else if .Values.postgresql.enabled }}
+$databases['default']['default'] = array (
+  'database' => {{ .Values.postgresql.postgresqlDatabase | quote }},
+  'username' => {{ .Values.postgresql.postgresqlUsername | quote }},
+  'password' => getenv('POSTGRES_PASSWORD') ?: '',
+  'host' => '{{ .Release.Name }}-postgresql',
+  'port' => '5432',
+  'prefix' => '',
+  'namespace' => 'Drupal\Core\Database\Driver\pgsql',
+  'driver' => 'pgsql',
 );
 {{- end }}
 

@@ -52,9 +52,9 @@ spec:
               drush -y cache:rebuild
               drush -y update:lightning
 
-              # Run entity updates
+              # WxT updates
               drush -y cache:rebuild
-              drush -y entity:updates
+              drush -y update:lightning
 
               # Configure s3fs
               {{- if not (eq .Values.files.provider "none") }}
@@ -134,6 +134,13 @@ spec:
               drush -y migrate:import --group gcweb --tag 'Menu'
               {{- end }}
         env:
+{{- if .Values.external.enabled }}
+        - name: EXTERNAL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "drupal.fullname" . }}
+              key: databasePassword
+{{- end }}
 {{- if .Values.osb.enabled }}
         - name: OSB_HOST
           valueFrom:

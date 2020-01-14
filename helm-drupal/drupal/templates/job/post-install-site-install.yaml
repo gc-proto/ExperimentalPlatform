@@ -37,6 +37,8 @@ spec:
               # Errors should fail the job
               set -e
 
+              rsync -rvz --links --modify-window=1 --ignore-existing  /tmp/custom /var/www/html/themes/
+
               # Wait for MySQL to be available
               until drush sql:query 'SHOW TABLES;'; do echo Waiting for MySQL; sleep 3; done
               echo MySQL available
@@ -139,6 +141,13 @@ spec:
               drush -y state:set system.maintenance_mode FALSE
               {{- end }}
         env:
+{{- if .Values.external.enabled }}
+        - name: EXTERNAL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "drupal.fullname" . }}
+              key: databasePassword
+{{- end }}
 {{- if .Values.osb.enabled }}
         - name: OSB_HOST
           valueFrom:
