@@ -125,8 +125,8 @@ mysql:
 
   persistence:
     enabled: true
-    storageClass: managed-premium
-    size: 256Gi
+    storageClass: default
+    size: 10Gi
 
 # Files: object storage
 #
