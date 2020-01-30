@@ -25,7 +25,7 @@
         "drupal/core": "^8.6"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
+    "prefer-stable": false,
     "config": {
         "preferred-install": "dist",
         "autoloader-suffix": "Drupal8",

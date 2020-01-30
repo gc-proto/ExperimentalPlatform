@@ -15,6 +15,8 @@ RUN chown -R -f www-data:www-data /var/www/html/
 RUN chmod -R ug+rwx /var/www/html
 RUN apk update
 RUN apk add rsync
+RUN apk add nano
+COPY /docker/images/tbs-proto1.openplus.ca /tmp/tbs-proto1
 
 # Reset Cache
 RUN php -r 'opcache_reset();'

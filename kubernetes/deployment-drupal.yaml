@@ -1,0 +1,164 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+  creationTimestamp: "2020-01-16T00:22:24Z"
+  generation: 2
+  labels:
+    app.kubernetes.io/instance: drupal
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: drupal
+    helm.sh/chart: drupal-0.2.0
+  name: drupal
+  namespace: drupal
+  resourceVersion: "2013122"
+  selfLink: /apis/extensions/v1beta1/namespaces/drupal/deployments/drupal
+  uid: ea8a55a0-d4ea-4a8a-87f5-e71a9f4ac30a
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: drupal
+      app.kubernetes.io/name: drupal
+      tier: drupal
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2020-01-15T19:53:07-05:00"
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: drupal
+        app.kubernetes.io/name: drupal
+        tier: drupal
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-password
+              name: drupal-mysql
+        image: ryanhyma/sitewxt_web:1.0.0
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - php-fpm-healthcheck
+          failureThreshold: 3
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: drupal
+        ports:
+        - containerPort: 9000
+          name: tcp-php-fpm
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - php-fpm-healthcheck
+          failureThreshold: 3
+          initialDelaySeconds: 1
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/www/html/sites/default/settings.php
+          name: cm-drupal
+          readOnly: true
+          subPath: settings.php
+        - mountPath: /var/www/html/sites/default/extra.settings.php
+          name: cm-drupal
+          readOnly: true
+          subPath: extra.settings.php
+        - mountPath: /etc/ssmtp/ssmtp.conf
+          name: ssmtp
+          readOnly: true
+          subPath: ssmtp.conf
+        - mountPath: /cache/twig
+          name: twig-cache
+        - mountPath: /config/sync
+          name: config-sync
+        - mountPath: /var/www/html/sites/default/files
+          name: files-public
+        - mountPath: /var/www/private
+          name: files-private
+        - mountPath: /var/www/html/themes/custom
+          name: themes
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - mkdir
+        - -p
+        - /files/media-icons/generic
+        image: alpine:3.10
+        imagePullPolicy: IfNotPresent
+        name: init-media-icons-folder
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /files
+          name: files-public
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: drupal
+        name: cm-drupal
+      - name: ssmtp
+        secret:
+          defaultMode: 420
+          items:
+          - key: ssmtp.conf
+            path: ssmtp.conf
+          secretName: drupal-ssmtp
+      - emptyDir: {}
+        name: twig-cache
+      - emptyDir: {}
+        name: config-sync
+      - azureFile:
+          secretName: drupal-storage
+          shareName: drupal-public
+        name: files-public
+      - azureFile:
+          secretName: drupal-storage
+          shareName: drupal-private
+        name: files-private
+      - azureFile:
+          secretName: drupal-storage
+          shareName: themes
+        name: themes
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2020-01-16T00:22:24Z"
+    lastUpdateTime: "2020-01-16T00:53:17Z"
+    message: ReplicaSet "drupal-d58b6f55c" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2020-01-22T16:14:20Z"
+    lastUpdateTime: "2020-01-22T16:14:20Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

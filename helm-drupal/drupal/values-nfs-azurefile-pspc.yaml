@@ -1,10 +1,17 @@
 drupal:
+  image: ryanhyma/sitewxt_web
+
+  ## Note that by default we use appVersion to get image tag
+  tag: 1.0.0
+
+  imagePullPolicy: Always
+  
   ## Site configuration
   ##
   profile: wxt
   siteEmail: admin@example.com
   siteName: Drupal Install Profile (WxT)
-  
+
   resources:
     requests:
       memory: "100Mi"
@@ -12,13 +19,14 @@ drupal:
     limits:
       memory: "1024Mi"
       cpu: "500m"
+
   ## User of the application
   ##
   username: admin
 
   ## Application password
   ##
-  password: admin
+  password: pspc@2020
 
   # php-fpm healthcheck
   # Requires https://github.com/renatomefi/php-fpm-healthcheck in the container.
@@ -59,17 +67,23 @@ drupal:
     - name: files-public
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-public-dev
+        shareName: pspc-drupal-public
     - name: files-private
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-private-dev
+        shareName: pspc-drupal-private
+    - name: themes
+      azureFile:
+        secretName: drupal-storage
+        shareName: pspc-drupal-themes
 
   volumeMounts:
     - name: files-public
       mountPath: /var/www/html/sites/default/files
     - name: files-private
       mountPath: /var/www/private
+    - name: themes
+      mountPath: /var/www/html/themes/custom
 
   initContainers:
     # Pre-create the media-icons folder
@@ -93,9 +107,16 @@ drupal:
         limits:
           memory: "100Mi"
           cpu: "100m"
+
+
         
 
 nginx:
+  image: ryanhyma/sitewxt_nginx
+  ## Note that by default we use appVersion to get image tag
+  tag: 1.0.0
+  imagePullPolicy: Always
+
   # Set your cluster's DNS resolution service here
   resolver: 10.0.0.10
 
@@ -104,10 +125,17 @@ nginx:
     - name: files-public
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-public-dev
+        shareName: pspc-drupal-public
+    - name: themes
+      azureFile:
+        secretName: drupal-storage
+        shareName: pspc-drupal-themes
   volumeMounts:
     - name: files-public
       mountPath: /var/www/html/sites/default/files
+    - name: themes
+      mountPath: /var/www/html/themes/custom
+
 mysql:
   imageTag: 5.7.28
 
@@ -118,8 +146,7 @@ mysql:
     enabled: true
     storageClass: default
     size: 5Gi
-
-  # Custom mysql configuration files used to override default mysql settings
+ # Custom mysql configuration files used to override default mysql settings
   configurationFiles:
    mysql.cnf: |-
      [mysqld]
@@ -155,8 +182,6 @@ mysql:
       limits:
         memory: "100Mi"
         cpu: "100m"
-  
-
 # Files: object storage
 #
 # Use Minio for object storage by default.
@@ -172,4 +197,7 @@ files:
 ## MINIO
 ##
 minio:
+  enabled: false
+
+osb:
   enabled: false

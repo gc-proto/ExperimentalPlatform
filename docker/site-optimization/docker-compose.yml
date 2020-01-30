@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: docker/images/mysql/Dockerfile
   nginx:
-    image: "ryanhyma/sitewxt_nginx:latest"
+    image: "ryanhyma/sitewxt_nginx"
     build:
       context: .
       dockerfile: docker/images/nginx/Dockerfile
@@ -26,9 +26,9 @@ services:
     restart: always
     container_name: sitewxt_nginx
     volumes:
-      - filesdata:/var/www/html/sites/default/files
+      - /home/hyma/tbs-proto1:/var/www/html
   web:
-    image: "ryanhyma/sitewxt_web:latest"
+    image: "ryanhyma/sitewxt_web"
     build:
       context: .
       dockerfile: docker/images/ci/Dockerfile
@@ -44,7 +44,7 @@ services:
       - HTTP_PROXY=${HTTP_PROXY}
       - HTTPS_PROXY=${HTTP_PROXY}
     volumes:
-      - filesdata:/var/www/html/sites/default/files
+      - /home/hyma/tbs-proto1:/var/www/html
     depends_on:
       - db
     ports:

@@ -1,24 +1,26 @@
 drupal:
+  image: ryanhyma/sitewxt_web
+
+  ## Note that by default we use appVersion to get image tag
+  tag: latest
+
+  imagePullPolicy: Always
+  
   ## Site configuration
   ##
   profile: wxt
   siteEmail: admin@example.com
   siteName: Drupal Install Profile (WxT)
+
   
-  resources:
-    requests:
-      memory: "100Mi"
-      cpu: "100m"
-    limits:
-      memory: "1024Mi"
-      cpu: "500m"
+
   ## User of the application
   ##
   username: admin
 
   ## Application password
   ##
-  password: admin
+  ## password: password
 
   # php-fpm healthcheck
   # Requires https://github.com/renatomefi/php-fpm-healthcheck in the container.
@@ -59,17 +61,23 @@ drupal:
     - name: files-public
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-public-dev
+        shareName: drupal-public
     - name: files-private
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-private-dev
+        shareName: drupal-private
+    - name: themes
+      azureFile:
+        secretName: drupal-storage
+        shareName: themes
 
   volumeMounts:
     - name: files-public
       mountPath: /var/www/html/sites/default/files
     - name: files-private
       mountPath: /var/www/private
+    - name: themes
+      mountPath: /var/www/html/themes/custom
 
   initContainers:
     # Pre-create the media-icons folder
@@ -82,20 +90,14 @@ drupal:
       volumeMounts:
         - name: files-public
           mountPath: /files
-      securityContext:
-          capabilities:
-            drop:
-              - NET_RAW
-      resources:
-        requests:
-          memory: "10Mi"
-          cpu: "10m"
-        limits:
-          memory: "100Mi"
-          cpu: "100m"
         
 
 nginx:
+  image: ryanhyma/sitewxt_nginx
+  ## Note that by default we use appVersion to get image tag
+  tag: latest
+  imagePullPolicy: Always
+
   # Set your cluster's DNS resolution service here
   resolver: 10.0.0.10
 
@@ -104,10 +106,17 @@ nginx:
     - name: files-public
       azureFile:
         secretName: drupal-storage
-        shareName: drupal-public-dev
+        shareName: drupal-public
+    - name: themes
+      azureFile:
+        secretName: drupal-storage
+        shareName: themes
   volumeMounts:
     - name: files-public
       mountPath: /var/www/html/sites/default/files
+    - name: themes
+      mountPath: /var/www/html/themes/custom
+
 mysql:
   imageTag: 5.7.28
 
@@ -117,45 +126,7 @@ mysql:
   persistence:
     enabled: true
     storageClass: default
-    size: 5Gi
-
-  # Custom mysql configuration files used to override default mysql settings
-  configurationFiles:
-   mysql.cnf: |-
-     [mysqld]
-     key_buffer_size         = 16M  
-     read_buffer_size        = 60K  
-     sort_buffer_size        = 1M  
-     innodb_buffer_pool_size = 64M  
-     tmp_table_size          = 8M  
-     max_allowed_packet      = 16M  
-     thread_stack            = 192K  
-     thread_cache_size       = 8  
-     # This replaces the startup script and checks MyISAM tables if needed
-     # the first time they are touched
-     max_connections        = 25
-  
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "500Mi"
-      cpu: "500m"
-
-  initContainer:
-    securityContext:
-      capabilities:
-        drop:
-          - NET_RAW  
-    resources:
-      requests:
-        memory: "10Mi"
-        cpu: "10m"
-      limits:
-        memory: "100Mi"
-        cpu: "100m"
-  
+    size: 10Gi
 
 # Files: object storage
 #
@@ -172,4 +143,7 @@ files:
 ## MINIO
 ##
 minio:
+  enabled: false
+
+osb:
   enabled: false

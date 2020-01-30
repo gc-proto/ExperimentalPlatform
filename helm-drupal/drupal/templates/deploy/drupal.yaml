@@ -30,6 +30,10 @@ spec:
       - image: "{{ .Values.drupal.image }}:{{ default .Chart.AppVersion .Values.drupal.tag }}"
         imagePullPolicy: {{ default "" .Values.drupal.imagePullPolicy | quote }}
         name: drupal
+        securityContext:
+          capabilities:
+            drop:
+              - NET_RAW
 {{- if .Values.drupal.healthcheck.enabled }}
         livenessProbe:
           exec:
@@ -151,6 +155,7 @@ spec:
       {{- end }}
       # Allow non-root user to access PersistentVolume
       securityContext:
+        
 {{ toYaml .Values.drupal.securityContext | indent 8 }}
       volumes:
       - name: cm-drupal
