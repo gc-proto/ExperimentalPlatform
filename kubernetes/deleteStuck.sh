@@ -1,0 +1,1 @@
+kubectl patch $1 $2 -p '{"metadata":{"finalizers":null}}'

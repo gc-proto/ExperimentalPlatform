@@ -1,0 +1,19 @@
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "creationTimestamp": "2020-01-27T14:22:14Z",
+        "deletionTimestamp": "2020-02-03T15:56:49Z",
+        "name": "drupalwxt",
+        "resourceVersion": "880078",
+        "selfLink": "/api/v1/namespaces/drupalwxt",
+        "uid": "abbe0b3c-d5a2-455e-83f1-b15181ca1d92"
+    },
+    "spec": {
+        "finalizers": [
+        ]
+    },
+    "status": {
+        "phase": "Terminating"
+    }
+}

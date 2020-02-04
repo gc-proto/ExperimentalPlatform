@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-templates-pspc-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+spec:
+  tls:
+  - hosts:
+    - web-templates.pspc.alpha.experimentation.ca
+    secretName: web-templates-pspc-tls-secret-staging
+  rules:
+  - host: web-templates.pspc.alpha.experimentation.ca
+    http:
+      paths:
+      - backend:
+          serviceName: pspc-drupal-nginx
+          servicePort: 80
+        path: /
+      

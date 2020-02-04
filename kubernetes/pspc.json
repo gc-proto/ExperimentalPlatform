@@ -1,0 +1,20 @@
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "creationTimestamp": "2020-01-29T21:08:53Z",
+        "deletionTimestamp": "2020-02-03T15:53:10Z",
+        "name": "pspc-drupal",
+        "resourceVersion": "879043",
+        "selfLink": "/api/v1/namespaces/pspc-drupal",
+        "uid": "9a39beab-6b41-4b1c-9d50-ff699f082470"
+    },
+    "spec": {
+        "finalizers": [
+       
+        ]
+    },
+    "status": {
+        "phase": "Terminating"
+    }
+}
