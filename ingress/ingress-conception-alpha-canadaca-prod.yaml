@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: conception-alpha-canadaca-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - conception.alpha.canada.ca
+    secretName: conception-alpha-tls-secret-prod
+  rules:
+  - host: conception.alpha.canada.ca
+    http:
+      paths:
+      - backend:
+          serviceName: nginx-fr
+          servicePort: 80
+        path: /

@@ -45,16 +45,15 @@ data:
           listen [::]:80;
 
           location / {
-            #proxy_hide_header "Cache-Control";
-            #proxy_hide_header "Strict-Transport-Security";
-            #add_header Cache-Control "no-store, no-cache, must-revalidate, post-check=0, pre-check=0";
-            #proxy_hide_header "Pragma";
-            #add_header Pragma "no-cache";
-            #expires -1;
-            #add_header Last-Modified $sent_http_Expires;
-            #proxy_redirect off;
-            #proxy_pass https://www.canada.ca/en/government/about/design-system.html;
-            return 302 https://www.canada.ca/fr/gouvernement/a-propos/systeme-conception.html;
+            proxy_hide_header "Cache-Control";
+            proxy_hide_header "Strict-Transport-Security";
+            add_header Cache-Control "no-store, no-cache, must-revalidate, post-check=0, pre-check=0";
+            proxy_hide_header "Pragma";
+            add_header Pragma "no-cache";
+            expires -1;
+            add_header Last-Modified $sent_http_Expires;
+            proxy_redirect off;
+            proxy_pass https://design-system-systeme-conception.netlify.com;
           }
       }
     }
@@ -82,7 +81,7 @@ spec:
       volumes:
       - name: nginx-fr-conf
         configMap:
-          name: nginx-conf # place ConfigMap `nginx-conf` on /etc/nginx
+          name: nginx-fr-conf # place ConfigMap `nginx-conf` on /etc/nginx
           items:
             - key: nginx.conf
               path: nginx.conf
