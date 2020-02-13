@@ -10,10 +10,37 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- checkout: none
+- task: HelmInstaller@1
+  displayName: 'install helm'
+  inputs:
+    helmVersionToInstall: $(helmVersion)
+- download: ci-pipeline
+  artifact: build-artifact
+- bash: |
+   az login \
+        --service-principal \
+        -u $(aksSpId) \
+        -p $(aksSpSecret) \
+        --tenant $(aksSpTenantId)
+    az aks get-credentials \
+        -n $(aks) \
+        -g $(rg)
+    helm repo add \
+        $(registryName) \
+        https://$(registryServerName)/helm/v1/repo \
+        --username $(registryLogin) \
+        --password $(registryPassword)
+    helmChartVersion=$(jq .helmChartVersion $(pipeline.workspace)/ci-pipeline/build-artifact/variables.json -r)
+    helm upgrade \
+        --namespace $(k8sNamespace) \
+        --install \
+        --wait \
+        --version $helmChartVersion \
+        --set image.repository=$(registryServerName)/$(projectName) \
+        --set ingress.enabled=false \
+        $(projectName) \
+        $(registryName)/$(projectName)
+  failOnStderr: true
+  displayName: 'deploy helm chart'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
