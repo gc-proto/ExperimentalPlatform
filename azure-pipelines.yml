@@ -12,11 +12,8 @@ pool:
 steps:
 - checkout: none
 - task: HelmInstaller@1
-  displayName: 'install helm'
   inputs:
-    helmVersionToInstall: $(helmVersion)
-- download: ci-pipeline
-  artifact: build-artifact
+    helmVersionToInstall: 'latest'
 - bash: |
    az login \
         --service-principal \
