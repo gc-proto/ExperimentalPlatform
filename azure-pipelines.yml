@@ -38,5 +38,5 @@ steps:
         --timeout 30m \
         ./helm-drupal/drupal
   failOnStderr: true
-  displayName: 'login to azure'
+  displayName: 'Deploy Drupal Instance'
 
