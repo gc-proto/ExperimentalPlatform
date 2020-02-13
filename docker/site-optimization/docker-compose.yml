@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: docker/images/mysql/Dockerfile
   nginx:
-    image: "ryanhyma/sitewxt_nginx"
+    image: "ryanhyma/sitewxt_nginx:1.0.0"
     build:
       context: .
       dockerfile: docker/images/nginx/Dockerfile
@@ -28,7 +28,7 @@ services:
     volumes:
       - /home/hyma/tbs-proto1:/var/www/html
   web:
-    image: "ryanhyma/sitewxt_web"
+    image: "ryanhyma/sitewxt_web:1.0.0"
     build:
       context: .
       dockerfile: docker/images/ci/Dockerfile

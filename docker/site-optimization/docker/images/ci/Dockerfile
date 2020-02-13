@@ -11,12 +11,16 @@ RUN yes | rm -R /var/www/html
 WORKDIR /var/www/html
 RUN git clone https://github.com/openplus/tbs-proto1.git .
 RUN cp -R /var/www/html/themes/custom /tmp/custom
+RUN git reset --hard origin/master
+RUN git pull
+RUN git status
 RUN chown -R -f www-data:www-data /var/www/html/
 RUN chmod -R ug+rwx /var/www/html
 RUN apk update
 RUN apk add rsync
 RUN apk add nano
-COPY /docker/images/tbs-proto1.openplus.ca /tmp/tbs-proto1
+
+
 
 # Reset Cache
 RUN php -r 'opcache_reset();'
