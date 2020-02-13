@@ -13,6 +13,9 @@ steps:
 - task: HelmInstaller@1
   inputs:
     helmVersionToInstall: 'latest'
+- task: KubectlInstaller@0
+  inputs:
+    kubectlVersion: 'latest'
 - bash: |
     az login \
         --service-principal \
@@ -22,6 +25,7 @@ steps:
     az aks get-credentials \
         -n $(aks) \
         -g $(rg)
+    kubectl create namespace $(instanceName)
     helm install \
         $(instanceName) \
         -f ./helm-drupal/drupal/$(helmValues) \
