@@ -26,6 +26,10 @@ steps:
         -n $(aks) \
         -g $(rg)
     kubectl create namespace $(instanceName)
+    ./azure/createNFSSecret.sh $(instanceName)
+    ./azure/createNFSShare.sh $(instanceName)-drupal-public
+    ./azure/createNFSShare.sh $(instanceName)-drupal-private
+    ./azure/createNFSShare.sh $(instanceName)-drupal-themes
     helm install \
         $(instanceName) \
         -f ./helm-drupal/drupal/$(helmValues) \
