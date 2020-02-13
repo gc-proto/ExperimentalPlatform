@@ -24,7 +24,7 @@ steps:
         -g $(rg)
     helm install \
         $(instanceName) \
-        -f $(helm-values)
+        -f $(helm-values) \
         --namespace $(instanceName) \
         --wait \
         --timeout 30m \
