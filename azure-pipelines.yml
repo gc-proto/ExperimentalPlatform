@@ -23,12 +23,11 @@ steps:
         -n $(aks) \
         -g $(rg)
     helm install \
+        $(instanceName) \
+        -f $(helm-values)
         --namespace $(instanceName) \
-        --install \
         --wait \
         --timeout 30m \
-        --version $helmChartVersion \
-        $(instanceName) \
         ./helm-drupal/drupal
   failOnStderr: true
   displayName: 'login to azure'
