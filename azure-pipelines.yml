@@ -14,7 +14,7 @@ steps:
   inputs:
     helmVersionToInstall: 'latest'
 - bash: |
-   az login \
+    az login \
         --service-principal \
         -u $(aksSpId) \
         -p $(aksSpSecret) \
@@ -22,6 +22,14 @@ steps:
     az aks get-credentials \
         -n $(aks) \
         -g $(rg)
+    helm install \
+        --namespace $(k8sNamespace) \
+        --install \
+        --wait \
+        --timeout 30m \
+        --version $helmChartVersion \
+        $(projectName) \
+        ./helm-drupal/drupal
   failOnStderr: true
   displayName: 'login to azure'
 
