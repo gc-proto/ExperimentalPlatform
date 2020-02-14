@@ -1,0 +1,74 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: updateGit
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: drush
+        image: ryanhyma/sitewxt_web:latest
+        imagePullPolicy: Always
+        command:
+          - '/bin/sh'
+          - '-c'
+          - |
+              # Errors should fail the job
+              set -e
+
+              rsync -rvz --links --modify-window=1 --ignore-existing  /tmp/custom /var/www/html/themes/
+
+             
+        env:
+        volumeMounts:
+        - name: cm-drupal
+          mountPath: /var/www/html/sites/default/settings.php
+          subPath: settings.php
+          readOnly: true
+        - name: cm-drupal
+          mountPath: /var/www/html/sites/default/extra.settings.php
+          subPath: extra.settings.php
+          readOnly: true
+        - name: twig-cache
+          mountPath: /cache/twig
+        - name: config-sync
+          mountPath: /config/sync
+{{- if not .Values.drupal.disableDefaultFilesMount }}
+        - name: files
+          mountPath: /var/www/html/sites/default/files
+          subPath: public
+        - name: files
+          mountPath: /var/www/private
+          subPath: private
+{{- end }}
+{{- if .Values.drupal.volumeMounts }}
+{{ toYaml .Values.drupal.volumeMounts | indent 8 }}
+{{- end }}
+      {{- if .Values.drupal.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.drupal.imagePullSecrets | indent 8 }}
+      {{- end }}
+      # Allow non-root user to access PersistentVolume
+      securityContext:
+{{ toYaml .Values.drupal.securityContext | indent 8 }}
+      volumes:
+      - name: cm-drupal
+        configMap:
+          name: {{ include "drupal.fullname" . }}
+      - name: twig-cache
+        emptyDir: {}
+      - name: config-sync
+        emptyDir: {}
+{{- if .Values.drupal.persistence.enabled }}
+      - name: files
+        persistentVolumeClaim:
+          claimName: {{ template "drupal.fullname" . }}-drupal
+{{- else if not .Values.drupal.disableDefaultFilesMount }}
+      - name: files
+        emptyDir: {}
+{{- end }}
+{{- if .Values.drupal.volumes }}
+{{ toYaml .Values.drupal.volumes | indent 6 }}
+{{- end }}
+{{- end }}

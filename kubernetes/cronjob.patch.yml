@@ -1,0 +1,4 @@
+spec:
+  failedJobsHistoryLimit: 0
+  schedule: 0 */12 * * *
+  successfulJobsHistoryLimit: 0
