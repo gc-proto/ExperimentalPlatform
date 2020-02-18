@@ -34,6 +34,7 @@ RUN mkdir /home/requests
 RUN mkdir /home/secrets
 COPY ./secrets/notification.key /home/secrets
 COPY ./helm-drupal /home/helm-drupal
+COPY ./azure /home/azure
 
 EXPOSE 8888
 EXPOSE 8000
