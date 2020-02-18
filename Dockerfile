@@ -20,20 +20,16 @@ RUN yes | curl -LO https://storage.googleapis.com/kubernetes-release/release/`cu
 RUN yes | chmod +x ./kubectl
 RUN yes | mv ./kubectl /usr/local/bin/kubectl
 RUN yes | curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-RUN curl https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz --output helm.tar.gz
-RUN tar -xvzf helm.tar.gz
-RUN chmod +x ./linux-amd64/helm
-RUN mv ./linux-amd64/helm /usr/local/bin/helm
-RUN rm helm.tar.gz
+RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+RUN chmod 700 get_helm.sh
+RUN ./get_helm.sh
+RUN rm ./get_helm.sh
 COPY ./secrets/init.sh /
 RUN chmod +x init.sh
 RUN /init.sh
 ARG CLUSTER_ENV
 RUN echo ARG:${CLUSTER_ENV}
 RUN az aks get-credentials --resource-group ${CLUSTER_ENV}-rg --name ${CLUSTER_ENV}-aks --admin --overwrite-existing
-RUN helm init --service-account tiller
-
-
 RUN mkdir /home/requests
 RUN mkdir /home/secrets
 COPY ./secrets/notification.key /home/secrets
@@ -47,7 +43,7 @@ ARG JAR_FILE=./EPRequest/target/EPRequest-0.0.1-SNAPSHOT.jar
 # Add the application's jar to the container
 ADD ${JAR_FILE} EPRequest.jar
 
-COPY ./EPRequest/config/${CLUSTER_ENV}.eprequest.properties /home/config/eprequest.properties
+COPY ./EPRequest/config/${CLUSTER_ENV}.eerequest.properties /home/config/eprequest.properties
 
 RUN /init.sh
 

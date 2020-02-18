@@ -66,6 +66,12 @@
   </pluginRepositories>
   <dependencies>
     <dependency>
+      <groupId>org.eclipse.mylyn.github</groupId>
+      <artifactId>org.eclipse.egit.github.core</artifactId>
+      <version>2.1.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>uk.gov.service.notify</groupId>
       <artifactId>notifications-java-client</artifactId>
       <version>3.15.1-RELEASE</version>

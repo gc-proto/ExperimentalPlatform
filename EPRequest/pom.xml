@@ -42,6 +42,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.eclipse.mylyn.github</groupId>
+			<artifactId>org.eclipse.egit.github.core</artifactId>
+			<version>2.1.5</version>
+		</dependency>
+		<dependency>
 			<groupId>uk.gov.service.notify</groupId>
 			<artifactId>notifications-java-client</artifactId>
 			<version>3.15.1-RELEASE</version>
@@ -88,7 +93,7 @@
 
 	<build>
 		<plugins>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>

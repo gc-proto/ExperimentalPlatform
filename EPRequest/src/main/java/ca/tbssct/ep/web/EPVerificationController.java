@@ -26,7 +26,7 @@ public class EPVerificationController {
 			String path = REQUEST_PATH + id;
 			decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(path)));
 		} catch (FileNotFoundException e) {
-			logger.error("ERROR: File dvd.xml not found");
+			logger.error("ERROR: "+e.getMessage());
 		}
 		EPRequest request = (EPRequest) decoder.readObject();
 		logger.info("Request found and read...");
