@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: drupal-pilot-cer-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - drupal-pilot.cer.alpha.experimentation.ca
+    secretName: drupal-pilot-cer-tls-secret-prod
+  rules:
+  - host: drupal-pilot.cer.alpha.experimentation.ca
+    http:
+      paths:
+      - backend:
+          serviceName: cer-drupal-nginx
+          servicePort: 80
+        path: /
+      
