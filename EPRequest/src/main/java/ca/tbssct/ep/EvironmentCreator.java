@@ -19,9 +19,99 @@ public class EvironmentCreator {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	public static final String HELM_SCRIPTS = "/home/helm-drupal/drupal/";
+	public static final String AZURE_SCRIPTS = "/home/azure/";
 
 	public EvironmentCreator() {
 
+	}
+
+	public boolean assignTemporaryDNS(String instanceName) {
+		String publicIP = Util.GetPublicIp();
+		if (!publicIP.equals("null")) {
+			// now use the command line to add a DNS entry using the azure command line.
+			logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+					"az network dns record-set a add-record -g DNSZone -z experimentation.ca -n " + instanceName
+							+ ".alpha -a " + publicIP));
+			// check that the DNS record is available.
+			boolean keepGoing = true;
+			int count = 0;
+			while (keepGoing) {
+				String response = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+						"nslookup " + instanceName + ".ryanhyma.com");
+				logger.info(response);
+				if (response.contains(publicIP)) {
+					logger.info("DNS entry found. Confirmation will be sent");
+					keepGoing = false;
+				} else {
+					try {
+						Thread.sleep(60000);
+					} catch (Exception e) {
+
+					}
+					if (count >= 240) {
+						logger.info("Failed to assign DNS entry failing the creation...");
+						return false;
+					} else {
+						count++;
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean deployDrupal(String instanceName, EPRequest epRequest) {
+		try {
+			String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
+					+ Util.GetValuesTemplate() + " " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
+			logger.info(output);
+			EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName);
+			EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
+					epRequest.getPassword(), epRequest.getEmailAddress(), instanceName);
+			String helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName
+					+ " --namespace " + instanceName + " -f values-" + instanceName + ".yaml --timeout 30m --wait .");
+			logger.info(helmMsg);
+			if (helmMsg.toUpperCase().contains("ERROR")) {
+				logger.info("Trying again once...");
+				helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm delete " + instanceName);
+				helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+						"helm install " + instanceName + " --namespace " + instanceName + " -f values-" + instanceName
+								+ ".yaml --timeout 30m --wait .");
+				logger.info(helmMsg);
+				if (helmMsg.toUpperCase().contains("ERROR")) {
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				return true;
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return false;
+		}
+	}
+
+	public boolean createNFSShares(String instanceName) {
+		// add the secret to the share
+		String output = EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName);
+		if (output.toUpperCase().contains("ERROR")) {
+			return false;
+		} else {
+			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+					"./createNFSShare.sh " + instanceName + "-drupal-private");
+			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+					"./createNFSShare.sh " + instanceName + "-drupal-public");
+			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+					"./createNFSShare.sh " + instanceName + "-drupal-themes");
+			if (output.toUpperCase().contains("ERROR")) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 
 	public void create(EPRequest epRequest) throws Exception {
@@ -29,89 +119,29 @@ public class EvironmentCreator {
 			public void run() {
 				try {
 					String instanceName = epRequest.getDomainNamePrefix();
-					String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
-							+ "values-template.yaml " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
-					logger.info(output);
-					EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
-							epRequest.getPassword(), epRequest.getEmailAddress());
-					String helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-							"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
-									+ instanceName + ".yaml --timeout 3600 --wait .");
-					boolean tryAgain = true;
-					logger.info(helmMsg);
-					if (helmMsg.toUpperCase().contains("ERROR") && tryAgain) {
-						logger.info("Trying again once...");
-						tryAgain = false;
-						helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-								"helm delete " + instanceName + " --purge");
-						helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-								"helm install --namespace " + instanceName + " --name " + instanceName + " -f values-"
-										+ instanceName + ".yaml --timeout 3600 --wait .");
-						logger.info(helmMsg);
-					}
-					if (!helmMsg.toUpperCase().contains("ERROR")) {
-						logger.info("Helm complete... finishing install");
-						boolean keepGoing = true;
-						int count = 0;
-						String publicIP = "null";
-						while (keepGoing) {
-							// wait for the public IP to be assigned
-							publicIP = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-									"kubectl get svc --namespace " + instanceName + " " + instanceName
-											+ "-drupal-nginx -o jsonpath=\"{.status.loadBalancer.ingress[*].ip}\"")
-									.trim();
-							if (!publicIP.equals("null") && !publicIP.contains("Error")) {
-								keepGoing = false;
-								logger.info(publicIP);
-							} else {
-								Thread.sleep(30000);
-								if (count >= 20) {
-									keepGoing = false;
-								} else {
-									count++;
-								}
+					// assign the temporary DNS
+					boolean dnsAssigned = EvironmentCreator.this.assignTemporaryDNS(instanceName);
+
+					if (dnsAssigned) {
+						boolean createNFSShares = EvironmentCreator.this.createNFSShares(instanceName);
+						if (createNFSShares) {
+							boolean drupalDeployed = EvironmentCreator.this.deployDrupal(instanceName, epRequest);
+							if (drupalDeployed) {
+								Map<String, String> personalisation = new HashMap<>();
+								personalisation.put("username", "admin");
+								personalisation.put("password", epRequest.getPassword());
+								personalisation.put("loginURL",
+										"http://" + instanceName + ".alpha.experimentation.ca/en/user/login");
+								personalisation.put("contactEmail", "ryan.hyma@tbs-sct.gc.ca");
+								Notification.getNotificationClient().sendEmail("a32135a9-2088-461c-8ea5-8044207497a3",
+										epRequest.getEmailAddress(), personalisation, null);
 							}
 						}
-
-						if (!publicIP.equals("null")) {
-							// now use the command line to add a DNS entry using the azure command line.
-							logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-									"az network dns record-set a add-record -g DNSZone -z ryanhyma.com -n "
-											+ instanceName + " -a " + publicIP));
-							// check that the DNS record is available.
-							keepGoing = true;
-							count = 0;
-							while (keepGoing) {
-								String response = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-										"nslookup " + instanceName + ".ryanhyma.com");
-								logger.info(response);
-								if (response.contains(publicIP)) {
-									logger.info("DNS entry found. Confirmation will be sent");
-									keepGoing = false;
-								} else {
-
-									Thread.sleep(60000);
-									if (count >= 240) {
-										keepGoing = false;
-									} else {
-										count++;
-									}
-								}
-							}
-
-							Map<String, String> personalisation = new HashMap<>();
-							personalisation.put("username", "admin");
-							personalisation.put("password", epRequest.getPassword());
-							personalisation.put("loginURL", "http://" + instanceName + ".ryanhyma.com/en/user/login");
-							personalisation.put("contactEmail", "ryan.hyma@tbs-sct.gc.ca");
-							Notification.getNotificationClient().sendEmail("a32135a9-2088-461c-8ea5-8044207497a3",
-									epRequest.getEmailAddress(), personalisation, null);
-						}
 					}
-
 				} catch (Exception e) {
 
 				}
+
 			}
 		};
 
@@ -119,10 +149,16 @@ public class EvironmentCreator {
 
 	}
 
-	public void updateValuesFile(String path, String password, String siteEmail) throws Exception {
+	public void updateValuesFile(String path, String password, String siteEmail, String instanceName) throws Exception {
 		String content = Util.fileToString(path);
 		content = content.replace("##password##", password);
 		content = content.replace("##siteEmail##", siteEmail);
+		content = content.replace("##publicShare##", instanceName + "-drupal-public");
+		content = content.replace("##privateShare##", instanceName + "-drupal-private");
+		content = content.replace("##themesShare##", instanceName + "-drupal-themes");
+		content = content.replace("##host##", instanceName + Util.GetHost());
+		content = content.replace("##hostSecret##",
+				(instanceName + Util.GetHost().toLowerCase().replace(".", "-") + "-tls-secret"));
 		Util.writeFile(path, content);
 	}
 

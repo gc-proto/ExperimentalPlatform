@@ -43,7 +43,7 @@ public class EPRequestController {
 
 		Map<String, String> personalisation = new HashMap<>();
 		personalisation.put("name", request.getYourName());
-		personalisation.put("link", "<a href=\""+Util.GetVerificationURL() + requestName+"\">Verify</a>");
+		personalisation.put("link", Util.GetVerificationURL() +"/verification?id="+requestName);
 
 		try {
 			logger.info("Sending email through notify:" + request.getEmailAddress());

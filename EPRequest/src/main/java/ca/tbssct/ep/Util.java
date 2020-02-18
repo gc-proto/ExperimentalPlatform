@@ -74,5 +74,36 @@ public class Util {
 		}
 		return prop.getProperty("server");
 	}
+	
+	public static String GetPublicIp() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("publicIP");
+	}
+	
+	public static String GetValuesTemplate() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("helmValuesTemplate");
+	}
+	
+	public static String GetHost() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("host");
+	}
+
 
 }
