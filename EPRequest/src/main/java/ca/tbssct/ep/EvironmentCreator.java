@@ -37,7 +37,7 @@ public class EvironmentCreator {
 			int count = 0;
 			while (keepGoing) {
 				String response = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-						"nslookup " + instanceName + ".ryanhyma.com");
+						"nslookup " + instanceName + ".alpha.experimentation.ca");
 				logger.info(response);
 				if (response.contains(publicIP)) {
 					logger.info("DNS entry found. Confirmation will be sent");
@@ -49,7 +49,7 @@ public class EvironmentCreator {
 
 					}
 					if (count >= 240) {
-						logger.info("Failed to assign DNS entry failing the creation...");
+						Util.handleError("Failed to assign DNS entry failing the creation...", instanceName, logger);
 						return false;
 					} else {
 						count++;
@@ -58,15 +58,20 @@ public class EvironmentCreator {
 			}
 			return true;
 		}
+		Util.handleError("Failed to assign DNS entry failing the creation...", instanceName, logger);
 		return false;
+
 	}
 
 	public boolean deployDrupal(String instanceName, EPRequest epRequest) {
 		try {
 			String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
 					+ Util.GetValuesTemplate() + " " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
+			if (output.toUpperCase().contains("ERROR")) {
+				Util.handleError(output, instanceName, logger);
+				return false;
+			}
 			logger.info(output);
-			EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName);
 			EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
 					epRequest.getPassword(), epRequest.getEmailAddress(), instanceName);
 			String helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName
@@ -80,6 +85,7 @@ public class EvironmentCreator {
 								+ ".yaml --timeout 30m --wait .");
 				logger.info(helmMsg);
 				if (helmMsg.toUpperCase().contains("ERROR")) {
+					Util.handleError(helmMsg, instanceName, logger);
 					return false;
 				} else {
 					return true;
@@ -89,7 +95,7 @@ public class EvironmentCreator {
 			}
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			Util.handleError(e.getMessage(), instanceName, logger);
 			return false;
 		}
 	}
@@ -97,7 +103,8 @@ public class EvironmentCreator {
 	public boolean createNFSShares(String instanceName) {
 		// add the secret to the share
 		String output = EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName);
-		if (output.toUpperCase().contains("ERROR")) {
+		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
+			Util.handleError(output, instanceName, logger);
 			return false;
 		} else {
 			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
@@ -106,40 +113,57 @@ public class EvironmentCreator {
 					"./createNFSShare.sh " + instanceName + "-drupal-public");
 			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-themes");
-			if (output.toUpperCase().contains("ERROR")) {
+			if ((output.toUpperCase().contains("\"CREATED\": FALSE") || output.toUpperCase().contains("ERROR"))
+					&& !output.toUpperCase().contains("ALREADY EXISTS")) {
+				Util.handleError(output, instanceName, logger);
 				return false;
 			} else {
+				logger.info(output);
 				return true;
 			}
 		}
 	}
 
+	public boolean createNamespace(String instanceName) {
+		String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName);
+		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
+			Util.handleError(output, instanceName, logger);
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
 	public void create(EPRequest epRequest) throws Exception {
+		String instanceName = epRequest.getDomainNamePrefix();
 		Thread thread = new Thread() {
 			public void run() {
 				try {
-					String instanceName = epRequest.getDomainNamePrefix();
 					// assign the temporary DNS
 					boolean dnsAssigned = EvironmentCreator.this.assignTemporaryDNS(instanceName);
-
 					if (dnsAssigned) {
-						boolean createNFSShares = EvironmentCreator.this.createNFSShares(instanceName);
-						if (createNFSShares) {
-							boolean drupalDeployed = EvironmentCreator.this.deployDrupal(instanceName, epRequest);
-							if (drupalDeployed) {
-								Map<String, String> personalisation = new HashMap<>();
-								personalisation.put("username", "admin");
-								personalisation.put("password", epRequest.getPassword());
-								personalisation.put("loginURL",
-										"http://" + instanceName + ".alpha.experimentation.ca/en/user/login");
-								personalisation.put("contactEmail", "ryan.hyma@tbs-sct.gc.ca");
-								Notification.getNotificationClient().sendEmail("a32135a9-2088-461c-8ea5-8044207497a3",
-										epRequest.getEmailAddress(), personalisation, null);
+						boolean namespaceCreated = EvironmentCreator.this.createNamespace(instanceName);
+						if (namespaceCreated) {
+							boolean createNFSShares = EvironmentCreator.this.createNFSShares(instanceName);
+							if (createNFSShares) {
+								boolean drupalDeployed = EvironmentCreator.this.deployDrupal(instanceName, epRequest);
+								if (drupalDeployed) {
+									Map<String, String> personalisation = new HashMap<>();
+									personalisation.put("username", "admin");
+									personalisation.put("password", epRequest.getPassword());
+									personalisation.put("loginURL",
+											"http://" + instanceName + ".alpha.experimentation.ca/en/user/login");
+									personalisation.put("contactEmail", Util.getAdminEmail());
+									Notification.getNotificationClient().sendEmail(
+											"a32135a9-2088-461c-8ea5-8044207497a3", epRequest.getEmailAddress(),
+											personalisation, null);
+								}
 							}
 						}
 					}
 				} catch (Exception e) {
-
+					Util.handleError(e.getMessage(), instanceName, logger);
 				}
 
 			}
@@ -183,17 +207,20 @@ public class EvironmentCreator {
 				try (final BufferedReader b = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
 					String line2;
 					if ((line2 = b.readLine()) != null)
-						return output.append(line2 + "\n").toString();
+						return "ERROR " + output.append(line2 + "\n").toString();
 				} catch (final IOException e) {
-					return e.getMessage();
+					return "ERROR " + e.getMessage();
 				}
 			}
 
 		} catch (IOException e) {
+			Util.handleError(e.getMessage(), command, logger);
 			return e.getMessage();
 		} catch (InterruptedException e) {
+			Util.handleError(e.getMessage(), command, logger);
 			return e.getMessage();
 		}
+		Util.handleError(command, "N/A", logger);
 		return "";
 	}
 

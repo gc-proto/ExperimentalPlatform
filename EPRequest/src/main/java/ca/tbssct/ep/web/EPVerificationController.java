@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
 import ca.tbssct.ep.EvironmentCreator;
+import ca.tbssct.ep.Util;
 
 @Controller
 public class EPVerificationController {
@@ -26,7 +27,7 @@ public class EPVerificationController {
 			String path = REQUEST_PATH + id;
 			decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(path)));
 		} catch (FileNotFoundException e) {
-			logger.error("ERROR: "+e.getMessage());
+			Util.handleError("ERROR: "+e.getMessage(),id,logger);
 		}
 		EPRequest request = (EPRequest) decoder.readObject();
 		logger.info("Request found and read...");

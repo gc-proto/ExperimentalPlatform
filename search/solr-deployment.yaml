@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.20.0 (f3d54d784)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: solr
+  name: solr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.20.0 (f3d54d784)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: solr
+    spec:
+      containers:
+      - command:
+        - docker-entrypoint.sh
+        - solr-precreate
+        - opt
+        image: solr:latest
+        name: solr
+        ports:
+        - containerPort: 8983
+        resources: {}
+        volumeMounts:
+        - mountPath: /opt/solr/server/solr/opt
+          name: data
+      restartPolicy: Always
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: data
+status: {}

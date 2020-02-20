@@ -23,8 +23,6 @@ import ca.tbssct.ep.Util;
 public class EPRequestController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
-
 	@GetMapping("/request")
 	public String greetingForm(Model model) {
 		logger.info("Vistor has accessed the form.");
@@ -43,7 +41,7 @@ public class EPRequestController {
 
 		Map<String, String> personalisation = new HashMap<>();
 		personalisation.put("name", request.getYourName());
-		personalisation.put("link", Util.GetVerificationURL() +"/verification?id="+requestName);
+		personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
 
 		try {
 			logger.info("Sending email through notify:" + request.getEmailAddress());
@@ -55,12 +53,13 @@ public class EPRequestController {
 				encoder = new XMLEncoder(
 						new BufferedOutputStream(new FileOutputStream("/home/requests/" + requestName)));
 			} catch (FileNotFoundException fileNotFound) {
-				logger.error("ERROR: While Creating or Opening the request file: " + requestName);
+				Util.handleError("ERROR: While Creating or Opening the request file: " + requestName, requestName,
+						logger);
 			}
 			encoder.writeObject(request);
 			encoder.close();
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			Util.handleError(e.getMessage(), request.getDomainNamePrefix(), logger);
 		}
 		RedirectView view = new RedirectView("result");
 		return view;
