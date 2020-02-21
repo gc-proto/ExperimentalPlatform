@@ -60,7 +60,7 @@ public class EPRequestController {
 			personalisation.put("name", request.getYourName());
 			personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
 			Notification.getNotificationClient().sendEmail(CONFIRMATION_TEMPLATE_ID, request.getEmailAddress(),
-					personalisation, requestName, Util.getAdminEmail());
+					personalisation, requestName);
 			personalisation = new HashMap<>();
 			personalisation.put("domainNamePrefix", request.getDomainNamePrefix());
 			personalisation.put("department", request.getDepartment());
