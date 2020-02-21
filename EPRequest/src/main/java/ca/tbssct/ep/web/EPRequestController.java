@@ -21,6 +21,9 @@ import ca.tbssct.ep.Util;
 
 @Controller
 public class EPRequestController {
+	
+	public static String INFORMATION_TEMPLATE_ID = "c01d8299-bcbf-4373-9ebf-783aaa58187f";
+	public static String CONFIRMATION_TEMPLATE_ID = "d5604c35-5a3c-4b3d-b084-6fc5c2abad2f";
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping("/request")
@@ -39,14 +42,11 @@ public class EPRequestController {
 
 		String requestName = request.getDomainNamePrefix() + "_" + System.currentTimeMillis();
 
-		Map<String, String> personalisation = new HashMap<>();
-		personalisation.put("name", request.getYourName());
-		personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
+		
 
 		try {
-			logger.info("Sending email through notify:" + request.getEmailAddress());
-			Notification.getNotificationClient().sendEmail(this.getConfirmationTemplateId(), request.getEmailAddress(),
-					personalisation, requestName);
+			
+			
 			XMLEncoder encoder = null;
 			try {
 				logger.info("Writing file:" + requestName);
@@ -58,6 +58,24 @@ public class EPRequestController {
 			}
 			encoder.writeObject(request);
 			encoder.close();
+			logger.info("Sending email through notify:" + request.getEmailAddress());
+			Map<String, String> personalisation = new HashMap<>();
+			personalisation.put("name", request.getYourName());
+			personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
+			Notification.getNotificationClient().sendEmail(CONFIRMATION_TEMPLATE_ID, request.getEmailAddress(),
+					personalisation, requestName);
+			personalisation = new HashMap<>();
+			personalisation.put("domainNamePrefix",request.getDomainNamePrefix());
+			personalisation.put("department",request.getDepartment());
+			personalisation.put("emailAddress",request.getEmailAddress());
+			personalisation.put("endDate",request.getEndDate());
+			personalisation.put("experimentDescription",request.getExperimentDesc());
+			personalisation.put("experimentName",request.getExperimentName());
+			personalisation.put("name",request.getYourName());
+			personalisation.put("password",request.getPassword());
+			personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
+			Notification.getNotificationClient().sendEmail(INFORMATION_TEMPLATE_ID, Util.getAdminEmail(),
+					personalisation, requestName);
 		} catch (Exception e) {
 			Util.handleError(e.getMessage(), request.getDomainNamePrefix(), logger);
 		}
@@ -70,8 +88,6 @@ public class EPRequestController {
 		return "result";
 	}
 
-	public String getConfirmationTemplateId() {
-		return "d5604c35-5a3c-4b3d-b084-6fc5c2abad2f";
-	}
+	
 
 }
