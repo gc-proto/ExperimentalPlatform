@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: search-experimentation-alpha-ca-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: search.alpha.experimentation.ca
+    http:
+      paths:
+      - backend:
+          serviceName: solr
+          servicePort: 8983
+        path: /
+      

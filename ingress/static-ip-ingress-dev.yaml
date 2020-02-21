@@ -13,7 +13,6 @@ metadata:
   namespace: ingress-nginx
   resourceVersion: "2771772"
   selfLink: /api/v1/namespaces/ingress-nginx/services/ingress-nginx
-  uid: 45ab26a8-5348-4b95-b0ce-792800638532
 spec:
   clusterIP: 10.0.71.154
   externalTrafficPolicy: Local
