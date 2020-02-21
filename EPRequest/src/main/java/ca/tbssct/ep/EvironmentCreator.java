@@ -157,7 +157,7 @@ public class EvironmentCreator {
 									personalisation.put("contactEmail", Util.getAdminEmail());
 									Notification.getNotificationClient().sendEmail(
 											"a32135a9-2088-461c-8ea5-8044207497a3", epRequest.getEmailAddress(),
-											personalisation, null,Util.getAdminEmail());
+											personalisation, null);
 									Notification.getNotificationClient().sendEmail(
 											"a32135a9-2088-461c-8ea5-8044207497a3", Util.getAdminEmail(),
 											personalisation, null);
