@@ -153,10 +153,13 @@ public class EvironmentCreator {
 									personalisation.put("username", "admin");
 									personalisation.put("password", epRequest.getPassword());
 									personalisation.put("loginURL",
-											"http://" + instanceName + ".alpha.experimentation.ca/en/user/login");
+											"https://" + instanceName + ".alpha.experimentation.ca/en/user/login");
 									personalisation.put("contactEmail", Util.getAdminEmail());
 									Notification.getNotificationClient().sendEmail(
 											"a32135a9-2088-461c-8ea5-8044207497a3", epRequest.getEmailAddress(),
+											personalisation, null);
+									Notification.getNotificationClient().sendEmail(
+											"a32135a9-2088-461c-8ea5-8044207497a3", Util.getAdminEmail(),
 											personalisation, null);
 								}
 							}
