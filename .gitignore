@@ -3,3 +3,4 @@ secrets/
 requests/
 **/*.sql
 **/*.mysql
+EPRequest/.attach*
