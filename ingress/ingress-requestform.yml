@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: eerequest-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: eerequest.alpha.experimentation.ca
+    http:
+      paths:
+      - backend:
+          serviceName: eerequestdev
+          servicePort: 8888
+        path: /

@@ -107,7 +107,7 @@ public class EvironmentCreator {
 			Util.handleError(output, instanceName, logger);
 			return false;
 		} else {
-			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+			output = EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-private");
 			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-public");
