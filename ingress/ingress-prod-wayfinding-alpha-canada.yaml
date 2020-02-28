@@ -6,6 +6,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/app-root: /en/landing/wayfinding
+    nginx.ingress.kubernetes.io/proxy-body-size: 20m
 spec:
   tls:
   - hosts:
