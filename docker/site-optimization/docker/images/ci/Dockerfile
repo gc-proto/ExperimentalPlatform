@@ -19,6 +19,7 @@ RUN chmod -R ug+rwx /var/www/html
 RUN apk update
 RUN apk add rsync
 RUN apk add nano
+RUN composer require drupal/migrate
 
 
 
