@@ -30,14 +30,14 @@ public class EvironmentCreator {
 		if (!publicIP.equals("null")) {
 			// now use the command line to add a DNS entry using the azure command line.
 			logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-					"az network dns record-set a add-record -g DNSZone -z experimentation.ca -n " + instanceName
-							+ ".alpha -a " + publicIP));
+					"az network dns record-set a add-record -g DNSZone -z " + Util.GetHost()+ " -n " + instanceName
+							 + " -a " + publicIP));
 			// check that the DNS record is available.
 			boolean keepGoing = true;
 			int count = 0;
 			while (keepGoing) {
 				String response = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-						"nslookup " + instanceName + ".alpha.experimentation.ca");
+						"nslookup " + instanceName + "."+Util.GetHost());
 				logger.info(response);
 				if (response.contains(publicIP)) {
 					logger.info("DNS entry found. Confirmation will be sent");
@@ -183,9 +183,9 @@ public class EvironmentCreator {
 		content = content.replace("##publicShare##", instanceName + "-drupal-public");
 		content = content.replace("##privateShare##", instanceName + "-drupal-private");
 		content = content.replace("##themesShare##", instanceName + "-drupal-themes");
-		content = content.replace("##host##", instanceName + Util.GetHost());
+		content = content.replace("##host##", instanceName +"."+ Util.GetHost());
 		content = content.replace("##hostSecret##",
-				(instanceName + Util.GetHost().toLowerCase().replace(".", "-") + "-tls-secret"));
+				(instanceName +"." +Util.GetHost().toLowerCase().replace(".", "-") + "-tls-secret"));
 		Util.writeFile(path, content);
 	}
 

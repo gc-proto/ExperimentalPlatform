@@ -1,9 +1,9 @@
 
 ingress:
-  enabled: true
+  enabled: false
   annotations: 
     kubernetes.io/ingress.class: nginx
-    #cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
   path: /
   hosts:
     - ##host##
@@ -13,10 +13,10 @@ ingress:
         - ##host##
 
 drupal:
-  image: ryanhyma/sitewxt_web
+  image: ryanhyma/
 
   ## Note that by default we use appVersion to get image tag
-  tag: 1.0.0
+  tag: latest
 
   imagePullPolicy: Always
   
@@ -25,13 +25,8 @@ drupal:
   profile: wxt
   siteEmail: admin@example.com
   siteName: Drupal Install Profile (WxT)
-  resources:
-    requests:
-      memory: "100Mi"
-      cpu: "100m"
-    limits:
-      memory: "1024Mi"
-      cpu: "500m"  
+
+  
 
   ## User of the application
   ##
@@ -72,17 +67,6 @@ drupal:
   healthcheck:
     enabled: true
 
-  # Configure the Drupal cron
-  cron:
-    # When enabled, a CronJob will run the job based on the schedule
-    enabled: true
-
-    # CronJob schedule (standard cron syntax)
-    # Defaults to once an hour
-    schedule: 0 */12 * * *
-    failedJobsHistoryLimit: 0
-    successfulJobsHistoryLimit: 0
-
   # Allows custom /var/www/html/sites/default/files and /var/www/private mounts
   disableDefaultFilesMount: true
 
@@ -96,18 +80,18 @@ drupal:
       azureFile:
         secretName: drupal-storage
         shareName: ##privateShare##
-    - name: themes
-      azureFile:
-        secretName: drupal-storage
-        shareName: ##themesShare##
+    #- name: themes
+    #  azureFile:
+    #    secretName: drupal-storage
+    #    shareName: ##themesShare##
 
   volumeMounts:
     - name: files-public
       mountPath: /var/www/html/sites/default/files
     - name: files-private
       mountPath: /var/www/private
-    - name: themes
-      mountPath: /var/www/html/themes/custom
+    #- name: themes
+    #  mountPath: /var/www/html/themes/custom
 
   initContainers:
     # Pre-create the media-icons folder
@@ -120,23 +104,12 @@ drupal:
       volumeMounts:
         - name: files-public
           mountPath: /files
-      securityContext:
-          capabilities:
-            drop:
-              - NET_RAW
-      resources:
-        requests:
-          memory: "10Mi"
-          cpu: "10m"
-        limits:
-          memory: "100Mi"
-          cpu: "100m"
         
 
 nginx:
-  image: ryanhyma/sitewxt_nginx
+  image: openplusca/site-canada
   ## Note that by default we use appVersion to get image tag
-  tag: 1.0.0
+  tag: nginx
   imagePullPolicy: Always
 
   # Set your cluster's DNS resolution service here
@@ -148,15 +121,15 @@ nginx:
       azureFile:
         secretName: drupal-storage
         shareName: ##publicShare##
-    - name: themes
-      azureFile:
-        secretName: drupal-storage
-        shareName: ##themesShare##
+  #  - name: themes
+  #    azureFile:
+  #      secretName: drupal-storage
+  #      shareName: ##themesShare##
   volumeMounts:
     - name: files-public
       mountPath: /var/www/html/sites/default/files
-    - name: themes
-      mountPath: /var/www/html/themes/custom
+  #  - name: themes
+  #    mountPath: /var/www/html/themes/custom
 
 mysql:
   imageTag: 5.7.28
@@ -185,26 +158,6 @@ mysql:
      # the first time they are touched
      max_connections        = 25
 
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "500Mi"
-      cpu: "500m"
-
-  initContainer:
-    securityContext:
-      capabilities:
-        drop:
-          - NET_RAW  
-    resources:
-      requests:
-        memory: "10Mi"
-        cpu: "10m"
-      limits:
-        memory: "100Mi"
-        cpu: "100m"
 # Files: object storage
 #
 # Use Minio for object storage by default.

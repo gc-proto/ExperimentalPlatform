@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: docker/images/nginx/Dockerfile
     ports:
-      - "80:80"
+      - "8888:80"
     depends_on:
       - web
     restart: always
