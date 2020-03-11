@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+  creationTimestamp: "2020-03-10T14:22:51Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/instance: crawos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: drupal
+    helm.sh/chart: drupal-0.2.0
+  name: crawos-drupal
+  namespace: crawos
+  selfLink: /apis/extensions/v1beta1/namespaces/crawos/ingresses/crawos-drupal
+spec:
+  rules:
+  - host: crawos.tbs.alpha.canada.ca
+    http:
+      paths:
+      - backend:
+          serviceName: crawos-drupal-nginx
+          servicePort: 80
+  tls:
+  - hosts:
+    - crawos.tbs.alpha.canada.ca
+    secretName: crawos.tbs-alpha-canada-ca-tls-secret
+status:
+  loadBalancer:
+    ingress:
+    - ip: 52.237.15.42
