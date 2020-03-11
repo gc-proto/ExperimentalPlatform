@@ -9,6 +9,7 @@ COPY docker/conf/drupal/www.conf /usr/local/etc/php-fpm.d
 
 RUN yes | rm -R /var/www/html
 WORKDIR /var/www/html
+RUN apk add rsync
 RUN git clone https://github.com/openplus/tbs-proto1.git .
 RUN cp -R /var/www/html/themes/custom /tmp/custom
 RUN git reset --hard origin/master
@@ -16,10 +17,15 @@ RUN git pull
 RUN git status
 RUN chown -R -f www-data:www-data /var/www/html/
 RUN chmod -R ug+rwx /var/www/html
+RUN composer require drupal/views_data_export
 RUN apk update
-RUN apk add rsync
 RUN apk add nano
-RUN composer require drupal/migrate
+COPY docker/images/ci/empty_experimentation_db.sql /tmp
+RUN chmod ug+rwx /tmp/empty_experimentation_db.sql
+RUN chown -R -f www-data:www-data /tmp/empty_experimentation_db.sql
+
+
+
 
 
 
