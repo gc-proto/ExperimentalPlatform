@@ -23,6 +23,9 @@ RUN apk add nano
 COPY docker/images/ci/empty_experimentation_db.sql /tmp
 RUN chmod ug+rwx /tmp/empty_experimentation_db.sql
 RUN chown -R -f www-data:www-data /tmp/empty_experimentation_db.sql
+RUN curl https://drupalconsole.com/installer -L -o drupal.phar
+RUN mv drupal.phar /usr/local/bin/drupal
+RUN chmod +x /usr/local/bin/drupal
 
 
 

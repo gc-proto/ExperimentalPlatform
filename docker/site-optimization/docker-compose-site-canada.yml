@@ -6,32 +6,32 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=wxt
     volumes:
-      - dbdataold:/var/lib/mysql
+      - dbdata:/var/lib/mysql
     ports:
       - "3306"
-    container_name: sitewxt_db
+    container_name: canadawxt_db
     command: mysqld --max_allowed_packet=32M
     build:
       context: .
       dockerfile: docker/images/mysql/Dockerfile
   nginx:
-    image: "ryanhyma/sitewxt_nginx:latest"
+    image: "ryanhyma/site-canada:nginx"
     build:
       context: .
-      dockerfile: docker/images/nginx/Dockerfile
+      dockerfile: docker/images/site-canada-nginx/Dockerfile
     ports:
-      - "8181:80"
+      - "8888:80"
     depends_on:
       - web
     restart: always
-    container_name: sitewxt_nginx
+    container_name: canadawxt_nginx
     volumes:
-      - /home/hyma/tbs-proto1:/var/www/html
+      - filesdata:/var/www/html
   web:
-    image: "ryanhyma/sitewxt_web:latest"
+    image: "ryanhyma/site-canada:latest"
     build:
       context: .
-      dockerfile: docker/images/ci/Dockerfile
+      dockerfile: docker/images/site-canada/Dockerfile
       args:
         - http_proxy=${HTTP_PROXY}
         - https_proxy=${HTTP_PROXY}
@@ -44,11 +44,12 @@ services:
       - HTTP_PROXY=${HTTP_PROXY}
       - HTTPS_PROXY=${HTTP_PROXY}
     volumes:
-      - /home/hyma/tbs-proto1:/var/www/html
+      - filesdata:/var/www/html
     depends_on:
       - db
     ports:
       - "9000"
-    container_name: sitewxt_web
+    container_name: canadawxt_web
 volumes:
-  dbdataold:
+  filesdata:
+  dbdata:

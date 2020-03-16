@@ -20,6 +20,7 @@ public class EvironmentCreator {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	public static final String HELM_SCRIPTS = "/home/helm-drupal/drupal/";
 	public static final String AZURE_SCRIPTS = "/home/azure/";
+	public static final String VELERO_SCRIPTS = "/home/velero";
 
 	public EvironmentCreator() {
 
@@ -125,7 +126,8 @@ public class EvironmentCreator {
 	}
 
 	public boolean createNamespace(String instanceName) {
-		String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName+"-drupal");
+		String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+				"kubectl create namespace " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
 			Util.handleError(output, instanceName, logger);
 			return false;
@@ -149,18 +151,21 @@ public class EvironmentCreator {
 							if (createNFSShares) {
 								boolean drupalDeployed = EvironmentCreator.this.deployDrupal(instanceName, epRequest);
 								if (drupalDeployed) {
-									Map<String, String> personalisation = new HashMap<>();
-									personalisation.put("username", "admin");
-									personalisation.put("password", epRequest.getPassword());
-									personalisation.put("loginURL",
-											"https://" + instanceName + ".alpha.experimentation.ca/en/user/login");
-									personalisation.put("contactEmail", Util.getAdminEmail());
-									Notification.getNotificationClient().sendEmail(
-											"a32135a9-2088-461c-8ea5-8044207497a3", epRequest.getEmailAddress(),
-											personalisation, null);
-									Notification.getNotificationClient().sendEmail(
-											"a32135a9-2088-461c-8ea5-8044207497a3", Util.getAdminEmail(),
-											personalisation, null);
+									boolean backupScheduled = EvironmentCreator.this.scheduleBackup(instanceName);
+									if (backupScheduled) {
+										Map<String, String> personalisation = new HashMap<>();
+										personalisation.put("username", "admin");
+										personalisation.put("password", epRequest.getPassword());
+										personalisation.put("loginURL",
+												"https://" + instanceName + ".alpha.experimentation.ca/en/user/login");
+										personalisation.put("contactEmail", Util.getAdminEmail());
+										Notification.getNotificationClient().sendEmail(
+												"a32135a9-2088-461c-8ea5-8044207497a3", epRequest.getEmailAddress(),
+												personalisation, null);
+										Notification.getNotificationClient().sendEmail(
+												"a32135a9-2088-461c-8ea5-8044207497a3", Util.getAdminEmail(),
+												personalisation, null);
+									}
 								}
 							}
 						}
@@ -174,6 +179,16 @@ public class EvironmentCreator {
 
 		thread.start();
 
+	}
+
+	public boolean scheduleBackup(String instanceName) {
+		String output = EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+				"./schedule-namespace.sh " + instanceName + "-drupal");
+		if (output.toUpperCase().contains("ERROR")) {
+			Util.handleError(output, instanceName, logger);
+			return false;
+		}
+		return true;
 	}
 
 	public void updateValuesFile(String path, String password, String siteEmail, String instanceName) throws Exception {
