@@ -34,4 +34,7 @@ public class ConfigProperties implements WebMvcConfigurer {
 	    return slr;
 	}
 	
+	
+	
+	
 }

@@ -9,11 +9,13 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import ca.tbssct.ep.Notification;
@@ -27,10 +29,12 @@ public class EPRequestController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping("/request")
-	public String greetingForm(Model model) {
+	public ModelAndView greetingForm(Model model) {
+		ModelAndView mav = new ModelAndView();
 		logger.info("Vistor has accessed the form.");
-		model.addAttribute("request", new EPRequest());
-		return "index";
+		mav.addObject("request", new EPRequest());
+		mav.setViewName("index");
+		return mav;
 	}
 
 	@PostMapping("/requestPost")
