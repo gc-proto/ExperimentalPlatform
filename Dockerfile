@@ -16,6 +16,7 @@ RUN apt-get update && \
 # Make port 8080 available to the world outside this container
 RUN yes | apt-get install git
 RUN yes | apt-get install curl
+RUN yes | apt-get install wget
 RUN yes | curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
 RUN yes | chmod +x ./kubectl
 RUN yes | mv ./kubectl /usr/local/bin/kubectl
@@ -24,14 +25,18 @@ RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master
 RUN chmod 700 get_helm.sh
 RUN ./get_helm.sh
 RUN rm ./get_helm.sh
-COPY ./secrets/init.sh /
-RUN chmod +x init.sh
-RUN /init.sh
+RUN wget https://github.com/vmware-tanzu/velero/releases/download/v1.2.0/velero-v1.2.0-linux-amd64.tar.gz
+RUN tar -zxvf velero-v1.2.0-linux-amd64.tar.gz
+RUN mv velero-v1.2.0-linux-amd64/velero /usr/local/bin/
+COPY ./velero/schedule-namespace.sh /home/velero/
+RUN mkdir /home/secrets
+COPY ./secrets/init.sh /home/secrets/
+RUN chmod +x /home/secrets/init.sh
+RUN ./home/secrets/init.sh
 ARG CLUSTER_ENV
 RUN echo ARG:${CLUSTER_ENV}
 RUN az aks get-credentials --resource-group ${CLUSTER_ENV}-rg --name ${CLUSTER_ENV}-aks --admin --overwrite-existing
 RUN mkdir /home/requests
-RUN mkdir /home/secrets
 COPY ./secrets/notification.key /home/secrets
 COPY ./helm-drupal /home/helm-drupal
 COPY ./azure /home/azure
@@ -46,7 +51,7 @@ ADD ${JAR_FILE} EPRequest.jar
 
 COPY ./EPRequest/config/${CLUSTER_ENV}.eerequest.properties /home/config/eprequest.properties
 
-RUN /init.sh
+RUN ./home/secrets/init.sh
 
 ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
 # Run the jar file 
