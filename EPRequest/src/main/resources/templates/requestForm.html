@@ -1,0 +1,80 @@
+<!DOCTYPE>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/layout}">
+<div layout:fragment="content">
+	<h1 property="name" id="wb-cont" th:text="#{title}"></h1>
+	<div class="wb-frmvld">
+		<form method="post" action="requestPost">
+			<div class="form-group">
+				<label for="domainNamePrefix" class="control-label"
+					th:text="#{domainNamePrefix}"></label> <input class="form-control"
+					id="domainNamePrefix" name="domainNamePrefix" type="text"
+					maxlength="30" pattern="[A-Za-z\s]" data-rule-lettersonly="true"
+					data-rule-minlength="6" size="40" />
+			</div>
+			<div class="form-group">
+				<div>
+					<strong th:text="#{yourDomain}"></strong>
+				</div>
+				<div id="domainExample"></div>
+			</div>
+			<div class="form-group">
+				<label for="emailAddress" class="control-label"
+					th:text="#{emailAddress}"></label> <input type="email"
+					id="emailAddress" name="emailAddress" class="form-control"
+					required="required" maxlength="100" size="40">
+			</div>
+			<div class="form-group">
+				<label for="endDate" class="control-label"
+					th:text="${approxEndDate}"> <span class="datepicker-format">
+						(<abbr title="${approxEndDateTitle}">YYYY-MM-DD</abbr>)
+				</span> <a href="#centred-popup" aria-controls="centred-popup"
+					class="wb-lbx" role="button"><i class="fas fa-info-circle"></i></a>
+				</label> <input class="form-control" type="date" id="endDate" name="endDate"
+					required="required" />
+			</div>
+			<div class="form-group">
+				<label for="experimentName" class="control-label"
+					th:text="#{experimentName}"></label> <input type="text"
+					id="experimentName" name="experimentName" class="form-control"
+					required="required" maxlength="50" size="40">
+			</div>
+			<div class="form-group">
+				<label for="experimentDesc" class="control-label"
+					th:text="#{experimentDescription}"></label>
+				<textarea id="experimentDesc" name="experimentDesc"
+					class="form-control" rows="5" cols="39" required="required"
+					maxlength="1000"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="department" class="control-label"
+					th:text="#{department}"></label>
+				<div>
+					<input id="department" name="department" type="text"
+						list="departments" required="required" size="41" maxlength="100" />
+					<div th:replace="fragments/department_datalist"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="yourName" class="control-label" th:text="#{yourName}"></label>
+				<input type="text" id="yourName" name="yourName"
+					class="form-control" required="required" maxlength="50" size="40">
+			</div>
+			<div class="form-group">
+				<label for="password" class="control-label"
+					th:text="#{drupalAdminPassword}"></label> <input type="password"
+					id="password" name="password" class="form-control"
+					required="required" maxlength="20" size="40">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary"
+					th:text="#{submitRequest}"></button>
+			</div>
+			<p>
+				<span th:text="#{assistMsg}"></span><a
+					href="mailto:dto.btn@tbs-sct.gc.ca">dto.btn@tbs-sct.gc.ca</a>
+			<p>
+		</form>
+	</div>
+</div>
+</html>

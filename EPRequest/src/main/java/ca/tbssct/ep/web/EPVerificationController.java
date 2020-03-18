@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import ca.tbssct.ep.EvironmentCreator;
@@ -20,8 +22,18 @@ public class EPVerificationController {
 	public static final String REQUEST_PATH = "/home/requests/";
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@GetMapping("/verification")
-	public RedirectView handleVerification(String id) throws Exception {
+	
+	
+	@GetMapping("/v-v")
+	public ModelAndView handleTerms(String id) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		
+		return mav;
+	}
+	
+	
+	@PostMapping("/termsAccepted")
+	public RedirectView handleTermsAccepted(String id) throws Exception {
 		XMLDecoder decoder = null;
 		try {
 			String path = REQUEST_PATH + id;

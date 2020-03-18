@@ -9,13 +9,13 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import ca.tbssct.ep.Notification;
@@ -28,13 +28,19 @@ public class EPRequestController {
 	public static String CONFIRMATION_TEMPLATE_ID = "d5604c35-5a3c-4b3d-b084-6fc5c2abad2f";
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@GetMapping("/request")
-	public ModelAndView greetingForm(Model model) {
+	@GetMapping("/r-r")
+	public ModelAndView request(Model model) {
 		ModelAndView mav = new ModelAndView();
 		logger.info("Vistor has accessed the form.");
 		mav.addObject("request", new EPRequest());
-		mav.setViewName("index");
+		mav.setViewName("requestForm");
 		return mav;
+	}
+	
+	@GetMapping("/")
+	public View index(Model model) {
+		RedirectView view = new RedirectView("r-r");
+		return view;
 	}
 
 	@PostMapping("/requestPost")
@@ -80,13 +86,13 @@ public class EPRequestController {
 		} catch (Exception e) {
 			Util.handleError(e.getMessage(), request.getDomainNamePrefix(), logger);
 		}
-		RedirectView view = new RedirectView("result");
+		RedirectView view = new RedirectView("es-ee");
 		return view;
 	}
 
-	@GetMapping("/result")
+	@GetMapping("/es-ee")
 	public String handleGetRequest() {
-		return "result";
+		return "mailSent";
 	}
 
 }
