@@ -27,7 +27,7 @@ public class EPVerificationController {
 	@GetMapping("/v-v")
 	public ModelAndView handleTerms(String id) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		
+		mav.setViewName("termsandconditions");
 		return mav;
 	}
 	
