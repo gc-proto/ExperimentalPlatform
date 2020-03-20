@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 public class Util {
 
@@ -121,7 +124,18 @@ public class Util {
 
 	}
 
-	public static void handleError(String error, String instanceName, Logger logger) {
+	public static boolean isDemoMode() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("demoMode").equals("true");
+
+	}
+
+	public static View handleError(String error, String instanceName, Logger logger) {
 		logger.error(instanceName + " " + error);
 		Map<String, String> personalisation = new HashMap<>();
 		personalisation.put("instanceName", instanceName);
@@ -133,6 +147,8 @@ public class Util {
 		} catch (Exception e) {
 			logger.error("Cannot send error message through notify...");
 		}
+		return new RedirectView(
+				"e?lang=" + LocaleContextHolder.getLocale().getDisplayLanguage().substring(0, 2).toLowerCase());
 	}
 
 }

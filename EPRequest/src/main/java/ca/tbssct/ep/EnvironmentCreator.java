@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import ca.tbssct.ep.web.EPRequest;
 
-public class EvironmentCreator {
+public class EnvironmentCreator {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	public static final String HELM_SCRIPTS = "/home/helm-drupal/drupal/";
 	public static final String AZURE_SCRIPTS = "/home/azure/";
 	public static final String VELERO_SCRIPTS = "/home/velero";
 
-	public EvironmentCreator() {
+	public EnvironmentCreator() {
 
 	}
 
@@ -30,14 +30,14 @@ public class EvironmentCreator {
 		String publicIP = Util.GetPublicIp();
 		if (!publicIP.equals("null")) {
 			// now use the command line to add a DNS entry using the azure command line.
-			logger.info(EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+			logger.info(EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 					"az network dns record-set a add-record -g DNSZone -z " + Util.GetHost() + " -n " + instanceName
 							+ " -a " + publicIP));
 			// check that the DNS record is available.
 			boolean keepGoing = true;
 			int count = 0;
 			while (keepGoing) {
-				String response = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+				String response = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 						"nslookup " + instanceName + "." + Util.GetHost());
 				logger.info(response);
 				if (response.contains(publicIP)) {
@@ -66,22 +66,22 @@ public class EvironmentCreator {
 
 	public boolean deployDrupal(String instanceName, EPRequest epRequest) {
 		try {
-			String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
+			String output = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
 					+ Util.GetValuesTemplate() + " " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
 			if (output.toUpperCase().contains("ERROR")) {
 				Util.handleError(output, instanceName, logger);
 				return false;
 			}
 			logger.info(output);
-			EvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
+			EnvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
 					epRequest.getPassword(), epRequest.getEmailAddress(), instanceName);
-			String helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName
+			String helmMsg = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName
 					+ " --namespace " + instanceName + " -f values-" + instanceName + ".yaml --timeout 30m --wait .");
 			logger.info(helmMsg);
 			if (helmMsg.toUpperCase().contains("ERROR")) {
 				logger.info("Trying again once...");
-				helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm delete " + instanceName);
-				helmMsg = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+				helmMsg = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm delete " + instanceName);
+				helmMsg = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 						"helm install " + instanceName + " --namespace " + instanceName + " -f values-" + instanceName
 								+ ".yaml --timeout 30m --wait .");
 				logger.info(helmMsg);
@@ -103,16 +103,16 @@ public class EvironmentCreator {
 
 	public boolean createNFSShares(String instanceName) {
 		// add the secret to the share
-		String output = EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName);
+		String output = EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName);
 		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
 			Util.handleError(output, instanceName, logger);
 			return false;
 		} else {
-			output = EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+			output = EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-private");
-			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+			output += EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-public");
-			output += EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+			output += EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-themes");
 			if ((output.toUpperCase().contains("\"CREATED\": FALSE") || output.toUpperCase().contains("ERROR"))
 					&& !output.toUpperCase().contains("ALREADY EXISTS")) {
@@ -126,7 +126,7 @@ public class EvironmentCreator {
 	}
 
 	public boolean createNamespace(String instanceName) {
-		String output = EvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+		String output = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
 				"kubectl create namespace " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
 			Util.handleError(output, instanceName, logger);
@@ -143,15 +143,15 @@ public class EvironmentCreator {
 			public void run() {
 				try {
 					// assign the temporary DNS
-					boolean dnsAssigned = EvironmentCreator.this.assignTemporaryDNS(instanceName);
+					boolean dnsAssigned = EnvironmentCreator.this.assignTemporaryDNS(instanceName);
 					if (dnsAssigned) {
-						boolean namespaceCreated = EvironmentCreator.this.createNamespace(instanceName);
+						boolean namespaceCreated = EnvironmentCreator.this.createNamespace(instanceName);
 						if (namespaceCreated) {
-							boolean createNFSShares = EvironmentCreator.this.createNFSShares(instanceName);
+							boolean createNFSShares = EnvironmentCreator.this.createNFSShares(instanceName);
 							if (createNFSShares) {
-								boolean drupalDeployed = EvironmentCreator.this.deployDrupal(instanceName, epRequest);
+								boolean drupalDeployed = EnvironmentCreator.this.deployDrupal(instanceName, epRequest);
 								if (drupalDeployed) {
-									boolean backupScheduled = EvironmentCreator.this.scheduleBackup(instanceName);
+									boolean backupScheduled = EnvironmentCreator.this.scheduleBackup(instanceName);
 									if (backupScheduled) {
 										Map<String, String> personalisation = new HashMap<>();
 										personalisation.put("username", "admin");
@@ -182,7 +182,7 @@ public class EvironmentCreator {
 	}
 
 	public boolean scheduleBackup(String instanceName) {
-		String output = EvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+		String output = EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
 				"./schedule-namespace.sh " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR")) {
 			Util.handleError(output, instanceName, logger);

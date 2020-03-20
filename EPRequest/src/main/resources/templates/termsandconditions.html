@@ -1,14 +1,11 @@
-<!DOCTYPE>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{fragments/layout}">
+	layout:decorate="~{fragments/layout}"
+	xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
 	<div th:if="${lang == 'en'}" id="kc-terms-text">
-		<h1 class="text-center">
-			Digital Transformation Office - Experimentation Platform
-		</h1>
-		<h2 class="text-center">
-			Terms and Conditions of Use
-		</h2>
+		<h1 class="text-center">Digital Transformation Office -
+			Experimentation Platform</h1>
+		<h2 class="text-center">Terms and Conditions of Use</h2>
 		<h2>
 			<i>Preamble</i>
 		</h2>
@@ -1135,10 +1132,12 @@
 		</ol>
 	</div>
 	<div class="wb-frmvld">
-		<form method="post" action="termsPost">
+		<form method="post" action="termsAccepted">
+			<input type="hidden" id="requestId" name="requestId" th:value="${id}" />
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary"
+				<button type="submit" class="btn btn-primary btn-lg"
 					th:text="#{submitTermAgreement}"></button>
+				<a href="https://alpha.canada.ca" class="btn btn-default btn-lg" th:text="#{decline}"></a>
 			</div>
 			<p>
 				<span th:text="#{assistMsg}"></span><a

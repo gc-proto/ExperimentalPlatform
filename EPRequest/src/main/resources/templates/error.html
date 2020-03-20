@@ -1,10 +1,10 @@
-<!DOCTYPE>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{fragments/layout}">
+	layout:decorate="~{fragments/layout}"
+	xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
 	<div class="alert alert-danger">
 		<h1 th:text="#{error}"></h1>
-		<p th:utext="#{errorMsg}"></p>
+		<p th:utext="#{errorMsg(${adminEmail})}"></p>
 	</div>
 </div>
 </html>

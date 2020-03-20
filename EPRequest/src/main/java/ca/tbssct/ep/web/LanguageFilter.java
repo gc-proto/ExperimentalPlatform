@@ -1,13 +1,14 @@
 package ca.tbssct.ep.web;
 
 import java.io.IOException;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,19 +18,21 @@ public class LanguageFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse res = (HttpServletResponse) response;
 		String lang = (String) req.getParameter("lang");
 		String altLang = "fr";
 		String altLangText = "Français";
 		String requestURL = req.getRequestURL().toString();
 		String queryString = req.getQueryString();
 
+		if (lang == null) {
+			res.sendRedirect(requestURL + "?lang=en");
+			return;
+		}
 		if (queryString != null) {
 			requestURL = requestURL + "?" + queryString;
 		}
-
-		if (lang == null || lang.contentEquals("en")) {
-			lang = "en";
-		} else {
+		if (!lang.equals("en")) {
 			lang = "fr";
 			altLang = "en";
 			altLangText = "English";
