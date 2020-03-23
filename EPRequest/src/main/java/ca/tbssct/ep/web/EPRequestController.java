@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
@@ -41,6 +42,17 @@ public class EPRequestController {
 	public View index(Model model) {
 		RedirectView view = new RedirectView("r-r");
 		return view;
+	}
+
+	@GetMapping("checkDuplicate")
+	public @ResponseBody String checkDuplicate(@RequestParam String domainNamePrefix) {
+		String response = Util.ExecuteCommand("/home",
+				"nslookup " + domainNamePrefix + Util.GetHost());
+		if (response.contains("ERROR")) {
+			return "true";
+		} else {
+			return "false";
+		}
 	}
 
 	@PostMapping("/requestPost")

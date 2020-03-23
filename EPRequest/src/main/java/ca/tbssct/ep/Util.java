@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class Util {
 	
 	public static String propPath = "/home/requests/";
+	static Logger logger = LoggerFactory.getLogger(Util.class);
 
 	public static String fileToString(String path) throws Exception {
 		String content = "";
@@ -38,40 +40,7 @@ public class Util {
 		propPath = path;
 	}
 
-	public static String ExecuteCommand(String workingDirectory, String command) {
-		ProcessBuilder processBuilder = new ProcessBuilder();
-		processBuilder.directory(new File(workingDirectory));
-		processBuilder.command("bash", "-c", command);
-		StringBuilder output = new StringBuilder();
-		try {
-			Process process = processBuilder.start();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				output.append(line + "\n");
-			}
-
-			int exitVal = process.waitFor();
-			if (exitVal == 0) {
-				return output.toString();
-			} else {
-				try (final BufferedReader b = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-					String line2;
-					if ((line2 = b.readLine()) != null) {
-						return "ERROR " + output.append(line2 + "\n").toString();
-					}
-				} catch (final IOException e) {
-					return e.getMessage();
-				}
-			}
-
-		} catch (IOException e) {
-			return e.getMessage();
-		} catch (InterruptedException e) {
-			return e.getMessage();
-		}
-		return "";
-	}
+	
 
 	public static void writeFile(String path, String content) throws Exception {
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"))) {
@@ -205,6 +174,45 @@ public class Util {
 		}
 		return new RedirectView(
 				"e?lang=" + LocaleContextHolder.getLocale().getDisplayLanguage().substring(0, 2).toLowerCase());
+	}
+	
+	public static String ExecuteCommand(String workingDirectory, String command) {
+		logger.info("Working Directory: " + workingDirectory);
+		logger.info(command);
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		processBuilder.directory(new File(workingDirectory));
+		processBuilder.command("bash", "-c", command);
+		StringBuilder output = new StringBuilder();
+		try {
+			Process process = processBuilder.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				output.append(line + "\n");
+			}
+			int exitVal = process.waitFor();
+			if (exitVal == 0) {
+				return output.toString();
+			} else {
+				try (final BufferedReader b = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+					String line2;
+					if ((line2 = b.readLine()) != null) {
+						output.append(line2 + "\n").toString();
+					}
+					return "ERROR " + output; 
+					
+				} catch (final IOException e) {
+					return "ERROR " + e.getMessage();
+				}
+			}
+
+		} catch (IOException e) {
+			Util.handleError(e.getMessage(), command, logger);
+			return e.getMessage();
+		} catch (InterruptedException e) {
+			Util.handleError(e.getMessage(), command, logger);
+			return e.getMessage();
+		}
 	}
 
 }

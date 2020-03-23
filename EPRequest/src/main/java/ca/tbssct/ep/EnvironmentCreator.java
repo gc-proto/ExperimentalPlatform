@@ -1,18 +1,9 @@
 package ca.tbssct.ep;
 
-import java.io.BufferedReader;
-
-import java.io.File;
-
-import java.io.IOException;
-
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import ca.tbssct.ep.web.EPRequest;
 
 public class EnvironmentCreator {
@@ -26,19 +17,19 @@ public class EnvironmentCreator {
 
 	}
 
-	public boolean assignTemporaryDNS(String instanceName) {
+	public boolean assignDNS(String instanceName) {
 		String publicIP = Util.GetPublicIp();
 		if (!publicIP.equals("null")) {
 			// now use the command line to add a DNS entry using the azure command line.
-			logger.info(EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+			logger.info(Util.ExecuteCommand(HELM_SCRIPTS,
 					"az network dns record-set a add-record -g DNSZone -z " + Util.GetHost() + " -n " + instanceName
 							+ " -a " + publicIP));
 			// check that the DNS record is available.
 			boolean keepGoing = true;
 			int count = 0;
 			while (keepGoing) {
-				String response = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
-						"nslookup " + instanceName + "." + Util.GetHost());
+				String response = Util.ExecuteCommand(HELM_SCRIPTS,
+						"nslookup " + instanceName + Util.GetHost());
 				logger.info(response);
 				if (response.contains(publicIP)) {
 					logger.info("DNS entry found. Confirmation will be sent");
@@ -66,7 +57,7 @@ public class EnvironmentCreator {
 
 	public boolean deployDrupal(String instanceName, EPRequest epRequest) {
 		try {
-			String output = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
+			String output = Util.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
 					+ Util.GetValuesTemplate() + " " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
 			if (output.toUpperCase().contains("ERROR")) {
 				Util.handleError(output, instanceName, logger);
@@ -75,13 +66,13 @@ public class EnvironmentCreator {
 			logger.info(output);
 			EnvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
 					epRequest.getPassword(), epRequest.getEmailAddress(), instanceName);
-			String helmMsg = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName
+			String helmMsg = Util.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName
 					+ " --namespace " + instanceName + " -f values-" + instanceName + ".yaml --timeout 30m --wait .");
 			logger.info(helmMsg);
 			if (helmMsg.toUpperCase().contains("ERROR")) {
 				logger.info("Trying again once...");
-				helmMsg = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS, "helm delete " + instanceName);
-				helmMsg = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+				helmMsg = Util.ExecuteCommand(HELM_SCRIPTS, "helm delete " + instanceName);
+				helmMsg = Util.ExecuteCommand(HELM_SCRIPTS,
 						"helm install " + instanceName + " --namespace " + instanceName + " -f values-" + instanceName
 								+ ".yaml --timeout 30m --wait .");
 				logger.info(helmMsg);
@@ -103,16 +94,16 @@ public class EnvironmentCreator {
 
 	public boolean createNFSShares(String instanceName) {
 		// add the secret to the share
-		String output = EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName);
+		String output = Util.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName);
 		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
 			Util.handleError(output, instanceName, logger);
 			return false;
 		} else {
-			output = EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+			output = Util.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-private");
-			output += EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+			output += Util.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-public");
-			output += EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+			output += Util.ExecuteCommand(AZURE_SCRIPTS,
 					"./createNFSShare.sh " + instanceName + "-drupal-themes");
 			if ((output.toUpperCase().contains("\"CREATED\": FALSE") || output.toUpperCase().contains("ERROR"))
 					&& !output.toUpperCase().contains("ALREADY EXISTS")) {
@@ -126,7 +117,7 @@ public class EnvironmentCreator {
 	}
 
 	public boolean createNamespace(String instanceName) {
-		String output = EnvironmentCreator.this.ExecuteCommand(HELM_SCRIPTS,
+		String output = Util.ExecuteCommand(HELM_SCRIPTS,
 				"kubectl create namespace " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
 			Util.handleError(output, instanceName, logger);
@@ -143,7 +134,7 @@ public class EnvironmentCreator {
 			public void run() {
 				try {
 					// assign the temporary DNS
-					boolean dnsAssigned = EnvironmentCreator.this.assignTemporaryDNS(instanceName);
+					boolean dnsAssigned = EnvironmentCreator.this.assignDNS(instanceName);
 					if (dnsAssigned) {
 						boolean namespaceCreated = EnvironmentCreator.this.createNamespace(instanceName);
 						if (namespaceCreated) {
@@ -182,7 +173,7 @@ public class EnvironmentCreator {
 	}
 
 	public boolean scheduleBackup(String instanceName) {
-		String output = EnvironmentCreator.this.ExecuteCommand(AZURE_SCRIPTS,
+		String output = Util.ExecuteCommand(AZURE_SCRIPTS,
 				"./schedule-namespace.sh " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR")) {
 			Util.handleError(output, instanceName, logger);
@@ -204,42 +195,6 @@ public class EnvironmentCreator {
 		Util.writeFile(path, content);
 	}
 
-	public String ExecuteCommand(String workingDirectory, String command) {
-		logger.info("Working Directory: " + workingDirectory);
-		logger.info(command);
-		ProcessBuilder processBuilder = new ProcessBuilder();
-		processBuilder.directory(new File(workingDirectory));
-		processBuilder.command("bash", "-c", command);
-		StringBuilder output = new StringBuilder();
-		try {
-			Process process = processBuilder.start();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				output.append(line + "\n");
-			}
-			int exitVal = process.waitFor();
-			if (exitVal == 0) {
-				return output.toString();
-			} else {
-				try (final BufferedReader b = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-					String line2;
-					if ((line2 = b.readLine()) != null)
-						return "ERROR " + output.append(line2 + "\n").toString();
-				} catch (final IOException e) {
-					return "ERROR " + e.getMessage();
-				}
-			}
-
-		} catch (IOException e) {
-			Util.handleError(e.getMessage(), command, logger);
-			return e.getMessage();
-		} catch (InterruptedException e) {
-			Util.handleError(e.getMessage(), command, logger);
-			return e.getMessage();
-		}
-		Util.handleError(command, "N/A", logger);
-		return "";
-	}
+	
 
 }
