@@ -21,7 +21,7 @@ import ca.tbssct.ep.Util;
 @Controller
 public class EPVerificationController {
 
-	public static final String REQUEST_PATH = "/home/requests/";
+	public static final String REQUEST_PATH = Util.getRequestPath();
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping("/v-v")

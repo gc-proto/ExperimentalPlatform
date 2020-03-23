@@ -12,6 +12,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class EpRequestApplication {
 
 	public static void main(String[] args) {
+		if (args[0] != null) {
+			Util.setPropPath(args[0]);
+		}
 		SpringApplication.run(EpRequestApplication.class, args);
 	}
 	

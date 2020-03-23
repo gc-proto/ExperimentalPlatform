@@ -18,9 +18,9 @@ import ca.tbssct.ep.web.EPRequest;
 public class EnvironmentCreator {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	public static final String HELM_SCRIPTS = "/home/helm-drupal/drupal/";
-	public static final String AZURE_SCRIPTS = "/home/azure/";
-	public static final String VELERO_SCRIPTS = "/home/velero";
+	public static final String HELM_SCRIPTS = Util.getHelmScriptPath();
+	public static final String AZURE_SCRIPTS = Util.getAzureScriptPath();
+	public static final String VELERO_SCRIPTS = Util.getVeleroScriptPath();
 
 	public EnvironmentCreator() {
 

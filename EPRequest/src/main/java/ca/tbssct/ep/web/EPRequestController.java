@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
@@ -24,8 +26,6 @@ import ca.tbssct.ep.Util;
 @Controller
 public class EPRequestController {
 
-	public static String INFORMATION_TEMPLATE_ID = "c01d8299-bcbf-4373-9ebf-783aaa58187f";
-	public static String CONFIRMATION_TEMPLATE_ID = "d5604c35-5a3c-4b3d-b084-6fc5c2abad2f";
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping("/r-r")
@@ -36,7 +36,7 @@ public class EPRequestController {
 		mav.setViewName("requestForm");
 		return mav;
 	}
-	
+
 	@GetMapping("/")
 	public View index(Model model) {
 		RedirectView view = new RedirectView("r-r");
@@ -49,28 +49,24 @@ public class EPRequestController {
 		String domainNamePrefix = request.getDomainNamePrefix().toLowerCase();
 		domainNamePrefix = domainNamePrefix.substring(0, Math.min(domainNamePrefix.length(), 30));
 		request.setDomainNamePrefix(domainNamePrefix);
-
-		String requestName = request.getDomainNamePrefix() + "_" + System.currentTimeMillis();
+		String requestName = request.getDomainNamePrefix();
 
 		try {
-
-			XMLEncoder encoder = null;
-			try {
+			try (XMLEncoder encoder = new XMLEncoder(
+					new BufferedOutputStream(new FileOutputStream(Util.getRequestPath() + requestName + ".xml")));) {
 				logger.info("Writing file:" + requestName);
-				encoder = new XMLEncoder(
-						new BufferedOutputStream(new FileOutputStream("/home/requests/" + requestName)));
+				encoder.writeObject(request);
 			} catch (FileNotFoundException fileNotFound) {
-				Util.handleError("ERROR: While Creating or Opening the request file: " + requestName, requestName,
-						logger);
+				Util.handleError("ERROR: While Creating or Opening the request file: " + requestName + ".xml",
+						requestName, logger);
 			}
-			encoder.writeObject(request);
-			encoder.close();
+
 			logger.info("Sending email through notify:" + request.getEmailAddress());
 			Map<String, String> personalisation = new HashMap<>();
 			personalisation.put("name", request.getYourName());
 			personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
-			Notification.getNotificationClient().sendEmail(CONFIRMATION_TEMPLATE_ID, request.getEmailAddress(),
-					personalisation, requestName);
+			Notification.getNotificationClient().sendEmail(Notification.CONFIRMATION_TEMPLATE_ID,
+					request.getEmailAddress(), personalisation, requestName);
 			personalisation = new HashMap<>();
 			personalisation.put("domainNamePrefix", request.getDomainNamePrefix());
 			personalisation.put("department", request.getDepartment());
@@ -81,7 +77,7 @@ public class EPRequestController {
 			personalisation.put("name", request.getYourName());
 			personalisation.put("password", request.getPassword());
 			personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
-			Notification.getNotificationClient().sendEmail(INFORMATION_TEMPLATE_ID, Util.getAdminEmail(),
+			Notification.getNotificationClient().sendEmail(Notification.INFORMATION_TEMPLATE_ID, Util.getAdminEmail(),
 					personalisation, requestName);
 		} catch (Exception e) {
 			Util.handleError(e.getMessage(), request.getDomainNamePrefix(), logger);

@@ -3,17 +3,18 @@ package ca.tbssct.ep;
 import uk.gov.service.notify.NotificationClient;
 
 public class Notification {
-
-	public static String KEY_PATH = "/home/secrets/notification.key";
+	
+	public static String INFORMATION_TEMPLATE_ID = "c01d8299-bcbf-4373-9ebf-783aaa58187f";
+	public static String CONFIRMATION_TEMPLATE_ID = "d5604c35-5a3c-4b3d-b084-6fc5c2abad2f";
 
 	public static NotificationClient getNotificationClient() {
-		NotificationClient client = new NotificationClient(getAPIKey(), "https://api.notification.alpha.canada.ca"); 
+		NotificationClient client = new NotificationClient(getAPIKey(), "https://api.notification.alpha.canada.ca");
 		return client;
 	}
 
 	private static String getAPIKey() {
 		try {
-			return Util.fileToString(KEY_PATH).trim();
+			return Util.fileToString(Util.getAPIKeyPath() + "notification.key").trim();
 		} catch (Exception e) {
 
 		}

@@ -21,6 +21,8 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 public class Util {
+	
+	public static String propPath = "/home/requests/";
 
 	public static String fileToString(String path) throws Exception {
 		String content = "";
@@ -30,6 +32,10 @@ public class Util {
 			e.printStackTrace();
 		}
 		return content;
+	}
+	
+	public static void setPropPath(String path) {
+		propPath = path;
 	}
 
 	public static String ExecuteCommand(String workingDirectory, String command) {
@@ -76,7 +82,7 @@ public class Util {
 	public static String GetVerificationURL() {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+			prop.load(new FileInputStream(new File(propPath)));
 		} catch (Exception e) {
 
 		}
@@ -86,7 +92,7 @@ public class Util {
 	public static String GetPublicIp() {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+			prop.load(new FileInputStream(new File(propPath)));
 		} catch (Exception e) {
 
 		}
@@ -96,7 +102,7 @@ public class Util {
 	public static String GetValuesTemplate() {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+			prop.load(new FileInputStream(new File(propPath)));
 		} catch (Exception e) {
 
 		}
@@ -106,7 +112,7 @@ public class Util {
 	public static String GetHost() {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+			prop.load(new FileInputStream(new File(propPath)));
 		} catch (Exception e) {
 
 		}
@@ -116,7 +122,7 @@ public class Util {
 	public static String getAdminEmail() {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+			prop.load(new FileInputStream(new File(propPath)));
 		} catch (Exception e) {
 
 		}
@@ -127,12 +133,62 @@ public class Util {
 	public static boolean isDemoMode() {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(new File("/home/config/eprequest.properties")));
+			prop.load(new FileInputStream(new File(propPath)));
 		} catch (Exception e) {
 
 		}
 		return prop.getProperty("demoMode").equals("true");
 
+	}
+
+	public static String getAPIKeyPath() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File(propPath)));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("secretPath");
+	}
+
+	public static String getRequestPath() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File(propPath)));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("requestPath");
+	}
+
+	public static String getAzureScriptPath() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File(propPath)));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("azureScriptPath");
+	}
+
+	public static String getVeleroScriptPath() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File(propPath)));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("veleroScriptPath");
+	}
+
+	public static String getHelmScriptPath() {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(new File(propPath)));
+		} catch (Exception e) {
+
+		}
+		return prop.getProperty("secretPath");
 	}
 
 	public static View handleError(String error, String instanceName, Logger logger) {
