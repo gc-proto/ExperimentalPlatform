@@ -26,7 +26,7 @@ public class LanguageFilter implements Filter {
 		String queryString = req.getQueryString();
 
 		if (lang == null) {
-			res.sendRedirect(requestURL + "?lang=en");
+			res.sendRedirect(requestURL + "?lang=en&"+queryString);
 			return;
 		}
 		if (queryString != null) {

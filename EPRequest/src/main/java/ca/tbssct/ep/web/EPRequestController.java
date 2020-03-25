@@ -2,7 +2,7 @@ package ca.tbssct.ep.web;
 
 import java.beans.XMLEncoder;
 import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class EPRequestController {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@GetMapping("/r-r")
+	@GetMapping("/r")
 	public ModelAndView request(Model model) {
 		ModelAndView mav = new ModelAndView();
 		logger.info("Vistor has accessed the form.");
@@ -40,15 +40,17 @@ public class EPRequestController {
 
 	@GetMapping("/")
 	public View index(Model model) {
-		RedirectView view = new RedirectView("r-r");
+		RedirectView view = new RedirectView("r");
 		return view;
 	}
 
-	@GetMapping("checkDuplicate")
+	@GetMapping("/checkDuplicate")
 	public @ResponseBody String checkDuplicate(@RequestParam String domainNamePrefix) {
-		String response = Util.ExecuteCommand("/home",
-				"nslookup " + domainNamePrefix + Util.GetHost());
-		if (response.contains("ERROR")) {
+		// verify that one has not already been created.
+		String response = Util.ExecuteCommand("/home", "nslookup " + domainNamePrefix + Util.GetHost());
+		// verify that the same name is not currently being created at the same time
+		File file = new File(Util.getRequestPath() + domainNamePrefix + ".xml");
+		if (response.contains("ERROR") && !file.exists()) {
 			return "true";
 		} else {
 			return "false";
@@ -56,7 +58,7 @@ public class EPRequestController {
 	}
 
 	@PostMapping("/requestPost")
-	public RedirectView handleRequest(@ModelAttribute EPRequest request) throws Exception {
+	public View handleRequest(@ModelAttribute EPRequest request) throws Exception {
 		// avoid long domain names cap it to 30 characters
 		String domainNamePrefix = request.getDomainNamePrefix().toLowerCase();
 		domainNamePrefix = domainNamePrefix.substring(0, Math.min(domainNamePrefix.length(), 30));
@@ -68,15 +70,17 @@ public class EPRequestController {
 					new BufferedOutputStream(new FileOutputStream(Util.getRequestPath() + requestName + ".xml")));) {
 				logger.info("Writing file:" + requestName);
 				encoder.writeObject(request);
-			} catch (FileNotFoundException fileNotFound) {
-				Util.handleError("ERROR: While Creating or Opening the request file: " + requestName + ".xml",
+			} catch (Exception e) {
+				return Util.handleError(
+						e.getMessage() + " ERROR: While Creating or Opening the request file: " + requestName + ".xml",
 						requestName, logger);
 			}
 
 			logger.info("Sending email through notify:" + request.getEmailAddress());
 			Map<String, String> personalisation = new HashMap<>();
 			personalisation.put("name", request.getYourName());
-			personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
+			personalisation.put("link_en", Util.GetVerificationURL() + "/v?lang=en&id=" + requestName);
+			personalisation.put("link_fr", Util.GetVerificationURL() + "/v?lang=fr&id=" + requestName);
 			Notification.getNotificationClient().sendEmail(Notification.CONFIRMATION_TEMPLATE_ID,
 					request.getEmailAddress(), personalisation, requestName);
 			personalisation = new HashMap<>();
@@ -88,17 +92,18 @@ public class EPRequestController {
 			personalisation.put("experimentName", request.getExperimentName());
 			personalisation.put("name", request.getYourName());
 			personalisation.put("password", request.getPassword());
-			personalisation.put("link", Util.GetVerificationURL() + "/verification?id=" + requestName);
+			personalisation.put("link_en", Util.GetVerificationURL() + "/v?lang=en&id=" + requestName);
+			personalisation.put("link_fr", Util.GetVerificationURL() + "/v?lang=fr&id=" + requestName);
 			Notification.getNotificationClient().sendEmail(Notification.INFORMATION_TEMPLATE_ID, Util.getAdminEmail(),
 					personalisation, requestName);
 		} catch (Exception e) {
-			Util.handleError(e.getMessage(), request.getDomainNamePrefix(), logger);
+			return Util.handleError(e.getMessage(), request.getDomainNamePrefix(), logger);
 		}
-		RedirectView view = new RedirectView("es-ee");
+		RedirectView view = new RedirectView("e-c");
 		return view;
 	}
 
-	@GetMapping("/es-ee")
+	@GetMapping("/e-c")
 	public String handleGetRequest() {
 		return "mailSent";
 	}

@@ -2,7 +2,7 @@
 	layout:decorate="~{fragments/layout}"
 	xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="content">
-	<h1 property="name" id="wb-cont" th:text="#{title}"></h1>
+	<h1 id="wb-cont" th:text="#{title}"></h1>
 	<div class="wb-frmvld">
 		<form id="requestForm" name="requestForm" method="post"
 			th:action="${'requestPost?lang=' + lang}">
@@ -10,7 +10,9 @@
 				<label for="domainNamePrefix" class="control-label required"
 					th:text="#{domainNamePrefix}"></label> <input
 					class="duplicate form-control" id="domainNamePrefix"
-					name="domainNamePrefix" type="text" maxlength="30" size="40" />
+					name="domainNamePrefix" type="text" maxlength="30"
+					pattern="[A-Za-z\s]" data-rule-lettersonly="true"
+					data-rule-minlength="6" required="required" size="40" />
 			</div>
 			<div class="form-group">
 				<div>
@@ -111,8 +113,11 @@
 								jQuery.ajax({
 									contentType : "text",
 									async : false,
-									type: "GET",
-									url : 'checkDuplicate?lang='+document.documentElement.lang+"&domainNamePrefix="+$("#domainNamePrefix").val(),
+									type : "GET",
+									url : 'checkDuplicate?lang='
+											+ document.documentElement.lang
+											+ "&domainNamePrefix="
+											+ $("#domainNamePrefix").val(),
 									success : function(result) {
 										if (result === "false") {
 											response = false;

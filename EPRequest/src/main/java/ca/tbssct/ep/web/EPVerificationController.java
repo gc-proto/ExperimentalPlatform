@@ -24,7 +24,7 @@ public class EPVerificationController {
 	public static final String REQUEST_PATH = Util.getRequestPath();
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@GetMapping("/v-v")
+	@GetMapping("/v")
 	public ModelAndView handleTerms(String id) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("termsandconditions");
@@ -35,14 +35,14 @@ public class EPVerificationController {
 	@PostMapping("/termsAccepted")
 	public View handleTermsAccepted(@ModelAttribute Terms terms) throws Exception {
 		String id = terms.getRequestId();
-		String path = REQUEST_PATH + id;
+		String path = REQUEST_PATH + id + ".xml";
 		try (XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(path)))) {
 			EPRequest request = (EPRequest) decoder.readObject();
 			logger.info("Request found and read..." + request.getExperimentName());
-			if (Util.isDemoMode()) {
+			if (!Util.isDemoMode()) {
 				new EnvironmentCreator().create(request);
 			} else {
-				
+
 			}
 			return new RedirectView("verified");
 		} catch (FileNotFoundException e) {

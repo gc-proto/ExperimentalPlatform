@@ -1132,7 +1132,7 @@
 		</ol>
 	</div>
 	<div class="wb-frmvld">
-		<form method="post" action="termsAccepted">
+		<form method="post" th:action="${'termsAccepted?lang=' + lang}">
 			<input type="hidden" id="requestId" name="requestId" th:value="${id}" />
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary btn-lg"
