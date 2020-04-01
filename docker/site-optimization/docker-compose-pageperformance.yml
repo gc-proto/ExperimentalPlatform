@@ -30,5 +30,13 @@ services:
     ports:
       - "9000"
     container_name: pageperformance_web
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
 volumes:
-  dbdataold:
+  mongodb_data_container:
