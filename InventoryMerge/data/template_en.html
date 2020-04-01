@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="no-js lt-ie9" lang="en" dir="ltr"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en" dir="ltr"><!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW) wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
+		<title>Default page - Centrally Deployed Templates Solution (CDTS)</title>
+		<meta content="width=device-width,initial-scale=1" name="viewport">
+		<!-- Meta data -->
+		<meta name="description" content="Web Experience Toolkit (WET) includes reusable components for building and maintaining innovative Web sites that are accessible, usable, and interoperable. These reusable components are open source software and free for use by departments and external Web communities">
+		<!-- Meta data-->
+		<!-- Load closure template scripts -->
+		<script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/soyutils.js"></script>
+		<script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/wet-en.js"></script>
+		<noscript>
+			<!-- Write closure fall-back static file -->
+			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/refTop.html -->
+		</noscript>
+		<!-- Write closure template -->
+		<script>
+			document.write(wet.builder.refTop({
+			}));
+		</script>
+	</head>
+	<body vocab="https://schema.org/" typeof="WebPage">
+		<div id="def-top">
+			<!-- Write closure fall-back static file -->
+			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/top-en.html -->
+		</div>
+		<!-- Write closure template -->
+		<script>
+			var defTop = document.getElementById("def-top");
+			defTop.outerHTML = wet.builder.top({
+				"lngLinks": [{
+					"lang": "fr",
+					"href": "content-fr.html",
+					"text": "Français"
+				}]
+			});
+		</script>
+		<main role="main" property="mainContentOfPage" class="container wb-prettify all-pre">
+			<h1 property="name" id="wb-cont">Covid Inventory</h1>
+<div class="row">
+<div class="col-md-3">
+<h4 class="wb-inv">Filtering Options</h4>
+<details open>
+<summary><h4 class="h4">Filter Options</h4></summary>
+<p class="mrgn-tp-md">Use filters to below options to change the focus of your results in following data table</p>
+<form class="wb-tables-filter" data-bind-to="dataset-filter">
+<div class="form-group">
+<label for="dt_type">Theme</label>
+<select class="form-control" id="dt_type" name="dt_type" data-column="0">
+<option value="">All</option>
+<!-- THEMES -->
+</select>
+</div>
+<div class="form-group">
+<fieldset>
+<legend><span class="field-name">For</span></legend>
+<ul class="list-unstyled">
+<li class="checkbox"><label for="dt_audience1"><input type="checkbox" id="dt_audience1" name="dt_audience" data-column="2" value="Alert">Alerts</label></li>
+<li class="checkbox"><label for="dt_audience2"><input type="checkbox" id="dt_audience2" name="dt_audience" data-column="2" value="Links">Links</label></li>
+<li class="checkbox"><label for="dt_audience3"><input type="checkbox" id="dt_audience3" name="dt_audience" data-column="2" value="Substantive">Substantive</label></li>
+</ul>
+</fieldset>
+</div>
+<div class="form-group">
+<details>
+<summary><h6>Advanced Options</h6></summary>
+<div class="radio">
+<label for="advanced_options1_1"><input type="radio" name="advanced_options1" id="advanced_options1_1" data-aopts='{"type": "any", "column": "5"}' checked=checked>Any</label>
+</div>
+<div class="radio">
+<label for="advanced_options1_2"><input type="radio" name="advanced_options1" id="advanced_options1_2" data-aopts='{"type": "both", "column": "5"}'>Both</label>
+</div>
+<div class="radio">
+<label for="advanced_options1_3"><input type="radio" name="advanced_options1" id="advanced_options1_3" data-aopts='{"type": "either", "column": "5"}'>Either</label>
+</div>
+<div class="radio">
+<label for="advanced_options1_4"><input type="radio" name="advanced_options1" id="advanced_options1_4" data-aopts='{"type": "and", "column": "5"}'>And</label>
+</div>
+</details>
+</div>
+<div class="form-group">
+<button type="submit" class="btn btn-primary" aria-controls="dataset-filter">Filter</button>
+</div>
+<div class="form-group">
+<button type="reset" class="btn btn-link btn-sm p-0">Reset to defaults</button>
+</div>
+</form>
+</details>
+</div>
+<div class="col-md-9">
+<table class="wb-tables table table-striped table-hover" id="dataset-filter" aria-live="polite" data-wb-tables=''>
+<thead>
+<tr>
+<th>Theme</th>
+<th>Title</th>
+<th>Content Type</th>
+<th>Content Type Data</th>
+<th>Modified Date</th>
+</tr>
+</thead>
+<!-- ROW DATA -->
+</table>
+			</section>
+			<div id="def-preFooter">
+				<!-- Write closure fall-back static file -->
+				<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-en.html -->
+				</div>
+			<!-- Write closure template -->
+			<script>
+				var defPreFooter = document.getElementById("def-preFooter");
+				defPreFooter.outerHTML = wet.builder.preFooter({
+						"dateModified": "2019-03-08"
+				});
+			</script>
+		</main>
+		<div id="def-footer">
+			<!-- Write closure fall-back static file -->
+			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/footer-en.html -->
+		</div>
+		<!-- Write closure template -->
+		<script>
+			var defFooter = document.getElementById("def-footer");
+			defFooter.outerHTML = wet.builder.footer({
+			});
+		</script>
+		<!-- Write closure template -->
+		<script>
+			document.write(wet.builder.refFooter({
+			}));
+		</script>
+	</body>
+</html>
