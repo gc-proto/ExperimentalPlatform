@@ -1,0 +1,11 @@
+version: "3"
+services:
+  nginx:
+    image: "ryanhyma/covid19inv_nginx:1.0.0"
+    build:
+      context: .
+      dockerfile: docker/images/covid19inv_nginx/Dockerfile
+    ports:
+      - "8181:80"
+    restart: always
+    container_name: covid19_nginx 

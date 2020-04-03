@@ -1,0 +1,1 @@
+helm install mongodb stable/mongodb --set usePassword=false --namespace pageperformance

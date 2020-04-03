@@ -4,8 +4,8 @@ metadata:
   creationTimestamp: "2020-03-25T23:31:09Z"
   labels:
     tier: frontend
-  name: pageperformance-nginx
-  namespace: pageperformance
+  name: covid19inv-nginx
+  namespace: covid19inv
 spec:
   ports:
   - port: 80
