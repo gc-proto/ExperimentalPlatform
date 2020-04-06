@@ -99,19 +99,19 @@ public class Main {
 		main.outputDataHTML("fr");
 		// main.outputURLMatch();
 	}
-	
+
 	public void dumpHeaders() throws Exception {
 		final BufferedWriter writer = Files.newBufferedWriter(Paths.get("./export/headers.csv"));
-		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader("English","French");
+		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader("English", "French");
 		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat);) {
-			for (String header: MERGED_HEADERS) {
-				csvPrinter.printRecord(header,"");
+			for (String header : MERGED_HEADERS) {
+				csvPrinter.printRecord(header, "");
 			}
-			for (String header: SEARCH_HEADERS) {
-				csvPrinter.printRecord(header,"");
+			for (String header : SEARCH_HEADERS) {
+				csvPrinter.printRecord(header, "");
 			}
-			for (String header: AEM_HEADER) {
-				csvPrinter.printRecord(header,"");
+			for (String header : AEM_HEADER) {
+				csvPrinter.printRecord(header, "");
 			}
 		}
 	}
@@ -250,7 +250,8 @@ public class Main {
 		togglecolumns = togglecolumns.substring(0, togglecolumns.length() - 3);
 		template = template.replace("<!-- TOGGLE COLUMNS -->", togglecolumns);
 
-		writeToFile(template, "../docker/site-optimization/docker/images/covid19inv_nginx/covid19_" + outputLang + ".html");
+		writeToFile(template,
+				"../docker/site-optimization/docker/images/covid19inv_nginx/covid19_" + outputLang + ".html");
 	}
 
 	public void outputURLMatch() throws Exception {
@@ -299,7 +300,8 @@ public class Main {
 		for (String checkField : checkFields) {
 			try {
 				String data = record.get(checkField).toUpperCase();
-				if (data.contains("COVID") || data.contains("CORONAVIRUS") || data.contains("TRUE")) {
+				if (data.contains("COVID") || data.contains("CORONAVIRUS")
+						|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
 					contentType += checkField + ": " + record.get(checkField) + "\n\r";
 				}
 			} catch (Exception e) {
