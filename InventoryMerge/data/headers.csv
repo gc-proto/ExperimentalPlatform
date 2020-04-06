@@ -15,21 +15,21 @@ Language,Langue
 Title,Titre
 Has Alert,Contient une alerte
 H2,H2
-Breadcrumb LVL2 Name,
+Breadcrumb LVL2 Name,Nom du fil d'Ariane (niveau 2)
 Breadcrumb LVL2 URL,
 Breadcrumb LVL3 Name,
 Breadcrumb LVL3 URL,
 Breadcrumb LVL4 Name,
 Breadcrumb LVL4 URL,
-Last Modified,
+Last Modified,Modifié le
 Last Crawled,
-Author,
+Author,Auteur
 dcterms.subject,
 dcterms.audience,
 dcterms.type,
 desc,
-Name,
-Page title,
+Name,Nom
+Page title,Titre de page
 H1,
 Language (jcr:language),
 Page path,
