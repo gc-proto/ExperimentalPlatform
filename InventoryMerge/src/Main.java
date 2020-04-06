@@ -4,24 +4,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class Main {
@@ -42,27 +39,40 @@ public class Main {
 			"Breadcrumb LVL4 URL", "Last Modified", "Last Crawled", "Author", "dcterms.subject", "dcterms.audience",
 			"dcterms.type", "desc" };
 
-	public static String[] MERGED_HEADERS = { "Theme/Department", "Title", "URL", "Content Type(s)", "Sub-Topics",
-			"Modified Date", "Language" };
+	public static String[] MERGED_HEADERS = { "Theme", "Department", "Title", "Content Type(s)", "H2", "Keywords",
+			"Modified Date", "Language", "AEM Content Type", "Page Performance", "Comments" };
 
 	public class OutputData {
-		public String organization;
+		public String department;
+		public String theme;
 		public String title;
 		public String URL;
 		public String contentTypes;
-		public String contentTypeContent;
+		public String h2;
+		public String keywords;
 		public String modifiedDate;
 		public String language;
+		public String AEMContentType = "";
+		public String pagePerformance = "";
+		public String comments = "";
 
 		public List<String> asList() {
 			List<String> list = new ArrayList<String>();
-			list.add(organization);
-			list.add(title);
-			list.add(URL);
+			list.add(theme);
+			list.add(department);
+			list.add("<a href=\"" + URL + "\">" + title + "</a>");
 			list.add(contentTypes);
-			list.add(contentTypeContent);
+			list.add(h2);
+			list.add(keywords);
 			list.add(modifiedDate);
 			list.add(language);
+			list.add(AEMContentType);
+			java.util.Date date = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			String format = formatter.format(date);
+			list.add("<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + URL + "&start=2020-01-01" + "&end="
+					+ format + "\">" + title + "</a>");
+			list.add("");
 			return list;
 
 		}
@@ -75,30 +85,34 @@ public class Main {
 	public HashMap<String, String> themeEn = new HashMap<String, String>();
 	public HashMap<String, String> themeFr = new HashMap<String, String>();
 
+	public HashMap<String, String> departmentsEn = new HashMap<String, String>();
+	public HashMap<String, String> departmentsFr = new HashMap<String, String>();
+
 	public static void main(String args[]) throws Exception {
 		Main main = new Main();
 		main.loadThemes();
+		main.loadDepartments();
 		main.loadData();
 		main.mergeData();
-		main.outputData();
 		main.outputDataHTML("en");
-		//main.outputDataHTML("fr");
+		main.outputDataHTML("fr");
 		// main.outputURLMatch();
 	}
 
 	public void mergeData() {
 		for (String url : aemMap.keySet()) {
-			OutputData tmpData = aemMap.get(url);
+			// OutputData tmpData = aemMap.get(url);
 			if (covidMap.containsKey(url)) {
 				OutputData data = covidMap.remove(url);
-				aemMap.get(url).contentTypeContent += data.contentTypeContent;
+				aemMap.get(url).h2 += data.h2;
+				if (aemMap.get(url).keywords.equals("")) {
+					aemMap.get(url).keywords += data.keywords;
+				}
 				aemMap.get(url).contentTypes = data.contentTypes;
 			}
 		}
-
 		finalMap.putAll(aemMap);
 		finalMap.putAll(covidMap);
-
 	}
 
 	private static String readLineByLineJava8(String filePath) {
@@ -109,6 +123,19 @@ public class Main {
 			e.printStackTrace();
 		}
 		return contentBuilder.toString();
+	}
+
+	public void loadDepartments() throws Exception {
+		Reader in2 = new FileReader("./data/departments.csv");
+		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
+		for (CSVRecord record : records2) {
+			String url = record.get(2);
+			String en = record.get(0);
+			String fr = record.get(1);
+			this.departmentsEn.put(url, en);
+			this.departmentsFr.put(url, fr);
+		}
+
 	}
 
 	public void loadThemes() throws Exception {
@@ -127,8 +154,12 @@ public class Main {
 		}
 	}
 
-	public void outputData() throws Exception {
-		final BufferedWriter writer = Files.newBufferedWriter(Paths.get("./data/output.csv"));
+	public void outputData(String lang) throws Exception {
+
+	}
+
+	public void outputData(String theme, String lang) throws Exception {
+		final BufferedWriter writer = Files.newBufferedWriter(Paths.get("./data/" + theme + "-" + lang + ".csv"));
 		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader(MERGED_HEADERS);
 		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat);) {
 			for (String url : finalMap.keySet())
@@ -148,35 +179,61 @@ public class Main {
 		String html = "";
 		for (String url : finalMap.keySet()) {
 			String lang = finalMap.get(url).language;
-			if (url.contains("www.canada.ca") && lang.toLowerCase().contains("en")) {
+			if (lang.toLowerCase().contains(outputLang)) {
 				html += "<tr>";
 				List<String> list = finalMap.get(url).asList();
 				for (int i = 0; i < list.size(); i++) {
 					String elem = list.get(i);
-					if (i != 1 && i != 2 && i != 6) {
-						html += "<td>" + elem + "</td>";
-					} else if (i == 2) {
-						html += "<td><a href=\"" + elem + "\">" + list.get(1) + "</a></td>";
-					}
+					html += "<td>" + elem + "</td>";
 				}
 				html += "</tr>";
 			}
 		}
 		template = template.replace("<!-- ROW DATA -->", html);
-		
+
 		// Insert themes
 		String themeList = "";
 		HashSet<String> themes = new HashSet<String>(this.themeEn.values());
 		if (outputLang.contains("fr")) {
 			themes = new HashSet<String>(this.themeFr.values());
 		}
-		
+
 		for (String theme : themes) {
-			themeList += "<option value='"+theme+"'>"+theme+"</option>";
+			themeList += "<option value='" + theme + "'>" + theme + "</option>";
 		}
 		template = template.replace("<!-- THEMES -->", themeList);
-		
-		writeToFile(template, "./data/dataHTML_" + outputLang + ".html");
+
+		// Insert departments
+		String deptList = "";
+		HashSet<String> depts = new HashSet<String>(this.departmentsEn.values());
+		if (outputLang.contains("fr")) {
+			themes = new HashSet<String>(this.departmentsFr.values());
+		}
+
+		for (String dept : depts) {
+			deptList += "<option value='" + dept + "'>" + dept + "</option>";
+		}
+		template = template.replace("<!-- DEPARTMENTS -->", deptList);
+
+		// Insert departments
+		String labelList = "";
+		for (String label : MERGED_HEADERS) {
+			labelList += "<th>" + label + "</th>";
+		}
+		template = template.replace("<!-- LABELS -->", labelList);
+
+		// Insert toggle columns
+		String togglecolumns = "";
+		for (int i = 0; i < MERGED_HEADERS.length; i++) {
+			if (i > 2) {
+				togglecolumns += "<a class='toggle-vis' data-column='" + i + "' href=\"" + MERGED_HEADERS[i] + "\">"
+						+ MERGED_HEADERS[i] + "</a> - ";
+			}
+		}
+		togglecolumns = togglecolumns.substring(0, togglecolumns.length() - 3);
+		template = template.replace("<!-- TOGGLE COLUMNS -->", togglecolumns);
+
+		writeToFile(template, "../docker/site-optimization/docker/images/covid19inv_nginx/covid19_" + outputLang + ".html");
 	}
 
 	public void outputURLMatch() throws Exception {
@@ -195,8 +252,8 @@ public class Main {
 		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat);) {
 			for (String url : set) {
 				Document document = Jsoup.connect("http://" + url).get();
-				Element english = null;
-				Element french = null;
+				// Element english = null;
+				// Element french = null;
 				Elements creators = document.select("meta[name=dcterms.creator]");
 				if (creators.size() > 1) {
 					if (creators.get(0).hasAttr("lang") && creators.get(0).attr("lang").equals("fr")) {
@@ -225,7 +282,7 @@ public class Main {
 		for (String checkField : checkFields) {
 			try {
 				String data = record.get(checkField).toUpperCase();
-				if (data.contains("COVID") || data.contains("CORONAVIRUS") || data.contains("true")) {
+				if (data.contains("COVID") || data.contains("CORONAVIRUS") || data.contains("TRUE")) {
 					contentType += checkField + ": " + record.get(checkField) + "\n\r";
 				}
 			} catch (Exception e) {
@@ -236,15 +293,20 @@ public class Main {
 	}
 
 	public static boolean stringContainsItemFromList(String inputStr, String[] items) {
-		return Arrays.stream(items).parallel().anyMatch(inputStr::contains);
+		for (int i = 0; i < items.length; i++) {
+			if (inputStr.toLowerCase().contains(items[i].toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	public String contentType(String contentTypeContent) {
+	public String determineContentType(String contentTypeContent) {
 		String substantiveContentTypes[] = { "Title", "H2", "dcterms.subject", "desc", "Description", "Name",
 				"Page title", "H1", "Keywords", "Primary topic", "Additional topics" };
 		String contentType;
 		if (stringContainsItemFromList(contentTypeContent, substantiveContentTypes)) {
-			contentType = "Substantive";
+			contentType = "Main Covid-19 content";
 		} else if (contentTypeContent.contains("Has Alert")) {
 			contentType = "Contains Covid Alert";
 		} else {
@@ -253,7 +315,8 @@ public class Main {
 		return contentType;
 	}
 
-	public String determineOrganization(String url, String lang) {
+	public String determineTheme(String url, String lang) {
+		// TODO put other themes in check.
 		if (url.contains("www.canada.ca")) {
 			HashMap<String, String> themes = this.themeEn;
 			if (lang.toLowerCase().contains("fr")) {
@@ -268,9 +331,22 @@ public class Main {
 		return "N/A";
 	}
 
+	public String determineDept(String url, String lang) {
+		HashMap<String, String> depts = this.departmentsEn;
+		if (lang.toLowerCase().contains("fr")) {
+			depts = this.departmentsFr;
+		}
+		for (String key : departmentsEn.keySet()) {
+			if (url.contains(key)) {
+				return depts.get(key);
+			}
+		}
+		return "N/A";
+	}
+
 	public void loadData() throws Exception {
 		System.out.println("");
-		Reader in2 = new FileReader("./data/covid19-2020-03-31_en.csv");
+		Reader in2 = new FileReader("./import/covid19-2020-03-31_en.csv");
 		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
 		for (CSVRecord record : records2) {
 			// System.out.println(record.get("URL"));
@@ -278,15 +354,17 @@ public class Main {
 			outputData.title = record.get("Title");
 			outputData.URL = record.get("URL");
 			outputData.language = record.get("Language");
-			outputData.organization = this.determineOrganization(outputData.URL, outputData.language);
-			outputData.contentTypeContent = this.contentTypeContent(record);
-			outputData.contentTypes = this.contentType(outputData.contentTypeContent);
+			outputData.department = this.determineDept(outputData.URL, outputData.language);
+			outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+			outputData.h2 = record.get("H2");
+			outputData.keywords = record.get("desc");
+			outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
 			outputData.modifiedDate = record.get("Last Modified");
-
+			outputData.language = record.get("Language");
 			this.covidMap.put(record.get("URL"), outputData);
 		}
 		System.out.println("");
-		Reader in3 = new FileReader("./data/covid19-2020-03-31_fr.csv");
+		Reader in3 = new FileReader("./import/covid19-2020-03-31_fr.csv");
 		Iterable<CSVRecord> records3 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in3);
 		for (CSVRecord record : records3) {
 			// System.out.println(record.get("URL"));
@@ -294,26 +372,32 @@ public class Main {
 			outputData.title = record.get("Title");
 			outputData.URL = record.get("URL");
 			outputData.language = record.get("Language");
-			outputData.organization = this.determineOrganization(outputData.URL, outputData.language);
-			outputData.contentTypeContent = this.contentTypeContent(record);
-			outputData.contentTypes = this.contentType(outputData.contentTypeContent);
+			outputData.department = this.determineDept(outputData.URL, outputData.language);
+			outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+			outputData.h2 = record.get("H2");
+			outputData.keywords = record.get("desc");
+			outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
 			outputData.modifiedDate = record.get("Last Modified");
 			outputData.language = record.get("Language");
 			this.covidMap.put(record.get("URL"), outputData);
 		}
 
-		Reader in = new FileReader("./data/gcPageReport-publish-03-31-2020.csv");
+		Reader in = new FileReader("./import/gcPageReport-publish-03-31-2020.csv");
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
 		for (CSVRecord record : records) {
 			OutputData outputData = new OutputData();
-			outputData.contentTypeContent = this.contentTypeContent(record);
-			if (!outputData.contentTypeContent.equals("")) {
+			String contentTypeContent = this.contentTypeContent(record);
+			if (!contentTypeContent.equals("")) {
 				outputData.title = record.get("Page title");
 				outputData.URL = record.get("Public path");
 				outputData.language = this.determineLanguage(outputData.URL, record.get("gcLanguage"));
-				outputData.organization = this.determineOrganization(outputData.URL, outputData.language);
-				outputData.contentTypes = this.contentType(outputData.contentTypeContent);
+				outputData.department = this.determineDept(outputData.URL, outputData.language);
+				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+				outputData.contentTypes = this.determineContentType(contentTypeContent);
 				outputData.modifiedDate = record.get("Last Modified date");
+				outputData.h2 = "";
+				outputData.keywords = record.get("Keywords");
+				outputData.AEMContentType = record.get("Content type");
 				this.aemMap.put(record.get("Public path"), outputData);
 			}
 		}
