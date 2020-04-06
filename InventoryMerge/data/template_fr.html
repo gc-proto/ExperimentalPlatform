@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<!--[if lt IE 9]><html class="no-js lt-ie9" lang="en" dir="ltr"><![endif]-->
-<!--[if gt IE 8]><!--><html class="no-js" lang="en" dir="ltr"><!--<![endif]-->
+<!--[if lt IE 9]><html class="no-js lt-ie9" lang="fr" dir="ltr"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="fr" dir="ltr"><!--<![endif]-->
 	<head>
 		<meta charset="utf-8">
 		<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW) wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-		<title>Covid-19 Inventory</title>
+		<title>Page de contenu - Solution de gabarits à déploiement centralisé (SGDC)</title>
 		<meta content="width=device-width,initial-scale=1" name="viewport">
 		<!-- Meta data -->
-		<meta name="description" content="Web Experience Toolkit (WET) includes reusable components for building and maintaining innovative Web sites that are accessible, usable, and interoperable. These reusable components are open source software and free for use by departments and external Web communities">
+		<meta name="description" content="La Boîte à outils de l’expérience Web (BOEW) rassemble différents composants réutilisables et prêts-à-utiliser pour la conception et la mise à jour de sites Web innovateurs qui sont à la fois accessibles, conviviaux et interopérables. Tous ces composants réutilisables sont des logiciels libres mis à la disposition des ministères et des collectivités Web externes.">
 		<!-- Meta data-->
 		<!-- Load closure template scripts -->
 		<script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/soyutils.js"></script>
-		<script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/wet-en.js"></script>
+		<script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/wet-fr.js"></script>
 		<noscript>
 			<!-- Write closure fall-back static file -->
 			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/refTop.html -->
@@ -38,21 +38,21 @@
 	<body vocab="https://schema.org/" typeof="WebPage">
 		<div id="def-top">
 			<!-- Write closure fall-back static file -->
-			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/top-en.html -->
+			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/top-fr.html -->
 		</div>
 		<!-- Write closure template -->
 		<script>
 			var defTop = document.getElementById("def-top");
 			defTop.outerHTML = wet.builder.top({
 				"lngLinks": [{
-					"lang": "fr",
-					"href": "covid19_fr.html",
-					"text": "Français"
+					"lang": "en",
+					"href": "covid19_en.html",
+					"text": "English"
 				}]
 			});
 		</script>
 		<main role="main" property="mainContentOfPage" class="container-fluid wb-prettify all-pre">
-			<h1 property="name" id="wb-cont">Covid Inventory</h1>
+	<h1 property="name" id="wb-cont">Covid Inventory</h1>
 <div class="row">
 <div class="col-md-3">
 <h4 class="wb-inv">Filtering Options</h4>
@@ -104,9 +104,10 @@ Toggle Column: <!-- TOGGLE COLUMNS -->
 <!-- ROW DATA -->
 </table>
 			
+			
 			<div id="def-preFooter">
 				<!-- Write closure fall-back static file -->
-				<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-en.html -->
+				<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-fr.html -->
 				</div>
 			<!-- Write closure template -->
 			<script>
@@ -115,11 +116,10 @@ Toggle Column: <!-- TOGGLE COLUMNS -->
 						"dateModified": "2019-03-08"
 				});
 			</script>
-			</row>
 		</main>
 		<div id="def-footer">
 			<!-- Write closure fall-back static file -->
-			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/footer-en.html -->
+			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/footer-fr.html -->
 		</div>
 		<!-- Write closure template -->
 		<script>
@@ -131,35 +131,6 @@ Toggle Column: <!-- TOGGLE COLUMNS -->
 		<script>
 			document.write(wet.builder.refFooter({
 			}));
-		</script>
-		<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-		<script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
-		<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-		<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
-		<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
-		<script>
-			$(document).on("wb-ready.wb",function() {
-			    $("#dataset-filter").find( "th" ).append( "<span class='sorting-cnt'><span class='sorting-icons'></span></span>" );
-			    var table = $('#dataset-filter').DataTable( {
-			        dom: "B<'top'fil>rt<'bottom'p><'clear'>",
-			        buttons: [
-			             { extend: 'excel', className: 'btn btn-default'}, { extend: 'pdf', className: 'btn btn-default'}
-			        ]
-			    } );
-			    $('a.toggle-vis').on( 'click', function (e) {
-			        e.preventDefault();
-			 
-			        // Get the column API object
-			        var column = table.column( $(this).attr('data-column') );
-			 
-			        // Toggle the visibility
-			        column.visible( ! column.visible() );
-			    } );
-			    $(".dt-buttons").prepend("Make selections using the filters, then click Excel or PDF to download your data.");
-			} );
 		</script>
 	</body>
 </html>

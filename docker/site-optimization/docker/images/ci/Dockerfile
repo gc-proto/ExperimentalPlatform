@@ -17,7 +17,8 @@ RUN git pull
 RUN git status
 RUN chown -R -f www-data:www-data /var/www/html/
 RUN chmod -R ug+rwx /var/www/html
-RUN composer require drupal/views_data_export
+RUN chown -R -f www-data:www-data /tmp/
+RUN chmod -R ug+rwx /tmp
 RUN apk update
 RUN apk add nano
 COPY docker/images/ci/empty_experimentation_db.sql /tmp

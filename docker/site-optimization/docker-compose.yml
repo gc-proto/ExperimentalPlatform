@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: docker/images/mysql/Dockerfile
   nginx:
-    image: "ryanhyma/sitewxt_nginx:latest"
+    image: "ryanhyma/sitewxt_nginx:1.0.0"
     build:
       context: .
       dockerfile: docker/images/nginx/Dockerfile
