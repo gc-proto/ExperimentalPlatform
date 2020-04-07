@@ -2,12 +2,12 @@ English,French
 Theme,Thème
 Department,Ministère
 Title,Titre
-Content type(s),Type(s) de contenu
+Content Type(s),Type(s) de contenu
 H2,H2
 Keywords,Mots-clés
-Modified date,Date de modification
+Modified Date,Date de modification
 Language,langue
-AEM content type,Type de contenu AEM
+AEM Content Type,Type de contenu AEM
 Page Performance,Performance de la page
 Comments,Comentaires
 URL,URL
@@ -53,7 +53,6 @@ Owner organization name,
 Publisher organization name,
 Licence,
 Description,
-Keywords,
 Primary topic,
 Additional topics,
 Content type,

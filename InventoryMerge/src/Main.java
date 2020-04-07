@@ -7,8 +7,12 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,8 +43,10 @@ public class Main {
 			"Breadcrumb LVL4 URL", "Last Modified", "Last Crawled", "Author", "dcterms.subject", "dcterms.audience",
 			"dcterms.type", "desc" };
 
-	public static String[] MERGED_HEADERS = { "Theme", "Department", "Title", "Content Type(s)", "H2", "Keywords",
+	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Content Type(s)", "H2", "Keywords",
 			"Modified Date", "Language", "AEM Content Type", "Page Performance", "Comments" };
+
+	public String[] OUTPUT_HEADERS_FR = {};
 
 	public class OutputData {
 		public String department;
@@ -88,9 +94,13 @@ public class Main {
 	public HashMap<String, String> departmentsEn = new HashMap<String, String>();
 	public HashMap<String, String> departmentsFr = new HashMap<String, String>();
 
+	DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	public String importDate = "";
+
 	public static void main(String args[]) throws Exception {
-		Main main = new Main();
-		main.dumpHeaders();
+		Main main = new Main(args[0]);
+		main.loadFrenchOutputHeaders();
+		// main.dumpHeaders();
 		main.loadThemes();
 		main.loadDepartments();
 		main.loadData();
@@ -100,11 +110,36 @@ public class Main {
 		// main.outputURLMatch();
 	}
 
+	public Main(String importDate) {
+		this.importDate = importDate;
+	}
+
+	public void loadFrenchOutputHeaders() throws Exception {
+		List<String> list = new ArrayList<String>();
+		HashMap<String, String> frenchHeader = new HashMap<String, String>();
+		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader()
+				.parse(new FileReader("./data/headers.csv"));
+		for (CSVRecord record : records2) {
+			String en = record.get(0);
+			String fr = record.get(1);
+			frenchHeader.put(en, fr);
+		}
+
+		for (String enHeader : OUTPUT_HEADERS_EN) {
+			if (frenchHeader.containsKey(enHeader)) {
+				list.add(frenchHeader.get(enHeader));
+			} else {
+				list.add(enHeader);
+			}
+		}
+		this.OUTPUT_HEADERS_FR = list.stream().toArray(String[]::new);
+	}
+
 	public void dumpHeaders() throws Exception {
 		final BufferedWriter writer = Files.newBufferedWriter(Paths.get("./export/headers.csv"));
 		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader("English", "French");
 		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat);) {
-			for (String header : MERGED_HEADERS) {
+			for (String header : OUTPUT_HEADERS_EN) {
 				csvPrinter.printRecord(header, "");
 			}
 			for (String header : SEARCH_HEADERS) {
@@ -162,6 +197,15 @@ public class Main {
 			// System.out.println(record.get("URL"));
 			this.themeEn.put(record.get(0), record.get(1));
 		}
+		
+		Collections.sort(this.themeEn, new Comparator<String>() {
+		    @Override
+		    public int compare(String o1, String o2) {
+		        o1 = Normalizer.normalize(o1, Normalizer.Form.NFD);
+		        o2 = Normalizer.normalize(o2, Normalizer.Form.NFD);
+		        return o1.compareTo(o2);
+		    }
+		});
 
 		Reader in1 = new FileReader("./data/themes_fr.csv");
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in1);
@@ -171,13 +215,9 @@ public class Main {
 		}
 	}
 
-	public void outputData(String lang) throws Exception {
-
-	}
-
 	public void outputData(String theme, String lang) throws Exception {
 		final BufferedWriter writer = Files.newBufferedWriter(Paths.get("./data/" + theme + "-" + lang + ".csv"));
-		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader(MERGED_HEADERS);
+		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader(OUTPUT_HEADERS_EN);
 		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat);) {
 			for (String url : finalMap.keySet())
 				csvPrinter.printRecord(finalMap.get(url).asList());
@@ -193,20 +233,6 @@ public class Main {
 
 	public void outputDataHTML(String outputLang) throws Exception {
 		String template = readLineByLineJava8("./data/template_" + outputLang + ".html");
-		String html = "";
-		for (String url : finalMap.keySet()) {
-			String lang = finalMap.get(url).language;
-			if (lang.toLowerCase().contains(outputLang)) {
-				html += "<tr>";
-				List<String> list = finalMap.get(url).asList();
-				for (int i = 0; i < list.size(); i++) {
-					String elem = list.get(i);
-					html += "<td>" + elem + "</td>";
-				}
-				html += "</tr>";
-			}
-		}
-		template = template.replace("<!-- ROW DATA -->", html);
 
 		// Insert themes
 		String themeList = "";
@@ -234,21 +260,42 @@ public class Main {
 
 		// Insert departments
 		String labelList = "";
-		for (String label : MERGED_HEADERS) {
+		String[] headers = OUTPUT_HEADERS_EN;
+		if (outputLang.equals("fr")) {
+			headers = OUTPUT_HEADERS_FR;
+		}
+		for (String label : headers) {
 			labelList += "<th>" + label + "</th>";
 		}
 		template = template.replace("<!-- LABELS -->", labelList);
 
 		// Insert toggle columns
 		String togglecolumns = "";
-		for (int i = 0; i < MERGED_HEADERS.length; i++) {
+		for (int i = 0; i < headers.length; i++) {
 			if (i > 2) {
-				togglecolumns += "<a class='toggle-vis' data-column='" + i + "' href=\"" + MERGED_HEADERS[i] + "\">"
-						+ MERGED_HEADERS[i] + "</a> - ";
+				togglecolumns += "<a class='toggle-vis' data-column='" + i + "' href=\"" + headers[i] + "\">"
+						+ headers[i] + "</a> - ";
 			}
 		}
 		togglecolumns = togglecolumns.substring(0, togglecolumns.length() - 3);
 		template = template.replace("<!-- TOGGLE COLUMNS -->", togglecolumns);
+
+		template = template.replace("<!-- IMPORT DATE -->", this.importDate);
+
+		String html = "";
+		for (String url : finalMap.keySet()) {
+			String lang = finalMap.get(url).language;
+			if (lang.toLowerCase().contains(outputLang)) {
+				html += "<tr>";
+				List<String> list = finalMap.get(url).asList();
+				for (int i = 0; i < list.size(); i++) {
+					String elem = list.get(i);
+					html += "<td>" + elem + "</td>";
+				}
+				html += "</tr>";
+			}
+		}
+		template = template.replace("<!-- ROW DATA -->", html);
 
 		writeToFile(template,
 				"../docker/site-optimization/docker/images/covid19inv_nginx/covid19_" + outputLang + ".html");
@@ -294,21 +341,50 @@ public class Main {
 	}
 
 	public String contentTypeContent(CSVRecord record) {
-		String checkFields[] = { "Title", "Has Alert", "H2", "dcterms.subject", "desc", "Description", "Name",
-				"Page title", "H1", "Keywords", "Primary topic", "Additional topics" };
-		String contentType = "";
-		for (String checkField : checkFields) {
-			try {
-				String data = record.get(checkField).toUpperCase();
-				if (data.contains("COVID") || data.contains("CORONAVIRUS")
-						|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
-					contentType += checkField + ": " + record.get(checkField) + "\n\r";
-				}
-			} catch (Exception e) {
 
+		String checkFields[] = { "Title", "Has Alert", "H2", "dcterms.subject", "desc", "Description", "Name",
+				"Page title", "H1", "Keywords", "Primary topic", "Additional topics","desc","dcterms.subject" };
+		String contentType = "";
+		Date afterDate = null;
+		try {
+			afterDate = DATE_FORMAT.parse("2019-01-01");
+		} catch (Exception e) {
+		}
+		Date modifiedDate = this.getLastModifiedDate(record);
+		if (modifiedDate == null || modifiedDate.after(afterDate)) {
+			for (String checkField : checkFields) {
+				try {
+					String data = record.get(checkField).toUpperCase();
+					if (data.toLowerCase().contains("canada emergency response benefit")
+							|| data.toLowerCase().contains("prestation canadienne d’urgence") || data.contains("CERB")
+							|| data.contains("COVID") || data.contains("CORONAVIRUS")
+							|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
+
+						contentType += checkField + ": " + record.get(checkField) + "\n\r";
+					}
+
+				} catch (Exception e) {
+
+				}
 			}
 		}
 		return contentType;
+	}
+
+	public Date getLastModifiedDate(CSVRecord record) {
+		try {
+			String lastModified = record.get("Last Modified");
+			return DATE_FORMAT.parse(lastModified);
+		} catch (Exception e) {
+			// System.out.println(e.getMessage());
+		}
+		try {
+			String lastModifiedDate = record.get("Last Modified date");
+			return DATE_FORMAT.parse(lastModifiedDate);
+		} catch (Exception e) {
+
+		}
+		return null;
 	}
 
 	public static boolean stringContainsItemFromList(String inputStr, String[] items) {
@@ -365,43 +441,49 @@ public class Main {
 
 	public void loadData() throws Exception {
 		System.out.println("");
-		Reader in2 = new FileReader("./import/covid19-2020-03-31_en.csv");
+		Reader in2 = new FileReader("./import/covid19-" + this.importDate + "_en.csv");
 		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
 		for (CSVRecord record : records2) {
-			// System.out.println(record.get("URL"));
-			OutputData outputData = new OutputData();
-			outputData.title = record.get("Title");
-			outputData.URL = record.get("URL");
-			outputData.language = record.get("Language");
-			outputData.department = this.determineDept(outputData.URL, outputData.language);
-			outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-			outputData.h2 = record.get("H2");
-			outputData.keywords = record.get("desc");
-			outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
-			outputData.modifiedDate = record.get("Last Modified");
-			outputData.language = record.get("Language");
-			this.covidMap.put(record.get("URL"), outputData);
+			String contentTypeContent = this.contentTypeContent(record);
+			if (!contentTypeContent.equals("")) {
+				// System.out.println(record.get("URL"));
+				OutputData outputData = new OutputData();
+				outputData.title = record.get("Title");
+				outputData.URL = record.get("URL");
+				outputData.language = record.get("Language");
+				outputData.department = this.determineDept(outputData.URL, outputData.language);
+				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+				outputData.h2 = record.get("H2");
+				outputData.keywords = record.get("desc");
+				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
+				outputData.modifiedDate = record.get("Last Modified");
+				outputData.language = record.get("Language");
+				this.covidMap.put(record.get("URL"), outputData);
+			}
 		}
 		System.out.println("");
-		Reader in3 = new FileReader("./import/covid19-2020-03-31_fr.csv");
+		Reader in3 = new FileReader("./import/covid19-" + this.importDate + "_fr.csv");
 		Iterable<CSVRecord> records3 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in3);
 		for (CSVRecord record : records3) {
-			// System.out.println(record.get("URL"));
-			OutputData outputData = new OutputData();
-			outputData.title = record.get("Title");
-			outputData.URL = record.get("URL");
-			outputData.language = record.get("Language");
-			outputData.department = this.determineDept(outputData.URL, outputData.language);
-			outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-			outputData.h2 = record.get("H2");
-			outputData.keywords = record.get("desc");
-			outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
-			outputData.modifiedDate = record.get("Last Modified");
-			outputData.language = record.get("Language");
-			this.covidMap.put(record.get("URL"), outputData);
+			String contentTypeContent = this.contentTypeContent(record);
+			if (!contentTypeContent.equals("")) {
+				// System.out.println(record.get("URL"));
+				OutputData outputData = new OutputData();
+				outputData.title = record.get("Title");
+				outputData.URL = record.get("URL");
+				outputData.language = record.get("Language");
+				outputData.department = this.determineDept(outputData.URL, outputData.language);
+				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+				outputData.h2 = record.get("H2");
+				outputData.keywords = record.get("desc");
+				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
+				outputData.modifiedDate = record.get("Last Modified");
+				outputData.language = record.get("Language");
+				this.covidMap.put(record.get("URL"), outputData);
+			}
 		}
 
-		Reader in = new FileReader("./import/gcPageReport-publish-03-31-2020.csv");
+		Reader in = new FileReader("./import/gcPageReport-publish-" + this.importDate + ".csv");
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
 		for (CSVRecord record : records) {
 			OutputData outputData = new OutputData();
