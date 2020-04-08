@@ -165,7 +165,9 @@ public class Main {
 				if (aemMap.get(url).keywords.equals("")) {
 					aemMap.get(url).keywords += data.keywords;
 				}
-				aemMap.get(url).contentTypes = data.contentTypes;
+				if (!aemMap.get(url).contentTypes.equals("News")) {
+					aemMap.get(url).contentTypes = data.contentTypes;
+				}
 			}
 		}
 		finalMap.putAll(aemMap);
@@ -376,8 +378,15 @@ public class Main {
 			afterDate = DATE_FORMAT.parse("2019-01-01");
 		} catch (Exception e) {
 		}
+
 		Date modifiedDate = this.getLastModifiedDate(record);
 		if (modifiedDate == null || modifiedDate.after(afterDate)) {
+			// String url = "";
+			// try {
+			// url = record.get("Public path");
+			// } catch (Exception e) {
+			// }
+			// System.out.println(url);
 			for (String checkField : checkFields) {
 				try {
 					String data = record.get(checkField).toUpperCase().trim();
@@ -481,7 +490,7 @@ public class Main {
 		return "N/A";
 	}
 
-	public String determineDept(String url, String lang) {
+	public String determineDept(String url, String lang, CSVRecord record) {
 		Map<String, String> depts = this.departmentsEn;
 		if (lang.toLowerCase().contains("fr")) {
 			depts = this.departmentsFr;
@@ -490,6 +499,24 @@ public class Main {
 			if (url.contains(key)) {
 				return depts.get(key);
 			}
+		}
+		// if not found in the department list then
+		// Publisher organization name
+		// Author
+		String dept = "";
+		try {
+			dept = record.get("Publisher organization name") + record.get("Owner organization name");
+
+		} catch (Exception e) {
+
+		}
+		if (dept.equals("")) {
+			try {
+				return record.get("Author");
+			} catch (Exception e2) {
+			}
+		} else {
+			return dept;
 		}
 		return "N/A";
 	}
@@ -506,11 +533,12 @@ public class Main {
 				outputData.title = record.get("Title");
 				outputData.URL = record.get("URL");
 				outputData.language = record.get("Language");
-				outputData.department = this.determineDept(outputData.URL, outputData.language);
+				outputData.department = this.determineDept(outputData.URL, outputData.language, record);
 				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
 				outputData.h2 = record.get("H2");
 				outputData.keywords = record.get("desc");
-				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record),outputData.language);
+				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record),
+						outputData.language);
 				outputData.modifiedDate = record.get("Last Modified");
 				outputData.language = record.get("Language");
 				this.covidMap.put(record.get("URL"), outputData);
@@ -527,11 +555,12 @@ public class Main {
 				outputData.title = record.get("Title");
 				outputData.URL = record.get("URL");
 				outputData.language = record.get("Language");
-				outputData.department = this.determineDept(outputData.URL, outputData.language);
+				outputData.department = this.determineDept(outputData.URL, outputData.language, record);
 				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
 				outputData.h2 = record.get("H2");
 				outputData.keywords = record.get("desc");
-				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record),outputData.language);
+				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record),
+						outputData.language);
 				outputData.modifiedDate = record.get("Last Modified");
 				outputData.language = record.get("Language");
 				this.covidMap.put(record.get("URL"), outputData);
@@ -547,9 +576,9 @@ public class Main {
 				outputData.title = record.get("Page title");
 				outputData.URL = record.get("Public path");
 				outputData.language = this.determineLanguage(outputData.URL, record.get("gcLanguage"));
-				outputData.department = this.determineDept(outputData.URL, outputData.language);
+				outputData.department = this.determineDept(outputData.URL, outputData.language, record);
 				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-				outputData.contentTypes = this.determineContentType(contentTypeContent,outputData.language);
+				outputData.contentTypes = this.determineContentType(contentTypeContent, outputData.language);
 				outputData.modifiedDate = record.get("Last Modified date");
 				outputData.h2 = "";
 				outputData.keywords = record.get("Keywords");
@@ -558,7 +587,6 @@ public class Main {
 				this.aemMap.put(record.get("Public path"), outputData);
 			}
 		}
-
 	}
 
 	public String determineLanguage(String url, String langRecordValue) {

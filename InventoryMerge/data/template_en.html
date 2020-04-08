@@ -154,10 +154,37 @@
 		<script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
 		<script>
 			$(document).on("wb-ready.wb",function() {
+			    if ( !i18nText ) {
+					i18n = wb.i18n;
+					i18nText = {
+						aria: {
+							sortAscending: i18n( "sortAsc" ),
+							sortDescending: i18n( "sortDesc" )
+						},
+						emptyTable: i18n( "emptyTbl" ),
+						info: i18n( "infoEntr" ),
+						infoEmpty: i18n( "infoEmpty" ),
+						infoFiltered: i18n( "infoFilt" ),
+						lengthMenu: i18n( "lenMenu" ),
+						loadingRecords: i18n( "load" ),
+						paginate: {
+							first: i18n( "first" ),
+							last: i18n( "last" ),
+							next: i18n( "nxt" ),
+							previous: i18n( "prv" ),
+							page: i18n( "page" )
+						},
+						processing: i18n( "process" ),
+						search: i18n( "filter" ),
+						thousands: i18n( "info1000" ),
+						zeroRecords: i18n( "infoEmpty" )
+					};
+				}
 			    $("#dataset-filter").find( "th" ).append( "<span class='sorting-cnt'><span class='sorting-icons'></span></span>" );
 			    var table = $('#dataset-filter').DataTable( {
 			        dom: "B<'top'fil>rt<'bottom'p><'clear'>",
 			        colReorder: true,
+			        language: i18nText,
 			        buttons: [
 			             { 
 			             	extend: 'excel',
