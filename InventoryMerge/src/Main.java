@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -44,7 +45,8 @@ public class Main {
 			"dcterms.type", "desc" };
 
 	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Content Type(s)", "H2", "Keywords",
-			"Modified Date", "Language", "AEM Content Type", "Page Performance", "Comments" };
+			"Modified Date", "Language", "AEM Content Type", "Page Performance", "URL", "Last Published date",
+			"Comments" };
 
 	public String[] OUTPUT_HEADERS_FR = {};
 
@@ -60,6 +62,7 @@ public class Main {
 		public String language;
 		public String AEMContentType = "";
 		public String pagePerformance = "";
+		public String lastPublishedDate = "";
 		public String comments = "";
 
 		public List<String> asList() {
@@ -78,6 +81,8 @@ public class Main {
 			String format = formatter.format(date);
 			list.add("<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + URL + "&start=2020-01-01" + "&end="
 					+ format + "\">" + title + "</a>");
+			list.add("<a href=\"" + URL + "\">" + URL + "</a>");
+			list.add(lastPublishedDate);
 			list.add("");
 			return list;
 
@@ -88,11 +93,11 @@ public class Main {
 	public HashMap<String, OutputData> aemMap = new HashMap<String, OutputData>();
 	public HashMap<String, OutputData> finalMap = new HashMap<String, OutputData>();
 
-	public HashMap<String, String> themeEn = new HashMap<String, String>();
-	public HashMap<String, String> themeFr = new HashMap<String, String>();
+	public Map<String, String> themeEn = new HashMap<String, String>();
+	public Map<String, String> themeFr = new HashMap<String, String>();
 
-	public HashMap<String, String> departmentsEn = new HashMap<String, String>();
-	public HashMap<String, String> departmentsFr = new HashMap<String, String>();
+	public Map<String, String> departmentsEn = new HashMap<String, String>();
+	public Map<String, String> departmentsFr = new HashMap<String, String>();
 
 	DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	public String importDate = "";
@@ -197,15 +202,6 @@ public class Main {
 			// System.out.println(record.get("URL"));
 			this.themeEn.put(record.get(0), record.get(1));
 		}
-		
-		Collections.sort(this.themeEn, new Comparator<String>() {
-		    @Override
-		    public int compare(String o1, String o2) {
-		        o1 = Normalizer.normalize(o1, Normalizer.Form.NFD);
-		        o2 = Normalizer.normalize(o2, Normalizer.Form.NFD);
-		        return o1.compareTo(o2);
-		    }
-		});
 
 		Reader in1 = new FileReader("./data/themes_fr.csv");
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in1);
@@ -213,6 +209,7 @@ public class Main {
 			// System.out.println(record.get("URL"));
 			this.themeFr.put(record.get(0), record.get(1));
 		}
+
 	}
 
 	public void outputData(String theme, String lang) throws Exception {
@@ -236,10 +233,19 @@ public class Main {
 
 		// Insert themes
 		String themeList = "";
-		HashSet<String> themes = new HashSet<String>(this.themeEn.values());
+		List<String> themes = new ArrayList<String>(new HashSet<String>(this.themeEn.values()));
 		if (outputLang.contains("fr")) {
-			themes = new HashSet<String>(this.themeFr.values());
+			themes = new ArrayList<String>(new HashSet<String>(this.themeFr.values()));
 		}
+
+		Collections.sort(themes, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				o1 = Normalizer.normalize(o1, Normalizer.Form.NFD);
+				o2 = Normalizer.normalize(o2, Normalizer.Form.NFD);
+				return o1.compareTo(o2);
+			}
+		});
 
 		for (String theme : themes) {
 			themeList += "<option value='" + theme + "'>" + theme + "</option>";
@@ -248,10 +254,19 @@ public class Main {
 
 		// Insert departments
 		String deptList = "";
-		HashSet<String> depts = new HashSet<String>(this.departmentsEn.values());
+		List<String> depts = new ArrayList<String>(new HashSet<String>(this.departmentsEn.values()));
 		if (outputLang.contains("fr")) {
-			themes = new HashSet<String>(this.departmentsFr.values());
+			themes = new ArrayList<String>(new HashSet<String>(this.departmentsFr.values()));
 		}
+
+		Collections.sort(depts, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				o1 = Normalizer.normalize(o1, Normalizer.Form.NFD);
+				o2 = Normalizer.normalize(o2, Normalizer.Form.NFD);
+				return o1.compareTo(o2);
+			}
+		});
 
 		for (String dept : depts) {
 			deptList += "<option value='" + dept + "'>" + dept + "</option>";
@@ -264,8 +279,12 @@ public class Main {
 		if (outputLang.equals("fr")) {
 			headers = OUTPUT_HEADERS_FR;
 		}
-		for (String label : headers) {
-			labelList += "<th>" + label + "</th>";
+		for (int i = 0; i < headers.length; i++) {
+			if (i == (headers.length - 1)) {
+				labelList += "<th class='export'>" + headers[i] + "</th>";
+			} else {
+				labelList += "<th>" + headers[i] + "</th>";
+			}
 		}
 		template = template.replace("<!-- LABELS -->", labelList);
 
@@ -273,11 +292,17 @@ public class Main {
 		String togglecolumns = "";
 		for (int i = 0; i < headers.length; i++) {
 			if (i > 2) {
-				togglecolumns += "<a class='toggle-vis' data-column='" + i + "' href=\"" + headers[i] + "\">"
-						+ headers[i] + "</a> - ";
+				if (i != (headers.length - 1)) {
+					togglecolumns += "<label for='toggle" + i + "'>"
+							+ "<input type='checkbox' CHECKED class='toggle-vis' name='toggle" + i + "' id='toggle" + i
+							+ "' data-column='" + i + "' />&nbsp;<span>" + headers[i] + "</span></label>&nbsp;";
+				} else {
+					togglecolumns += "<label for='toggle" + i + "'>"
+							+ "<input type='checkbox' class='toggle-vis' name='toggle" + i + "' id='toggle" + i
+							+ "' data-column='" + i + "' />&nbsp;<span>" + headers[i] + "</span></label>&nbsp;";
+				}
 			}
 		}
-		togglecolumns = togglecolumns.substring(0, togglecolumns.length() - 3);
 		template = template.replace("<!-- TOGGLE COLUMNS -->", togglecolumns);
 
 		template = template.replace("<!-- IMPORT DATE -->", this.importDate);
@@ -341,9 +366,10 @@ public class Main {
 	}
 
 	public String contentTypeContent(CSVRecord record) {
-
+		boolean covid = false;
 		String checkFields[] = { "Title", "Has Alert", "H2", "dcterms.subject", "desc", "Description", "Name",
-				"Page title", "H1", "Keywords", "Primary topic", "Additional topics","desc","dcterms.subject" };
+				"Page title", "H1", "Keywords", "Primary topic", "Additional topics", "desc", "dcterms.subject",
+				"Content type" };
 		String contentType = "";
 		Date afterDate = null;
 		try {
@@ -354,13 +380,18 @@ public class Main {
 		if (modifiedDate == null || modifiedDate.after(afterDate)) {
 			for (String checkField : checkFields) {
 				try {
-					String data = record.get(checkField).toUpperCase();
-					if (data.toLowerCase().contains("canada emergency response benefit")
-							|| data.toLowerCase().contains("prestation canadienne d’urgence") || data.contains("CERB")
+					String data = record.get(checkField).toUpperCase().trim();
+					if (data.contains("CANADA EMERGENCY RESPONSE BENEFIT")
+							|| data.contains("PRESTATION CANADIENNE D’URGENCE") || data.contains("CERB")
 							|| data.contains("COVID") || data.contains("CORONAVIRUS")
 							|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
-
+						covid = true;
 						contentType += checkField + ": " + record.get(checkField) + "\n\r";
+					} else if (checkField.equals("Content type") && (data.equals("GC:CONTENT-TYPES/STATEMENTS")
+							|| data.equals("GC:CONTENT-TYPES/SPEECHES") || data.equals("GC:CONTENT-TYPES/BACKGROUNDERS")
+							|| data.equals("GC:CONTENT-TYPES/NEWS-RELEASES")
+							|| data.equals("GC:CONTENT-TYPES/MEDIA-ADVISORIES"))) {
+						contentType += "Content type: News" + "\n\r";
 					}
 
 				} catch (Exception e) {
@@ -368,7 +399,11 @@ public class Main {
 				}
 			}
 		}
-		return contentType;
+		if (covid) {
+			return contentType;
+		} else {
+			return "";
+		}
 	}
 
 	public Date getLastModifiedDate(CSVRecord record) {
@@ -400,7 +435,9 @@ public class Main {
 		String substantiveContentTypes[] = { "Title", "H2", "dcterms.subject", "desc", "Description", "Name",
 				"Page title", "H1", "Keywords", "Primary topic", "Additional topics" };
 		String contentType;
-		if (stringContainsItemFromList(contentTypeContent, substantiveContentTypes)) {
+		if (contentTypeContent.contains("Content type: News")) {
+			contentType = "News";
+		} else if (stringContainsItemFromList(contentTypeContent, substantiveContentTypes)) {
 			contentType = "Main Covid-19 content";
 		} else if (contentTypeContent.contains("Has Alert")) {
 			contentType = "Contains Covid Alert";
@@ -413,7 +450,7 @@ public class Main {
 	public String determineTheme(String url, String lang) {
 		// TODO put other themes in check.
 		if (url.contains("www.canada.ca")) {
-			HashMap<String, String> themes = this.themeEn;
+			Map<String, String> themes = this.themeEn;
 			if (lang.toLowerCase().contains("fr")) {
 				themes = this.themeFr;
 			}
@@ -427,7 +464,7 @@ public class Main {
 	}
 
 	public String determineDept(String url, String lang) {
-		HashMap<String, String> depts = this.departmentsEn;
+		Map<String, String> depts = this.departmentsEn;
 		if (lang.toLowerCase().contains("fr")) {
 			depts = this.departmentsFr;
 		}
@@ -499,6 +536,7 @@ public class Main {
 				outputData.h2 = "";
 				outputData.keywords = record.get("Keywords");
 				outputData.AEMContentType = record.get("Content type");
+				outputData.lastPublishedDate = record.get("Last Published date");
 				this.aemMap.put(record.get("Public path"), outputData);
 			}
 		}
