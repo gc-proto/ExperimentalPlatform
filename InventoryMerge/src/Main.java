@@ -431,18 +431,36 @@ public class Main {
 		return false;
 	}
 
-	public String determineContentType(String contentTypeContent) {
+	public String determineContentType(String contentTypeContent, String lang) {
 		String substantiveContentTypes[] = { "Title", "H2", "dcterms.subject", "desc", "Description", "Name",
 				"Page title", "H1", "Keywords", "Primary topic", "Additional topics" };
 		String contentType;
 		if (contentTypeContent.contains("Content type: News")) {
-			contentType = "News";
+			if (lang.contains("en")) {
+				contentType = "News";
+			} else {
+				contentType = "Nouvelles";
+			}
 		} else if (stringContainsItemFromList(contentTypeContent, substantiveContentTypes)) {
-			contentType = "Main Covid-19 content";
+
+			if (lang.contains("en")) {
+				contentType = "Main Covid-19 content";
+			} else {
+				contentType = "Contenu principal COVID";
+			}
 		} else if (contentTypeContent.contains("Has Alert")) {
-			contentType = "Contains Covid Alert";
+			if (lang.contains("en")) {
+				contentType = "Contains Covid Alert";
+			} else {
+				contentType = "Contient une alerte COVID";
+			}
 		} else {
-			contentType = "Links to Covid pages";
+
+			if (lang.equals("en")) {
+				contentType = "Links to Covid pages";
+			} else {
+				contentType = "Liens vers des pages COVID";
+			}
 		}
 		return contentType;
 	}
@@ -492,7 +510,7 @@ public class Main {
 				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
 				outputData.h2 = record.get("H2");
 				outputData.keywords = record.get("desc");
-				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
+				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record),outputData.language);
 				outputData.modifiedDate = record.get("Last Modified");
 				outputData.language = record.get("Language");
 				this.covidMap.put(record.get("URL"), outputData);
@@ -513,7 +531,7 @@ public class Main {
 				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
 				outputData.h2 = record.get("H2");
 				outputData.keywords = record.get("desc");
-				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record));
+				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record),outputData.language);
 				outputData.modifiedDate = record.get("Last Modified");
 				outputData.language = record.get("Language");
 				this.covidMap.put(record.get("URL"), outputData);
@@ -531,7 +549,7 @@ public class Main {
 				outputData.language = this.determineLanguage(outputData.URL, record.get("gcLanguage"));
 				outputData.department = this.determineDept(outputData.URL, outputData.language);
 				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-				outputData.contentTypes = this.determineContentType(contentTypeContent);
+				outputData.contentTypes = this.determineContentType(contentTypeContent,outputData.language);
 				outputData.modifiedDate = record.get("Last Modified date");
 				outputData.h2 = "";
 				outputData.keywords = record.get("Keywords");
