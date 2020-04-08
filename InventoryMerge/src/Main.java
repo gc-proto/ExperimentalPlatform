@@ -96,27 +96,126 @@ public class Main {
 	public Map<String, String> themeEn = new HashMap<String, String>();
 	public Map<String, String> themeFr = new HashMap<String, String>();
 
-	public Map<String, String> departmentsEn = new HashMap<String, String>();
-	public Map<String, String> departmentsFr = new HashMap<String, String>();
+	public Map<String, String> urlDepartmentsEn = new HashMap<String, String>();
+	public Map<String, String> urlDepartmentsFr = new HashMap<String, String>();
+	public Map<String, String> aemDepartmentsEn = new HashMap<String, String>();
+	public Map<String, String> aemDepartmentsFr = new HashMap<String, String>();
+
+	public HashSet<String> UsedDepartmentsEn = new HashSet<String>();
+	public HashSet<String> UsedDepartmentsFr = new HashSet<String>();
 
 	DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	public String importDate = "";
 
 	public static void main(String args[]) throws Exception {
 		Main main = new Main(args[0]);
+
 		main.loadFrenchOutputHeaders();
-		// main.dumpHeaders();
 		main.loadThemes();
 		main.loadDepartments();
 		main.loadData();
 		main.mergeData();
 		main.outputDataHTML("en");
 		main.outputDataHTML("fr");
-		// main.outputURLMatch();
+
+	}
+
+	public class BiLang {
+		String en;
+		String fr;
+		String aemName;
 	}
 
 	public Main(String importDate) {
 		this.importDate = importDate;
+	}
+
+	public void dumpAEMFrench() throws Exception {
+		Reader in = new FileReader("./data/aemdepartments.csv");
+		Iterable<CSVRecord> aemRecords = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+		HashMap<String, String> aemMapEN = new HashMap<String, String>();
+		List<BiLang> outputList = new ArrayList<BiLang>();
+		for (CSVRecord record : aemRecords) {
+			aemMapEN.put(record.get("English").toUpperCase().trim(), record.get("Publisher organization name"));
+		}
+
+		Reader in2 = new FileReader("./data/deptNamesAndAcronyms.csv");
+		Iterable<CSVRecord> deptNamesRecords = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
+		for (CSVRecord record : deptNamesRecords) {
+			String appliedName = record.get("Applied EN");
+			String legalName = record.get("Legal EN");
+			List<String> toRemove = new ArrayList<String>();
+			for (String aemKey : aemMapEN.keySet()) {
+				if (aemKey.contains(appliedName.toUpperCase()) || appliedName.toUpperCase().contains(aemKey)) {
+					BiLang biLang = new BiLang();
+					biLang.en = legalName;
+					biLang.fr = record.get("Legal FR");
+					biLang.aemName = aemMapEN.get(aemKey);
+					outputList.add(biLang);
+					toRemove.add(appliedName.toUpperCase());
+					break;
+				} else if (aemKey.contains(legalName.toUpperCase()) || legalName.toUpperCase().contains(aemKey)) {
+					BiLang biLang = new BiLang();
+					biLang.en = legalName;
+					biLang.fr = record.get("Legal FR");
+					biLang.aemName = aemMapEN.get(aemKey);
+					outputList.add(biLang);
+					toRemove.add(legalName.toUpperCase());
+					break;
+				}
+			}
+			for (String remove : toRemove) {
+				aemMapEN.remove(remove);
+			}
+		}
+		final BufferedWriter writer = Files.newBufferedWriter(Paths.get("./export/aemdepartmentsfinal.csv"));
+		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader("Publisher organization name", "English", "French");
+		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat)) {
+			for (BiLang biLang : outputList) {
+				csvPrinter.printRecord(biLang.aemName, biLang.en, biLang.fr);
+			}
+		}
+
+	}
+
+	public void dumpAEMPublishers() throws Exception {
+		HashSet<String> departments = new HashSet<String>();
+
+		Reader in = new FileReader("./import/gcPageReport-publish-" + this.importDate + ".csv");
+		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+		for (CSVRecord record : records) {
+			String publisher = record.get("Publisher organization name");
+			publisher = publisher.replace("gc:institutions", "");
+			String publishers[] = publisher.split("/");
+			for (String pub : publishers) {
+				departments.add(pub);
+			}
+		}
+
+		final BufferedWriter writer = Files.newBufferedWriter(Paths.get("./export/aemdepartments.csv"));
+		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader("Publisher organization name", "English", "French");
+		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat)) {
+			for (String publisher : departments) {
+				if (publisher.length() > 0) {
+					csvPrinter.printRecord(publisher, capitalizeWord(publisher.replace("-", " ")), "");
+				}
+			}
+		}
+	}
+
+	public String capitalizeWord(String str) {
+		if (str.length() > 0) {
+			String words[] = str.split("\\s");
+			String capitalizeWord = "";
+			for (String w : words) {
+				String first = w.substring(0, 1);
+				String afterfirst = w.substring(1);
+				capitalizeWord += first.toUpperCase() + afterfirst + " ";
+			}
+			return capitalizeWord.trim();
+		} else {
+			return str;
+		}
 	}
 
 	public void loadFrenchOutputHeaders() throws Exception {
@@ -158,7 +257,7 @@ public class Main {
 
 	public void mergeData() {
 		for (String url : aemMap.keySet()) {
-			// OutputData tmpData = aemMap.get(url);
+			//OutputData tmpData = aemMap.get(url);
 			if (covidMap.containsKey(url)) {
 				OutputData data = covidMap.remove(url);
 				aemMap.get(url).h2 += data.h2;
@@ -191,9 +290,22 @@ public class Main {
 			String url = record.get(2);
 			String en = record.get(0);
 			String fr = record.get(1);
-			this.departmentsEn.put(url, en);
-			this.departmentsFr.put(url, fr);
+			this.urlDepartmentsEn.put(url, en);
+			this.urlDepartmentsFr.put(url, fr);
 		}
+
+		Reader in = new FileReader("./data/aemdepartments.csv");
+		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+		for (CSVRecord record : records) {
+			String aemType = record.get(0);
+			String en = record.get(1);
+			String fr = record.get(2);
+			this.aemDepartmentsEn.put(aemType, en);
+			this.aemDepartmentsFr.put(aemType, fr);
+		}
+
+		this.UsedDepartmentsEn.add("N/A");
+		this.UsedDepartmentsFr.add("N/A");
 
 	}
 
@@ -211,6 +323,8 @@ public class Main {
 			// System.out.println(record.get("URL"));
 			this.themeFr.put(record.get(0), record.get(1));
 		}
+		
+		
 
 	}
 
@@ -235,10 +349,12 @@ public class Main {
 
 		// Insert themes
 		String themeList = "";
+		
 		List<String> themes = new ArrayList<String>(new HashSet<String>(this.themeEn.values()));
 		if (outputLang.contains("fr")) {
 			themes = new ArrayList<String>(new HashSet<String>(this.themeFr.values()));
 		}
+		themes.add("N/A");
 
 		Collections.sort(themes, new Comparator<String>() {
 			@Override
@@ -256,9 +372,9 @@ public class Main {
 
 		// Insert departments
 		String deptList = "";
-		List<String> depts = new ArrayList<String>(new HashSet<String>(this.departmentsEn.values()));
+		List<String> depts = new ArrayList<String>(this.UsedDepartmentsEn);
 		if (outputLang.contains("fr")) {
-			themes = new ArrayList<String>(new HashSet<String>(this.departmentsFr.values()));
+			depts = new ArrayList<String>(this.UsedDepartmentsFr);
 		}
 
 		Collections.sort(depts, new Comparator<String>() {
@@ -371,7 +487,7 @@ public class Main {
 		boolean covid = false;
 		String checkFields[] = { "Title", "Has Alert", "H2", "dcterms.subject", "desc", "Description", "Name",
 				"Page title", "H1", "Keywords", "Primary topic", "Additional topics", "desc", "dcterms.subject",
-				"Content type" };
+				"Content type", "URL", "Public path" };
 		String contentType = "";
 		Date afterDate = null;
 		try {
@@ -401,6 +517,10 @@ public class Main {
 							|| data.equals("GC:CONTENT-TYPES/NEWS-RELEASES")
 							|| data.equals("GC:CONTENT-TYPES/MEDIA-ADVISORIES"))) {
 						contentType += "Content type: News" + "\n\r";
+					} else if (checkField.equals("Public path")
+							|| checkField.equals("URL") && (data.contains("NEWS") || data.contains("NOUVELLES"))) {
+						contentType += "Content type: News" + "\n\r";
+						//System.out.println("Checkfield:"+checkField);
 					}
 
 				} catch (Exception e) {
@@ -475,28 +595,29 @@ public class Main {
 	}
 
 	public String determineTheme(String url, String lang) {
-		// TODO put other themes in check.
-		if (url.contains("www.canada.ca")) {
-			Map<String, String> themes = this.themeEn;
-			if (lang.toLowerCase().contains("fr")) {
-				themes = this.themeFr;
-			}
-			for (String key : themes.keySet()) {
-				if (url.contains(key)) {
-					return themes.get(key);
-				}
+		Map<String, String> themes = this.themeEn;
+		if (lang.toLowerCase().contains("fr")) {
+			themes = this.themeFr;
+		}
+		for (String key : themes.keySet()) {
+			if (url.contains(key)) {
+				return themes.get(key);
 			}
 		}
 		return "N/A";
 	}
 
 	public String determineDept(String url, String lang, CSVRecord record) {
-		Map<String, String> depts = this.departmentsEn;
+		Map<String, String> depts = this.urlDepartmentsEn;
+		HashSet<String> usedDepts = this.UsedDepartmentsEn;
 		if (lang.toLowerCase().contains("fr")) {
-			depts = this.departmentsFr;
+			depts = this.urlDepartmentsFr;
+			usedDepts = this.UsedDepartmentsFr;
 		}
-		for (String key : departmentsEn.keySet()) {
+		for (String key : urlDepartmentsEn.keySet()) {
 			if (url.contains(key)) {
+				String dept = depts.get(key);
+				usedDepts.add(dept);
 				return depts.get(key);
 			}
 		}
@@ -505,20 +626,59 @@ public class Main {
 		// Author
 		String dept = "";
 		try {
-			dept = record.get("Publisher organization name") + record.get("Owner organization name");
-
+			String aemDept = record.get("Publisher organization name").replace("gc:institutions/", "");
+			if (aemDept != null && !aemDept.equals("")) {
+				if (lang.contains("en")) {
+					dept = aemDepartmentsEn.get(aemDept);
+				} else {
+					dept = aemDepartmentsFr.get(aemDept);
+				}
+			}
 		} catch (Exception e) {
 
 		}
-		if (dept.equals("")) {
+		if (dept == null || dept.equals("")) {
 			try {
-				return record.get("Author");
+				dept = record.get("Author");
 			} catch (Exception e2) {
 			}
-		} else {
-			return dept;
 		}
-		return "N/A";
+
+		// one last hail mary
+		Document doc = null;
+		try {
+			doc = Jsoup.connect(url).get();
+			String author = doc.select("meta[name=Author]").get(0).attr("content");
+			dept = author;
+			System.out.println(url + " - " + dept);
+		} catch (Exception e) {
+			try {
+				String author = doc.select("meta[name=dcterms.creator]").get(0).attr("content");
+				dept = author;
+				System.out.println(url + " - " + dept);
+			} catch (Exception e2) {
+			}
+		}
+
+		if (dept.contains(",")) {
+			String deptsplit[] = dept.split(",");
+			dept = deptsplit[deptsplit.length - 1].trim();
+		}
+		if (dept.contains("none") || dept.contains("English name")) {
+			dept = "";
+		}
+
+		if (dept != null && !dept.equals("")) {
+			if (lang.contains("en")) {
+				this.UsedDepartmentsEn.add(dept);
+			} else {
+				this.UsedDepartmentsFr.add(dept);
+			}
+			return dept;
+		} else {
+
+			return "N/A";
+		}
 	}
 
 	public void loadData() throws Exception {

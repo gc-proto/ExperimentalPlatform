@@ -152,8 +152,7 @@
 		<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
 		<script>
 			$(document).on("wb-ready.wb",function() {
-			    if ( !i18nText ) {
-					i18n = wb.i18n;
+			    	i18n = wb.i18n;
 					i18nText = {
 						aria: {
 							sortAscending: i18n( "sortAsc" ),
@@ -177,7 +176,7 @@
 						thousands: i18n( "info1000" ),
 						zeroRecords: i18n( "infoEmpty" )
 					};
-				}
+				
 			    $("#dataset-filter").find( "th" ).append( "<span class='sorting-cnt'><span class='sorting-icons'></span></span>" );
 			    var table = $('#dataset-filter').DataTable( {
 			        dom: "B<'top'fil>rt<'bottom'p><'clear'>",
