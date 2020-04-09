@@ -93,7 +93,7 @@
 <li class="checkbox"><label for="dt_audience3"><input type="checkbox" id="dt_audience3" name="dt_audience" data-column="3" value="Contenu principal Covid">Contenu principal Covid</label></li>
 <li class="checkbox"><label for="dt_audience1"><input type="checkbox" id="dt_audience1" name="dt_audience" data-column="3" value="Contient une alerte Covid">Contient une alerte Covid</label></li>
 <li class="checkbox"><label for="dt_audience2"><input type="checkbox" id="dt_audience2" name="dt_audience" data-column="3" value="Liens vers des pages Covid">Liens vers des pages Covid</label></li>
-<li class="checkbox"><label for="dt_audience2"><input type="checkbox" id="dt_audience2" name="dt_audience" data-column="3" value="Nouvelles">Nouvelles</label></li>
+<li class="checkbox"><label for="dt_audience4"><input type="checkbox" id="dt_audience4" name="dt_audience" data-column="3" value="Nouvelles">Nouvelles</label></li>
 </ul>
 </fieldset>
 </div>
@@ -211,7 +211,82 @@
 			        column.visible( ! column.visible() );
 			    } );
 			    $(".dt-buttons").prepend("Faites vos sélections en utilisant les filtres, puis cliquez sur Excel ou PDF pour télécharger vos données.");
+			$('#dataset-filter tbody').on( 'click', 'button', function () {
+        				var row = table.row( $(this).parents('tr') ).index();
+						var url = "";
+						$.each(table.columns()[0], function(index,item) {
+							var title = $(table.column(index).header()).text().trim()
+							if (title === 'URL') {
+								url = $(table.cell(row,index).data()).attr("href");
+							} 
+						});
+						$("#commenturl").val(url);        				
+        				wb.doc.trigger("open.wb-lbx", [
+							[			
+								{
+									src: "#submitWindow",
+									type: "inline"
+								}
+							],
+							true
+						]);
+    			} );
+
+				$('input#submit').click( function(e) {
+					e.preventDefault();
+					$.ajax({
+						url: 'http://emailservice/email',
+						type: 'POST',
+						dataType: 'text',
+						data: $('form#commentForm').serialize(),
+						success: function(data) {
+							
+						},
+						error: function(xhr, status, err) {
+ 							 alert(xhr.responseText);
+						}
+					});
+					$(".popup-modal-dismiss").click();
+				});
 			} );
 		</script>
+		<section id="submitWindow" class="mfp-hide modal-dialog modal-content overlay-def">
+			<header class="modal-header">
+				<h2 class="modal-title">Use this form to submit corrections or comments on this row in the inventory. Comments will be reviewed by DTO</h2>
+			</header>
+			<div class="modal-body">
+				<div class="wb-frmvld">
+					<form id="commentForm" name="commentForm" method="post" >
+						<input type="hidden" name="commenturl" id="commenturl" value=""/>
+						<input type="hidden" name="dtoemailAddress" id="dtoemailAddress" value="dto-btn@tbs-sct.gc.ca"/>
+						<input type="hidden" id="lang" name="lang" value="en"/>
+						<div class="form-group">
+							<label for="name" class="control-label required">
+								Name:
+							</label> 
+							<input class="form-control" id="name"
+								name="name" type="text" maxlength="30"							 
+								 required="required" size="40" />
+						</div>
+						<div class="form-group">
+							<label for="emailAddress" class="control-label required">
+							Email:
+							</label> 
+							<input type="email"
+								id="emailAddress" name="emailAddress" class="form-control"
+								required="required" maxlength="100" size="40">
+						</div>
+						<div class="form-group">
+							<label for="comments" class="control-label required">
+							Comments:
+							</label> 
+							<textarea 
+								id="comments" name="comments" class="form-control"
+								required="required" rows="10" cols="47"></textarea>
+						</div>
+						<input type="submit" class="btn" name="submit" id="submit" value="Submit"/>
+					</form>
+				</div>
+		</section>
 	</body>
 </html>

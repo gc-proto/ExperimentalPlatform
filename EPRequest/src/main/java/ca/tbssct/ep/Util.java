@@ -23,7 +23,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 public class Util {
 	
-	public static String propPath = "/home/requests/";
+	public static String propPath = "/home/config/eprequest.properties";
 	static Logger logger = LoggerFactory.getLogger(Util.class);
 
 	public static String fileToString(String path) throws Exception {

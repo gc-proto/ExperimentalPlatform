@@ -60,6 +60,10 @@ data:
               return 200 "OK";
           }
 
+          location /emailservice { 
+            proxy_pass http://emailservice/email;
+          }
+
           location / {
               # First attempt to serve request as file, then
               # as directory, then fall back to displaying a 404.

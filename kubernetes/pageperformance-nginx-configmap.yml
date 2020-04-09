@@ -66,6 +66,9 @@ data:
               try_files $uri $uri/ /index.html /index.php?$query_string;
           }
 
+
+         
+
           location ~ \.php$ {
             proxy_intercept_errors on;
             include fastcgi_params;

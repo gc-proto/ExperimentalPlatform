@@ -27,6 +27,8 @@ RUN chown -R -f www-data:www-data /tmp/empty_experimentation_db.sql
 RUN curl https://drupalconsole.com/installer -L -o drupal.phar
 RUN mv drupal.phar /usr/local/bin/drupal
 RUN chmod +x /usr/local/bin/drupal
+RUN composer require drupal/csv_serialization
+
 
 
 

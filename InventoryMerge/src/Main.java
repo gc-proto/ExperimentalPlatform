@@ -96,6 +96,9 @@ public class Main {
 	public Map<String, String> themeEn = new HashMap<String, String>();
 	public Map<String, String> themeFr = new HashMap<String, String>();
 
+	public HashSet<String> usedThemesEn = new HashSet<String>();
+	public HashSet<String> usedThemesFr = new HashSet<String>();
+
 	public Map<String, String> urlDepartmentsEn = new HashMap<String, String>();
 	public Map<String, String> urlDepartmentsFr = new HashMap<String, String>();
 	public Map<String, String> aemDepartmentsEn = new HashMap<String, String>();
@@ -257,7 +260,7 @@ public class Main {
 
 	public void mergeData() {
 		for (String url : aemMap.keySet()) {
-			//OutputData tmpData = aemMap.get(url);
+			// OutputData tmpData = aemMap.get(url);
 			if (covidMap.containsKey(url)) {
 				OutputData data = covidMap.remove(url);
 				aemMap.get(url).h2 += data.h2;
@@ -323,8 +326,6 @@ public class Main {
 			// System.out.println(record.get("URL"));
 			this.themeFr.put(record.get(0), record.get(1));
 		}
-		
-		
 
 	}
 
@@ -349,10 +350,10 @@ public class Main {
 
 		// Insert themes
 		String themeList = "";
-		
-		List<String> themes = new ArrayList<String>(new HashSet<String>(this.themeEn.values()));
+
+		List<String> themes = new ArrayList<String>(this.usedThemesEn);
 		if (outputLang.contains("fr")) {
-			themes = new ArrayList<String>(new HashSet<String>(this.themeFr.values()));
+			themes = new ArrayList<String>(this.usedThemesFr);
 		}
 		themes.add("N/A");
 
@@ -410,15 +411,15 @@ public class Main {
 		String togglecolumns = "";
 		for (int i = 0; i < headers.length; i++) {
 			if (i > 2) {
-				if (i != (headers.length - 1)) {
+				//if (i != (headers.length - 1)) {
 					togglecolumns += "<label for='toggle" + i + "'>"
 							+ "<input type='checkbox' CHECKED class='toggle-vis' name='toggle" + i + "' id='toggle" + i
 							+ "' data-column='" + i + "' />&nbsp;<span>" + headers[i] + "</span></label>&nbsp;";
-				} else {
-					togglecolumns += "<label for='toggle" + i + "'>"
-							+ "<input type='checkbox' class='toggle-vis' name='toggle" + i + "' id='toggle" + i
-							+ "' data-column='" + i + "' />&nbsp;<span>" + headers[i] + "</span></label>&nbsp;";
-				}
+				//} else {
+				//	togglecolumns += "<label for='toggle" + i + "'>"
+				//			+ "<input type='checkbox' class='toggle-vis' name='toggle" + i + "' id='toggle" + i
+				//			+ "' data-column='" + i + "' />&nbsp;<span>" + headers[i] + "</span></label>&nbsp;";
+				//}
 			}
 		}
 		template = template.replace("<!-- TOGGLE COLUMNS -->", togglecolumns);
@@ -432,8 +433,17 @@ public class Main {
 				html += "<tr>";
 				List<String> list = finalMap.get(url).asList();
 				for (int i = 0; i < list.size(); i++) {
-					String elem = list.get(i);
-					html += "<td>" + elem + "</td>";
+					if (i != (list.size() - 1)) {
+						String elem = list.get(i);
+						html += "<td>" + elem + "</td>";
+					}
+					else {
+						if (lang.contains("en")) {
+						html += "<td><button class='btn'>Submit</button></td>";
+						} else {
+							html += "<td><button class='btn'>Soumettre</button></td>";	
+						}
+					}
 				}
 				html += "</tr>";
 			}
@@ -520,7 +530,7 @@ public class Main {
 					} else if (checkField.equals("Public path")
 							|| checkField.equals("URL") && (data.contains("NEWS") || data.contains("NOUVELLES"))) {
 						contentType += "Content type: News" + "\n\r";
-						//System.out.println("Checkfield:"+checkField);
+						// System.out.println("Checkfield:"+checkField);
 					}
 
 				} catch (Exception e) {
@@ -596,11 +606,14 @@ public class Main {
 
 	public String determineTheme(String url, String lang) {
 		Map<String, String> themes = this.themeEn;
+		HashSet<String> usedTheme = this.usedThemesEn;
 		if (lang.toLowerCase().contains("fr")) {
 			themes = this.themeFr;
+			usedTheme = this.usedThemesFr;
 		}
 		for (String key : themes.keySet()) {
 			if (url.contains(key)) {
+				usedTheme.add(themes.get(key));
 				return themes.get(key);
 			}
 		}
