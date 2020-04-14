@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+  creationTimestamp: "2020-03-10T14:22:51Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: pageperformance
+  name: pageperformance
+  namespace: pageperformance
+  selfLink: /apis/extensions/v1beta1/namespaces/crawos/ingresses/pageperformance
+spec:
+  rules:
+  - host: pageperformance.tbs.alpha.canada.ca
+    http:
+      paths:
+      - backend:
+          serviceName: pageperformance-nginx
+          servicePort: 80
+  tls:
+  - hosts:
+    - pageperformance.tbs.alpha.canada.ca
+    secretName: pageperformance.tbs-alpha-canada-ca-tls-secret
+status:
+  loadBalancer:
+    ingress:
+    - ip: 52.237.15.42

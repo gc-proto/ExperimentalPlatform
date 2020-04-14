@@ -4,7 +4,7 @@ COPY docker/bin /var/www/docker/bin
 COPY docker/images/pageperformance_php/php.ini /usr/local/etc/php/php.ini
 RUN yes | rm -R /var/www/html
 WORKDIR /var/www/html
-RUN git clone https://github.com/amonsour/analytics-api.git .
+RUN git clone https://github.com/ryanhyma/analytics-api.git .
 COPY docker/images/pageperformance_php/secrets/php/config.php /var/www/html/php/config.php
 COPY docker/images/pageperformance_php/secrets/keys /var/www/html/keys
 RUN chown -R -f www-data:www-data /var/www/html/
