@@ -1,0 +1,19 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: pageperformancecacher
+spec:
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: pageperformancecacher
+            image: ryanhyma/pageperformance_cacher:1.0.0
+            imagePullPolicy: Always
+            args:
+            - java
+            - -jar 
+            - PagePerformanceCacher.jar
+          restartPolicy: OnFailure

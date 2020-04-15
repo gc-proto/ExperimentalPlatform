@@ -32,7 +32,7 @@ public class Main {
 	private String thirtyDaysAgo;
 	public static long WAIT_TIME = 10000;
 	public static long FIVE_MINUTES = 1000 * 60 * 5;
-	public static final String PAGE_PERFORMANCE_URL = "https://pageperformance.alpha.canada.ca";
+	public static final String PAGE_PERFORMANCE_URL = "http://pageperformance-nginx/";
 	public static int NUM_THREADS = 6;
 	private ExecutorService executor = null;
 	public static AtomicInteger numCached = new AtomicInteger(0);
