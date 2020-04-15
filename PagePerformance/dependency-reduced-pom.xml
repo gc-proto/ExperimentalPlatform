@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ca.tbssct.pageperformance</groupId>
+  <artifactId>PagePerformanceCacher</artifactId>
+  <name>PagePerformanceCacher</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <description>Page Performance Cacher</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer />
+                <transformer>
+                  <mainClass>ca.tbssct.Main</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <slf4jVersion>1.6.1</slf4jVersion>
+  </properties>
+</project>

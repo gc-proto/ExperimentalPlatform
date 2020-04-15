@@ -1,0 +1,12 @@
+version: "3"
+services:
+  cacher:
+    image: "ryanhyma/pageperformance_cacher:1.0.0"
+    build:
+      context: .
+      dockerfile: docker/images/pageperformance_cacher/Dockerfile
+    ports:
+      - "8000:8000"
+    restart: always
+    container_name: pageperformance_cacher
+  
