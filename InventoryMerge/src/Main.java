@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -46,7 +47,7 @@ public class Main {
 
 	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Content Type(s)", "H2", "Keywords",
 			"Modified Date", "Language", "AEM Content Type", "Page Performance", "URL", "Last Published date",
-			"Audience", "Comments" };
+			"Audience", "New Page", "Comments" };
 
 	public String[] OUTPUT_HEADERS_FR = {};
 
@@ -64,6 +65,7 @@ public class Main {
 		public String pagePerformance = "";
 		public String lastPublishedDate = "";
 		public String audience = "";
+		public String newPage = "";
 		public String comments = "";
 
 		public List<String> asList() {
@@ -85,6 +87,7 @@ public class Main {
 			list.add("<a href=\"" + URL + "\">" + URL + "</a>");
 			list.add(lastPublishedDate);
 			list.add(audience);
+			list.add(newPage);
 			list.add("");
 			return list;
 
@@ -109,12 +112,15 @@ public class Main {
 	public HashSet<String> UsedDepartmentsEn = new HashSet<String>();
 	public HashSet<String> UsedDepartmentsFr = new HashSet<String>();
 
+	public Set<String> completURLList;
+
 	DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	public String importDate = "";
+	public String lastImportDate = "";
 
 	public static void main(String args[]) throws Exception {
-		Main main = new Main(args[0]);
-		//main.dumpAEMAudience();
+		Main main = new Main(args[0], args[1]);
+		// main.dumpAEMAudience();
 		main.loadFrenchOutputHeaders();
 		main.loadThemes();
 		main.loadDepartments();
@@ -122,7 +128,7 @@ public class Main {
 		main.mergeData();
 		main.outputDataHTML("en");
 		main.outputDataHTML("fr");
-
+		main.updateURLList();
 	}
 
 	public class BiLang {
@@ -131,13 +137,35 @@ public class Main {
 		String aemName;
 	}
 
-	public Main(String importDate) {
+	public Main(String importDate, String lastImportDate) throws Exception {
 		this.importDate = importDate;
+		this.lastImportDate = lastImportDate;
+		this.completURLList = this.readURLList();
+		System.out.println("URL Count:" + this.completURLList.size());
+		this.compareManualList("en");
+		this.compareManualList("fr");
+	}
+
+	public String determineNewURL(String url, String lang) {
+		if (!this.completURLList.contains(url)) {
+			if (lang.contains("en")) {
+				return "Yes";
+			} else {
+				return "Oui";
+			}
+		} else {
+			if (lang.contains("en")) {
+				return "No";
+			} else {
+				return "Non";
+			}
+		}
 	}
 
 	public String determineAudience(CSVRecord record) {
 		try {
-			String audience = record.get("Audience").replace("gc:audience/", ", ").replace("-", " ").trim().replaceFirst(",", "");
+			String audience = record.get("Audience").replace("gc:audience/", ", ").replace("-", " ").trim()
+					.replaceFirst(",", "");
 			audience = this.capitalizeWord(audience);
 			return audience;
 		} catch (Exception e) {
@@ -229,7 +257,7 @@ public class Main {
 	public String capitalizeWord(String str) {
 		if (str.length() > 0 && !str.equals("")) {
 			str = str.trim().replaceAll(" +", " ");
-			//System.out.println("Word:"+str);
+			// System.out.println("Word:"+str);
 			String words[] = str.split("\\s");
 			String capitalizeWord = "";
 			for (String w : words) {
@@ -308,6 +336,23 @@ public class Main {
 		return contentBuilder.toString();
 	}
 
+	public Set<String> loadManualList(String lang) throws Exception {
+		Set<String> urls = new HashSet<String>();
+		Reader in2 = new FileReader("./import/Page inventory-Table 1.csv");
+		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
+		for (CSVRecord record : records2) {
+			String en = record.get(0);
+			String fr = record.get(1);
+			if (en != null && !en.equals("") && lang.contains("en")) {
+				urls.add(en);
+			}
+			if (fr != null && !fr.equals("") && lang.contains("fr")) {
+				urls.add(fr);
+			}
+		}
+		return urls;
+	}
+
 	public void loadDepartments() throws Exception {
 		Reader in2 = new FileReader("./data/departments.csv");
 		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
@@ -365,6 +410,54 @@ public class Main {
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		printWriter.print(content);
 		printWriter.close();
+	}
+
+	public void updateURLList() throws Exception {
+		Set<String> urls = this.completURLList;
+		urls.addAll(this.finalMap.keySet());
+		final BufferedWriter writer = Files
+				.newBufferedWriter(Paths.get("./data/completeURLList-" + this.importDate + ".csv"));
+		final CSVFormat csvFormat = CSVFormat.EXCEL.withHeader("URL");
+		try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat);) {
+			for (String url : urls) {
+				csvPrinter.printRecord(url);
+			}
+		} catch (Exception e) {
+
+		}
+		System.out.println("URL Count:" + urls.size());
+	}
+
+	public void compareManualList(String lang) throws Exception {
+		Set<String> manualList = this.loadManualList(lang);
+		int count = 0;
+		for (String manualURL : manualList) {
+			boolean found = false;
+			for (String url : this.completURLList) {
+				String tmpURL = url.trim().toUpperCase();
+				String tmpManualURL = manualURL.trim().toUpperCase();
+				if (tmpURL.contains(tmpManualURL) || tmpManualURL.contains(tmpURL)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				count++;
+				System.out.println("<url>" + manualURL.replace("&", "&amp;").trim() + "</url>");
+			}
+		}
+		System.out.println("Missed Count:" + count);
+	}
+
+	public Set<String> readURLList() throws Exception {
+		Set<String> urls = new HashSet<String>();
+		Reader in = new FileReader("./data/completeURLList-" + this.lastImportDate + ".csv");
+		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+		for (CSVRecord record : records) {
+			// System.out.println(record.get("URL"));
+			urls.add(record.get(0));
+		}
+		return urls;
 	}
 
 	public void outputDataHTML(String outputLang) throws Exception {
@@ -522,43 +615,29 @@ public class Main {
 				"Page title", "H1", "Keywords", "Primary topic", "Additional topics", "desc", "dcterms.subject",
 				"Content type", "URL", "Public path" };
 		String contentType = "";
-		Date afterDate = null;
-		try {
-			afterDate = DATE_FORMAT.parse("2019-01-01");
-		} catch (Exception e) {
-		}
 
-		Date modifiedDate = this.getLastModifiedDate(record, url);
-		if (modifiedDate == null || modifiedDate.after(afterDate)) {
-			// String url = "";
-			// try {
-			// url = record.get("Public path");
-			// } catch (Exception e) {
-			// }
-			// System.out.println(url);
-			for (String checkField : checkFields) {
-				try {
-					String data = record.get(checkField).toUpperCase().trim();
-					if (data.contains("CANADA EMERGENCY RESPONSE BENEFIT")
-							|| data.contains("PRESTATION CANADIENNE D’URGENCE") || data.contains("CERB")
-							|| data.contains("COVID") || data.contains("CORONAVIRUS")
-							|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
-						covid = true;
-						contentType += checkField + ": " + record.get(checkField) + "\n\r";
-					} else if (checkField.equals("Content type") && (data.equals("GC:CONTENT-TYPES/STATEMENTS")
-							|| data.equals("GC:CONTENT-TYPES/SPEECHES") || data.equals("GC:CONTENT-TYPES/BACKGROUNDERS")
-							|| data.equals("GC:CONTENT-TYPES/NEWS-RELEASES")
-							|| data.equals("GC:CONTENT-TYPES/MEDIA-ADVISORIES"))) {
-						contentType += "Content type: News" + "\n\r";
-					} else if ((checkField.equals("Public path") || checkField.equals("URL"))
-							&& (data.contains("NEWS") || data.contains("NOUVELLES"))) {
-						contentType += "Content type: News" + "\n\r";
-						// System.out.println("Checkfield:"+checkField);
-					}
-
-				} catch (Exception e) {
-
+		for (String checkField : checkFields) {
+			try {
+				String data = record.get(checkField).toUpperCase().trim();
+				if (data.contains("CANADA EMERGENCY RESPONSE BENEFIT")
+						|| data.contains("PRESTATION CANADIENNE D’URGENCE") || data.contains("CERB")
+						|| data.contains("COVID") || data.contains("CORONAVIRUS")
+						|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
+					covid = true;
+					contentType += checkField + ": " + record.get(checkField) + "\n\r";
+				} else if (checkField.equals("Content type") && (data.equals("GC:CONTENT-TYPES/STATEMENTS")
+						|| data.equals("GC:CONTENT-TYPES/SPEECHES") || data.equals("GC:CONTENT-TYPES/BACKGROUNDERS")
+						|| data.equals("GC:CONTENT-TYPES/NEWS-RELEASES")
+						|| data.equals("GC:CONTENT-TYPES/MEDIA-ADVISORIES"))) {
+					contentType += "Content type: News" + "\n\r";
+				} else if ((checkField.equals("Public path") || checkField.equals("URL"))
+						&& (data.contains("NEWS") || data.contains("NOUVELLES"))) {
+					contentType += "Content type: News" + "\n\r";
+					// System.out.println("Checkfield:"+checkField);
 				}
+
+			} catch (Exception e) {
+
 			}
 		}
 		if (covid) {
@@ -568,7 +647,7 @@ public class Main {
 		}
 	}
 
-	public Date getLastModifiedDate(CSVRecord record, String url) {
+	public Date getLastModifiedDate(CSVRecord record, String url, boolean canadaca) {
 		try {
 			String lastModified = record.get("Last Modified");
 			return DATE_FORMAT.parse(lastModified);
@@ -581,14 +660,16 @@ public class Main {
 		} catch (Exception e) {
 
 		}
-		Document doc = null;
-		try {
-			doc = Jsoup.connect(url).get();
-			String dateModified = doc.select("time[property=dateModified]").get(0).text();
-			System.out.println(url + " - " + dateModified);
-			return DATE_FORMAT.parse(dateModified);
+		if ((!canadaca && !url.contains("www.canada.ca")) || canadaca) {
+			Document doc = null;
+			try {
+				doc = Jsoup.connect(url).get();
+				String dateModified = doc.select("time[property=dateModified]").get(0).text();
+				System.out.println(url + " - " + dateModified);
+				return DATE_FORMAT.parse(dateModified);
 
-		} catch (Exception e) {
+			} catch (Exception e) {
+			}
 		}
 
 		return null;
@@ -604,8 +685,8 @@ public class Main {
 	}
 
 	public String determineContentType(String contentTypeContent, String lang) {
-		String substantiveContentTypes[] = { "Title", "H2", "dcterms.subject", "desc", "Description", "Name",
-				"Page title", "H1", "Keywords", "Primary topic", "Additional topics" };
+		String substantiveContentTypes[] = { "Title", "dcterms.subject", "desc", "Description", "Name", "Page title",
+				"H1", "Keywords", "Primary topic", "Additional topics" };
 		String contentType;
 		if (contentTypeContent.contains("Content type: News")) {
 			if (lang.contains("en")) {
@@ -683,26 +764,29 @@ public class Main {
 		} catch (Exception e) {
 
 		}
-		if (dept == null || dept.equals("")) {
-			try {
-				dept = record.get("Author");
-			} catch (Exception e2) {
+		if (!url.contains(".pdf") && !url.contains(".docx")) {
+			if (dept == null || dept.equals("")) {
+				try {
+					dept = record.get("Author");
+				} catch (Exception e2) {
+				}
 			}
-		}
 
-		// one last hail mary
-		Document doc = null;
-		try {
-			doc = Jsoup.connect(url).get();
-			String author = doc.select("meta[name=Author]").get(0).attr("content");
-			dept = author;
-			System.out.println(url + " - " + dept);
-		} catch (Exception e) {
+			// one last hail mary
+
+			Document doc = null;
 			try {
-				String author = doc.select("meta[name=dcterms.creator]").get(0).attr("content");
+				doc = Jsoup.connect(url).get();
+				String author = doc.select("meta[name=Author]").get(0).attr("content");
 				dept = author;
 				System.out.println(url + " - " + dept);
-			} catch (Exception e2) {
+			} catch (Exception e) {
+				try {
+					String author = doc.select("meta[name=dcterms.creator]").get(0).attr("content");
+					dept = author;
+					System.out.println(url + " - " + dept);
+				} catch (Exception e2) {
+				}
 			}
 		}
 
@@ -714,7 +798,7 @@ public class Main {
 			dept = "";
 		}
 
-		if (dept != null && !dept.equals("")) {
+		if (dept != null && !dept.equals("") && !dept.equals("null")) {
 			if (lang.contains("en")) {
 				this.UsedDepartmentsEn.add(dept);
 			} else {
@@ -728,27 +812,37 @@ public class Main {
 	}
 
 	public void loadData() throws Exception {
+
+		Date afterDate = null;
+		try {
+			afterDate = DATE_FORMAT.parse("2019-01-01");
+		} catch (Exception e) {
+		}
+
 		System.out.println("");
 		Reader in2 = new FileReader("./import/covid19-" + this.importDate + "_en.csv");
 		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
 		for (CSVRecord record : records2) {
 			OutputData outputData = new OutputData();
 			outputData.URL = record.get("URL");
-			String contentTypeContent = this.contentTypeContent(record, outputData.URL);
-			if (!contentTypeContent.equals("")) {
-				// System.out.println(record.get("URL"));
-				outputData.title = record.get("Title");
-				outputData.language = record.get("Language");
-				outputData.department = this.determineDept(outputData.URL, outputData.language, record);
-				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-				outputData.h2 = record.get("H2");
-				outputData.keywords = record.get("desc");
-				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record, outputData.URL),
-						outputData.language);
-				outputData.modifiedDate = record.get("Last Modified");
-				outputData.language = record.get("Language");
-				outputData.audience = this.determineAudience(record);
-				this.covidMap.put(record.get("URL"), outputData);
+			Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
+			if (modifiedDate != null && modifiedDate.after(afterDate)) {
+				String contentTypeContent = this.contentTypeContent(record, outputData.URL);
+				if (!contentTypeContent.equals("")) {
+					// System.out.println(record.get("URL"));
+					outputData.title = record.get("Title");
+					outputData.language = record.get("Language");
+					outputData.department = this.determineDept(outputData.URL, outputData.language, record);
+					outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+					outputData.h2 = record.get("H2");
+					outputData.keywords = record.get("desc");
+					outputData.contentTypes = this.determineContentType(contentTypeContent, "en");
+					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
+					outputData.language = record.get("Language");
+					outputData.audience = this.determineAudience(record);
+					outputData.newPage = this.determineNewURL(outputData.URL, "en");
+					this.covidMap.put(record.get("URL"), outputData);
+				}
 			}
 		}
 		System.out.println("");
@@ -757,21 +851,25 @@ public class Main {
 		for (CSVRecord record : records3) {
 			OutputData outputData = new OutputData();
 			outputData.URL = record.get("URL");
-			String contentTypeContent = this.contentTypeContent(record, outputData.URL);
-			if (!contentTypeContent.equals("")) {
-				// System.out.println(record.get("URL"));
-				outputData.title = record.get("Title");
-				outputData.language = record.get("Language");
-				outputData.department = this.determineDept(outputData.URL, outputData.language, record);
-				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-				outputData.h2 = record.get("H2");
-				outputData.keywords = record.get("desc");
-				outputData.contentTypes = this.determineContentType(this.contentTypeContent(record, outputData.URL),
-						outputData.language);
-				outputData.modifiedDate = record.get("Last Modified");
-				outputData.language = record.get("Language");
-				outputData.audience = this.determineAudience(record);
-				this.covidMap.put(record.get("URL"), outputData);
+			Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
+			if (modifiedDate != null && modifiedDate.after(afterDate)) {
+
+				String contentTypeContent = this.contentTypeContent(record, outputData.URL);
+				if (!contentTypeContent.equals("")) {
+					// System.out.println(record.get("URL"));
+					outputData.title = record.get("Title");
+					outputData.language = record.get("Language");
+					outputData.department = this.determineDept(outputData.URL, outputData.language, record);
+					outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+					outputData.h2 = record.get("H2");
+					outputData.keywords = record.get("desc");
+					outputData.contentTypes = this.determineContentType(contentTypeContent, "fr");
+					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
+					outputData.language = record.get("Language");
+					outputData.audience = this.determineAudience(record);
+					outputData.newPage = this.determineNewURL(outputData.URL, "fr");
+					this.covidMap.put(record.get("URL"), outputData);
+				}
 			}
 		}
 
@@ -780,21 +878,26 @@ public class Main {
 		for (CSVRecord record : records) {
 			OutputData outputData = new OutputData();
 			outputData.URL = record.get("Public path");
-			String contentTypeContent = this.contentTypeContent(record, outputData.URL);
-			if (!contentTypeContent.equals("")) {
-				outputData.title = record.get("Page title");
-				outputData.language = this.determineLanguage(outputData.URL, record.get("gcLanguage"));
-				outputData.department = this.determineDept(outputData.URL, outputData.language, record);
-				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-				outputData.contentTypes = this.determineContentType(contentTypeContent, outputData.language);
-				outputData.modifiedDate = record.get("Last Modified date");
-				outputData.h2 = "";
-				outputData.keywords = record.get("Keywords");
-				String contentType = record.get("Content type").replace("gc:content-types/", ", ").replace("-", " ").trim().replaceFirst(",", "");
-				outputData.AEMContentType = this.capitalizeWord(contentType);
-				outputData.lastPublishedDate = record.get("Last Published date");
-				outputData.audience = this.determineAudience(record);
-				this.aemMap.put(record.get("Public path"), outputData);
+			Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
+			if (modifiedDate != null && modifiedDate.after(afterDate)) {
+				String contentTypeContent = this.contentTypeContent(record, outputData.URL);
+				if (!contentTypeContent.equals("")) {
+					outputData.title = record.get("Page title");
+					outputData.language = this.determineLanguage(outputData.URL, record.get("gcLanguage"));
+					outputData.department = this.determineDept(outputData.URL, outputData.language, record);
+					outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+					outputData.contentTypes = this.determineContentType(contentTypeContent, outputData.language);
+					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
+					outputData.h2 = "";
+					outputData.keywords = record.get("Keywords");
+					String contentType = record.get("Content type").replace("gc:content-types/", ", ").replace("-", " ")
+							.trim().replaceFirst(",", "");
+					outputData.AEMContentType = this.capitalizeWord(contentType);
+					outputData.lastPublishedDate = record.get("Last Published date");
+					outputData.audience = this.determineAudience(record);
+					outputData.newPage = this.determineNewURL(outputData.URL, outputData.language);
+					this.aemMap.put(record.get("Public path"), outputData);
+				}
 			}
 		}
 	}
@@ -805,23 +908,25 @@ public class Main {
 		for (CSVRecord record : records) {
 			OutputData outputData = new OutputData();
 			System.out.println(record.get("Content type"));
-			String contentType = record.get("Content type").replace("gc:content-types/", ", ").replace("-", " ").trim().replaceFirst(",", "");
+			String contentType = record.get("Content type").replace("gc:content-types/", ", ").replace("-", " ").trim()
+					.replaceFirst(",", "");
 			outputData.AEMContentType = this.capitalizeWord(contentType);
-			
+
 			System.out.println(outputData.AEMContentType);
 
 		}
 	}
-	
+
 	public void dumpAEMAudience() throws Exception {
 		Reader in = new FileReader("./import/gcPageReport-publish-" + this.importDate + ".csv");
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
 		for (CSVRecord record : records) {
 			OutputData outputData = new OutputData();
 			System.out.println(record.get("Audience"));
-			String contentType = record.get("Audience").replace("gc:audience/", ", ").replace("-", " ").trim().replaceFirst(",", "");
+			String contentType = record.get("Audience").replace("gc:audience/", ", ").replace("-", " ").trim()
+					.replaceFirst(",", "");
 			outputData.AEMContentType = this.capitalizeWord(contentType);
-			
+
 			System.out.println(outputData.AEMContentType);
 
 		}
