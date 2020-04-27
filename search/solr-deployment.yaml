@@ -30,7 +30,10 @@ spec:
         name: solr
         ports:
         - containerPort: 8983
-        resources: {}
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 100m
         volumeMounts:
         - mountPath: /opt/solr/server/solr/opt
           name: data

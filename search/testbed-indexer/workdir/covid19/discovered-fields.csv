@@ -1,0 +1,434 @@
+Field Name,Occurences,Sample Value 1,Sample Value 2,Sample Value 3,Sample Value 4,Sample Value 5
+Abstract,14,Announcement of Valour recipients.,Captain (N) Chris Henderson discusses the impact of embedded media on operations.,"Dr. Sean Maloney discusses what was International Security Assistance Forces created to do both ostensibly and actually, how it evolved, and it’s future.  ",Doctor Tim Mau and Alexander Wooley propose a new integrative model for assessing military leadership.,"Lieutenant-General Ken Pennie explains the air force vision, examining some  of the key concepts and assumptions that underlie it, as well as the vectors  to achieve that vision."
+Accept-Ranges,2306,bytes,,,,
+Access-Control-Allow-Headers,156,"Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers","Origin, X-Requested-With, Content-Type, Accept","Origin, Content-Type, X-Auth-Token, X-Requested-By, X-Requested-With",Content-Type,
+Access-Control-Allow-Methods,156,"GET, POST, OPTIONS","GET, HEAD, OPTIONS, POST, PUT, DELETE","GET,PUT,POST,OPTIONS","GET, POST, PATCH, PUT, DELETE, OPTIONS",
+Access-Control-Allow-Origin,2593,*.gc.ca,https://intra.nrc-cnrc.gc.ca,*,https://otc-cta.gc.ca,https://www.youtube.com
+Access-Control-Allow-Origins,101,*,,,,
+Access-Control-Expose-Headers,38,Request-Context,,,,
+Age,285,0,32036,39157,30666,
+Akamai-Age-Ms,10,1587720029306,1587725921528,1587717725403,1587725209787,1587725939016
+Arr-Disable-Session-Affinity,85,true,,,,
+Assessment Start Date,3,14/03/2018 12:00:00 AM,28/06/2019 12:00:00 AM,21/02/2020 12:00:00 AM,,
+Assessment Type,3,Project on federal lands,Environmental assessment under CEAA 2012,,,
+Author,16,David Bashow,Dr. Sean Maloney,Lieutenant-General Ken Pennie,Doctor Tim Mau and Alexander Wooley,Andrew J. Duncan
+CF-Cache-Status,1,DYNAMIC,,,,
+CF-RAY,1,588f76d21a77f232-ORD,,,,
+Cache-Control,3040,"public, no-store, max-age=0",private,"max-age=0, no-cache, no-store","max-age=300, public",no-cache
+Cache-control,179,no-cache,,,,
+ChairTitle,1,Canada Research Chair in RNA & Protein Biophysics,,,,
+Chroma BackgroundColor,1,"red=255, green=255, blue=255",,,,
+Chroma BlackIsZero,6,true,,,,
+Chroma ColorSpaceType,6,RGB,,,,
+Chroma NumChannels,6,4,,,,
+Compression CompressionTypeName,6,deflate,,,,
+Compression Lossless,6,true,,,,
+Compression NumProgressiveScans,6,1,,,,
+Connection,3471,Keep-Alive,keep-alive,"Upgrade, Keep-Alive",close,
+Content-Encoding,6101,ISO-8859-1,UTF-8,windows-1252,US-ASCII,
+Content-Language,792,en-CA,en-US,en,,
+Content-Length,6101,138050,32235,46445,26574,122939
+Content-Location,6101,https://www.canada.ca/en/employment-social-development/news/2020/04/canada-emergency-response-benefit-to-launch-on-april-6.html,https://www.canada.ca/en/department-finance/economic-response-plan.html,https://www.canada.ca/en/services/benefits/ei/cerb-application.html,https://www.canada.ca/en/employment-social-development/corporate/notices/coronavirus.html,https://www.canada.ca/en/revenue-agency/services/benefits/apply-for-cerb-with-cra.html
+Content-Script-Type,58,text/javascript,,,,
+Content-Security-Policy,402,frame-ancestors 'self',frame-ancestors 'self';,default-src 'self' 'unsafe-inline' *.open.canada.ca *.canada.ca *.gc.ca www.youtube.com youtube.com platform.twitter.com syndication.twitter.com *.demdex.net *.omtrdc.net epsg.io *.google-analytics.com *.googletagmanager.com *.gov.bc.ca governmentofbc.maps.arcgis.com *.maps.alberta.ca geodiscover.alberta.ca;         script-src 'self' 'unsafe-inline' 'unsafe-eval' *.open.canada.ca *.canada.ca webservices.maps.canada.ca *.google-analytics.com ajax.googleapis.com js.arcgis.com *.gc.ca *.geosciences.ca *.epsg.i,img-src 'self' *.canada.ca data: 'unsafe-inline' ; script-src 'self' *.canada.ca 'unsafe-inline' 'unsafe-eval' ; frame-src 'self' http://www.canada.ca; font-src 'self' *.canada.ca https://cdnjs.cloudflare.com data: ; media-src 'none' ; connect-src 'self' *.canada.ca *.hc-sc.gc.ca ; form-action 'self' *.canada.ca *.hc-sc.gc.ca ; style-src 'self' *.canada.ca https://cdnjs.cloudflare.com 'unsafe-inline' ; default-src 'self' www.canada.ca cdn.canada.ca ;,default-src 'self' 'unsafe-inline' *.open.canada.ca *.canada.ca *.gc.ca www.youtube.com youtube.com platform.twitter.com syndication.twitter.com *.demdex.net *.omtrdc.net epsg.io *.google-analytics.com *.googletagmanager.com *.gov.bc.ca governmentofbc.maps.arcgis.com *.maps.alberta.ca geodiscover.alberta.ca;          script-src 'self' 'unsafe-inline' 'unsafe-eval' *.open.canada.ca *.canada.ca webservices.maps.canada.ca *.google-analytics.com ajax.googleapis.com js.arcgis.com *.gc.ca *.geosciences.ca *.epsg.
+Content-Style-Type,63,text/css,,,,
+Content-Type,6101,text/html; charset=utf-8,text/html; charset=UTF-8,text/html,text/html;charset=utf-8,text/html;charset=UTF-8
+Content-Type-Hint,560,text/html; charset=utf-8,text/html; charset=UTF-8,text/html; charset=us-ascii,text/html; charset=windows-1252,text/html; charset=iso-8859-1
+Content-language,33,en,,,,
+ContentServer,371,hpvs489,hpvs490,hpvs491,,
+Controlled_Subject_Terms,21,,,,,
+Cteonnt-Length,39,43410,53450,52554,38236,21711
+Data BitsPerSample,6,8 8 8 8,,,,
+Data PlanarConfiguration,6,PixelInterleaved,,,,
+Data SampleFormat,6,UnsignedIntegral,,,,
+Date,6101,"Fri, 24 Apr 2020 10:58:37 GMT","Fri, 24 Apr 2020 10:58:42 GMT","Fri, 24 Apr 2020 10:58:43 GMT","Fri, 24 Apr 2020 10:58:41 GMT","Fri, 24 Apr 2020 10:58:40 GMT"
+Date_created,21,2001-04-01,2000-08-24,2001-10-04,,
+Date_modified,31,2001-09-01,2002-10-02,2002-10-24,2004-05-06</HEAD><BODY BGCOLOR=,2003-04-25</HEAD><BODY BGCOLOR=
+Description,61,"A review of new federal stimulus measures that will take effect in 2010-2011 under Canada's Economic Action Plan, as well as new actions proposed in the Budget to build jobs and growth for the future.","The Budget of Canada outlines the fiscal, social and economic policies and priorities of the Government of Canada, and reflects Government spending obligations and revenue projections for the coming fiscal year.",ARCHIVED - Bell Canada - Revenue requirements for 1993 and 1994,ARCHIVED - Call for comments concerning order in coucil P.C. 1994-1689,ARCHIVED - Introduction to decisions renewing the licences of privately-owned English-language television stations
+Dimension HorizontalPixelSize,1,0.35273367,,,,
+Dimension ImageOrientation,6,Normal,,,,
+Dimension PixelAspectRatio,6,1.0,,,,
+Dimension VerticalPixelSize,1,0.35273367,,,,
+Document Date,45,11/01/2018 12:00:00 AM,29/06/2016 12:00:00 AM,12/12/2016 12:00:00 AM,17/12/2019 12:00:00 AM,27/06/2017 12:00:00 AM
+Document ImageModificationTime,1,"year=2017, month=4, day=21, hour=19, minute=25, second=13",,,,
+Document Type,45,News Releases,Additional Information,For Public Participation,,
+DocumentStatus,2,Archived,,,,
+ETag,1708,"W/""a2d7-5a4073f8d7d32-gzip""","""205b2-5a406fa0d6912-gzip""","W/""816a-5a4073fc2e8d7-gzip""","""24138-5a406f2d51d12-gzip""","""d6ed-5a4021bcc5274-gzip"""
+Etag,196,"""1587691087-0""","""1587691004-1""","""1587691095-0""","""1587680417-0""","""1587691089-0"""
+Expect-CT,1,"max-age=604800, report-uri=""https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct""",,,,
+Expires,1017,"Fri, 24 Apr 2020 10:59:39 GMT","Fri, 24 Apr 2020 11:05:55 GMT","Mon, 26 Jul 1997 05:00:00 GMT","Sun, 19 Nov 1978 05:00:00 GMT","Fri, 24 Apr 2020 11:03:48 GMT"
+Feature-Policy,7,geolocation none;midi none;notifications none;push none;sync-xhr none;microphone none;camera none;magnetometer none;gyroscope none;speaker self;vibrate none;fullscreen self;payment none;,microphone 'none'; payment 'none'; sync-xhr 'self' https://rdc-drc.ca,,,
+GENERATOR,15,Microsoft FrontPage 4.0,Microsoft SharePoint,,,
+Generator,70,Drupal 8 (https://www.drupal.org),DSpace 4.2,Drupal 7 (http://drupal.org),,
+HandheldFriendly,57,true,,,,
+IHDR,6,"width=266, height=339, bitDepth=8, colorType=RGBAlpha, compressionMethod=deflate, filterMethod=adaptive, interlaceMethod=none","width=16, height=16, bitDepth=8, colorType=RGBAlpha, compressionMethod=deflate, filterMethod=adaptive, interlaceMethod=none",,,
+ISO639-2,2,eng,,,,
+Keep-Alive,1054,"timeout=15, max=100","timeout=5, max=100","timeout=5, max=99","timeout=5, max=97","timeout=15, max=99"
+Keywords,68,"Canada Excellence Research Chair, CERC, program, researchers, universities, Canadian, experts, nominations, research funding, research grants","tax relief, job creation, training, Employment Insurance, EI, infrastructure, social housing, post-secondary education, research, innovation, technology, environment, financial sector, tax reduction, income tax, First Nations, north, seniors, credit, financial markets, student loans, labour market, trade, debt, youth, regional development, green energy, clean energy, research grants, border security, crime, single parents, UCCB, athletes, amateur sport, persons with disabilities, charities, residential scho",Telecommunications,"government finances, social spending, financial policy, budget speech, revenue, estimates, forecasts","Access to Information Act, "
+Last-Modified,2052,"Fri, 24 Apr 2020 10:58:45 GMT","Fri, 24 Apr 2020 04:50:46 GMT","Fri, 24 Apr 2020 10:37:14 GMT","Fri, 24 Apr 2020 10:39:15 GMT","Fri, 24 Apr 2020 10:58:41 GMT"
+Link,84,"<https://nrc.canada.ca/en/corporate/values-ethics/research-involving-human-participants/guidance-completing-applications-forms>; rel=""canonical""","</en/annual-report-2014-2015>; rel=""canonical"",</en/node/1739>; rel=""shortlink""","<https://ml-fd.caf-fac.ca/en/wp-json/>; rel=""https://api.w.org/""","<https://nrc.canada.ca/en/corporate/planning-reporting/departmental-performance-report-2015-16>; rel=""canonical""","<https://mpmo.gc.ca/measures/292>; rel=""canonical"",<https://mpmo.gc.ca/node/292>; rel=""shortlink"""
+LiveOnProduction,58,True,,,,
+Location,3,"25 Huron Street, Victoria BC, V8V 4V9",325 kilometres northeast of St. John's,Interlake Region,,
+MS-Author-Via,9,DAV,,,,
+MicrosoftSharePointTeamServices,56,16.0.0.4681,14.0.0.7230,16.0.0.4900,16.0.0.4927,
+MobileOptimized,57,width,,,,
+Modified Date,3,2020-02-21,2020-04-03,2020-04-21,,
+NumPages,58,13,14,8,9,10
+P3P,1,"CP=""ALL COR ADMa OURa IND UNI NAV INT""",,,,
+Page-Session-Info,55,"c-date: 2020-04-22 21:11:58, e-date: 2020-05-06 21:11:58, age:1209600","c-date: 2020-04-24 07:05:39, e-date: 2020-05-08 07:05:39, age:1209600","c-date: 2020-04-23 09:41:47, e-date: 2020-05-07 09:41:47, age:1209600","c-date: 2020-04-22 22:31:27, e-date: 2020-05-06 22:31:27, age:1209600","c-date: 2020-04-23 15:47:58, e-date: 2020-05-07 15:47:58, age:1209600"
+Pragma,209,no-cache,No-cache,,,
+ProgId,10,FrontPage.Editor.Document,,,,
+Project ID,48,80067,80117,80127,80103,80094
+Project Name,48,Howse Property Iron Mine Project,Marine Terminal Project on the North Shore of the Saguenay,Project 4 - All-Season Road Connecting Berens River to Poplar River First Nation,Pacific Future Energy Refinery Project,CNOOC International Flemish Pass Exploration Drilling Project
+Project Type,3,Bridges,Building and Property Development,"Other, not otherwise specified",Oil and Gas,Water Management
+Proponent,3,Manitoba Infrastructure,BHP Petroleum (New Ventures) Corporation,Fisheries and Oceans Canada,,
+Province,3,Manitoba,British Columbia,Newfoundland and Labrador,,
+Public-Extension,4,http://schemas.microsoft.com/repl-2,,,,
+Public-Key-Pins,72,"pin-sha256=""K5cLRLJx5XMmt3FZ4juyw6w77/ZS+AP52Q/mK+UO3P0=""; pin-sha256=""CzdPous1hY3sIkO55pUH7vklXyIHVZAl/UnprSQvpEI=""; pin-sha256=""ntPCN1f+CZzlQhaIE331czBRcAjdmi504yTaH4mK2Gw=""; max-age=2592000; report-uri=""https://domain.com/report""",,,,
+ROBOTS,58,"INDEX,FOLLOW,NOARCHIVE",,,,
+RVBD-CSH,2,::ffff:10.16.251.6,,,,
+RVBD-SSH,2,::ffff:142.130.17.62,,,,
+Referrer-Policy,319,no-referrer,same-origin,no-referrer-when-downgrade,,
+Refresh,7,600;url=../auth/logout?url=/?theme%3Daadnc&theme=aadnc,600;url=../auth/logout?url=/?theme%3Dmobile&theme=mobile,,,
+Request-Context,38,appId=cid-v1:ca663ce7-b7c3-48bc-8b73-c4a808479811,appId=cid-v1:124bc074-4d6e-461a-b96c-f162221348ef,,,
+Research_Involves,1,Studying how host proteins and viral RNAs interact.,,,,
+Researcher,1,Trushar R Patel,,,,
+ResourceTag,4,rt:8FE0476A-68E8-49A7-9302-7CAEF35277CC@00000001547,rt:30F18CAA-410B-4554-BC44-DAAD67415939@00000016662,rt:5E5D79E9-427D-4A7E-87DB-CD8E42A7EDE3@00000001693,rt:27D698F0-90C7-45AD-A3C7-B91D465B1797@00000002004,
+Responsible Authority,3,Impact Assessment Agency of Canada,Fisheries and Oceans Canada,,,
+Review_date,29,2003-09-01,20021231,2005-06-22,2007-06-22,20030716
+SPIisLatency,51,0,11,1,,
+SPRequestDuration,51,145,113,1079,1387,183
+SPRequestGuid,56,d2e04b9f-302c-80c3-fcbc-a271ccb8ccc0,f8e04b9f-00c8-80c3-fcbc-a90f81fd2783,1ce14b9f-ce99-f0da-ff96-e48975b77090,dee04b9f-f0bc-80c3-fcbc-a1cc9eed7fda,d9e04b9f-12f6-c0de-c82e-c9519a3d6c13
+Server,5928,Microsoft-IIS/7.5,Apache,Apache/2.4.6 (Red Hat Enterprise Linux) Communique/4.2.1,Microsoft-IIS/10.0,Microsoft-IIS/8.5
+Service,58,dpr-rmr/2008-2009,archives,dpr-rmr/2007-2008,est-pre,dpr-rmr/2006-2007
+Set-Cookie,473,ASP.NET_SessionId=o21p102ln2ng20vpzdrt5drv; path=/; secure; HttpOnly; SameSite=Lax,JSESSIONID=F491B1D1A849D3C1B63C8495443D2E4E; Path=/,"CFID=2986781; Expires=Sun, 17-Apr-2050 10:59:19 GMT; Path=/; HttpOnly",ASPSESSIONIDSWADTART=EEEKHGFBIDFEFEIEOPCEFODM; secure; path=/,ASPSESSIONIDSWBSQACR=ABICHDOAAJPIECKKNHEHHNHP; secure; path=/
+Status,178,In progress,200 OK,,,
+Strict-Transport-Security,4339,max-age=31536000,max-age=0; includeSubDomains,max-age=15768000,max-age=31536000; includeSubDomains; preload,max-age=31536000; preload
+Text TextEntry,1,"keyword=Comment, value=Created with GIMP, language=, compression=none",,,,
+Title,21,Bill C-53: An Act to protect human health and safety and the environment by regulating products used for the control of pests (LS-423E),Bill C-33: The Species at Risk Act (LS-369E),Contact Us,Bill C-58: An Act to Amend the Railway Safety Act and To Make a Consequential Amendment to Another Act (LS-326E),"Bill C-6: An Act to provide for an integrated system of land and water management in the MacKenzie Valley, to establish certain boards for that purpose and to make consequential amendments to other Acts (LS302E)"
+Transfer-Encoding,1507,chunked,,,,
+Transparency Alpha,6,nonpremultipled,,,,
+Upgrade,3,"h2,h2c",,,,
+Vary,3113,Cookie,"Accept-Encoding,User-Agent","Cookie,Accept-Encoding",*,Accept-Encoding
+Via,652,1.1 ito-oti.ic.gc.ca (Apache/2.4.27),1.1 varnish-v4,1.1 strategis.ic.gc.ca (Apache/2.4.27),1.1 varnish (Varnish/6.0),1.1 fednor.gc.ca (Apache/2.4.27)
+WT.cg_n,47,tc.gc.ca; en-ca; ncrws450.tc.gc.ca D:\RedDot\WS\MS\ASP\ReddotTemp\,tc.gc.ca; en-ca; CA Publications,Our Office,tc.gc.ca; en-ca; Corporate Services,tc.gc.ca; en-ca; CA Standards
+WT.cg_s,46,en-ca; ncrws450.tc.gc.ca D:\RedDot\WS\MS\ASP\ReddotTemp\; transport-canada-response-aviation-safety-recommendations-2002.html,en-ca; ncrws450.tc.gc.ca D:\RedDot\WS\MS\ASP\ReddotTemp\; transport-canada-response-aviation-safety-recommendations-2015.html,en-ca; ncrws450.tc.gc.ca D:\RedDot\WS\MS\ASP\ReddotTemp\; technical-implementation-procedures-united-kingdom.html,Media Room,en-ca; ncrws450.tc.gc.ca D:\RedDot\WS\MS\ASP\ReddotTemp\; enhancing-rail-safety-canada-working-together-safer-communities.html
+WebConfigHost,8,www,,,,
+X-Akamai-Transformed,329,"9 9877 0 pmb=mRUM,1","9 14312 0 pmb=mRUM,1","9 8573 0 pmb=mRUM,1","9 - 0 pmb=mRUM,1","9 8681 0 pmb=mRUM,1"
+X-AspNet-Version,923,2.0.50727,4.0.30319,,,
+X-AspNetMvc-Version,181,3.0,5.0,,,
+X-Cache,6,HIT,MISS,,,
+X-Cache-Hits,4,0,1,,,
+X-Cacheable,1,YES,,,,
+X-Content-Security-Policy,2,default-src 'self' 'unsafe-inline' data: ; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' ;,,,,
+X-Content-Type-Options,937,nosniff,,,,
+X-DB-Content-length,6,81215,241342,220386,35110,367747
+X-Drupal-Cache,259,HIT,MISS,,,
+X-Drupal-Dynamic-Cache,57,HIT,MISS,UNCACHEABLE,,
+X-FRAME-OPTIONS,52,SAMEORIGIN,,,,
+X-FW-Hash,1,pep6orybxv,,,,
+X-FW-Serve,1,TRUE,,,,
+X-FW-Server,1,Flywheel/4.1.0,,,,
+X-FW-Static,1,NO,,,,
+X-FW-Type,1,FLYWHEEL_BOT,,,,
+X-Fastly-Request-ID,1,34c35a88e93c55011e34becd09289566519d1ada,,,,
+X-Frame-Options,1031,SAMEORIGIN,deny,DENY,"SAMEORIGIN, SAMEORIGIN",sameorigin
+X-Generator,125,Drupal 7 (https://www.drupal.org),Drupal 8 (https://www.drupal.org),Drupal 7 (http://drupal.org),,
+X-GitHub-Request-Id,1,0818:2258:1C60EA:23C908:5EA2D56C,,,,
+X-Hits,1,1,,,,
+X-MS-InvokeApp,56,1; RequireReadOnly,,,,
+X-Original-Host,85,www.tbs-sct.gc.ca,,,,
+X-Parsed-By,6101,org.apache.tika.parser.image.ImageParser,org.apache.tika.parser.html.HtmlParser,org.apache.tika.parser.DefaultParser,,
+X-Permitted-Cross-Domain-Policies,1,none,,,,
+X-Pool,18,1,2,3,4,
+X-Powered-By,2921,Express,ARR/2.5,PHP/5.3.17,ASP.NET,ARR/3.0
+X-Powered-By-Plesk,2,PleskWin,,,,
+X-Proxy-Cache,56,HIT,MISS,,,
+X-Request-Id,177,4f333939-3ff1-48dd-bc7a-f710272c45fd,f67f94cc-d125-4cbb-8864-d276a5fb6c96,f2d8411d-fe6f-4201-96e8-48e44d661a21,9e2c66bb-62b3-4b56-8628-2953ec415312,0e47f365-e5ba-44c8-bd85-1b418959bd21
+X-Runtime,177,0.541590,0.166578,0.169203,1.184835,0.189030
+X-Served-By,1,cache-yyz4537-YYZ,,,,
+X-SharePointHealthScore,56,0,,,,
+X-TEC-API-ORIGIN,1,http://sopf.gc.ca,,,,
+X-TEC-API-ROOT,1,http://sopf.gc.ca/index.php?rest_route=/tribe/events/v1/,,,,
+X-TEC-API-VERSION,1,v1,,,,
+X-Timer,1,"S1587729774.273502,VS0,VE21",,,,
+X-UA-Compatible,4232,"IE=edge,chrome=1",IE=11,IE=edge,IE=Edge,IE=EDGE
+X-Varnish,280,67263645,68307712,701105702,67796511,694067394
+X-Via-NSCOPI,86,1.0,,,,
+X-XSS-Protection,458,1;mode=block,1; mode=block,,,
+X-Xss-Protection,85,1; mode=block,,,,
+X-ac,6,2.yyz _dca,1.yyz _dca,,,
+X-hacker,6,"If you're reading this, you should visit automattic.com/jobs and apply to join the fun, mention this header.",,,,
+aafc.subject,5,Abstracts of Research Publications,,,,
+aafc:subject,50,vegetable crops;world trade organization negotiations;soil assessement,research;market analysis;agricultural industries,proactive disclosure;agricultural policy framework (apf);government publications,technology transfer;architectural heritage;soil assessement,poultry farming;architectural heritage;soil assessement
+abstract,18,Creating Canada’s 4th Plan on Open Government 2018-20,"Driving digital government forward, together",Improving government services in the digital age,Why is CODE Important?,Using Artificial Intelligence in government means balancing innovation with the ethical and responsible use of emerging technologies
+adcterms.creator,1,"Government of Canada, Department of Justice, Electronic Communications",,,,
+adcterms.description,1,Department of Justice Canada's Internet site,,,,
+adcterms.language,1,eng,,,,
+adcterms.subject,1,"justice, law, judicial system, legal system, legislation, statute, act, regulation, legislative process, amendment, canadian government, sfi, initiative, support, supporting families, family law, policy, laws, legislation, publications, children, sibling, brother, sister, youth, teens, family, separation, divorce, divorce act, divorce law, best interests of the child, federal child support guidelines, child support guidelines, child support, family justice",,,,
+adcterms.title,1,Department of Justice - Insert the English title,,,,
+adctermsterms.issued,1,2002-03-29,,,,
+adctermsterms.modified,1,2002-05-14,,,,
+alert,864,true,,,,
+alert_tmp,1496,Only apply for the CERB through either Service Canada or the Canada Revenue Agency (CRA) – not both.,"Important note The information in this module is for general understanding only. For up-to-date details and to see how to apply the information in your own situation,go to Canada Revenue Agency . If you also pay income taxes in Quebec, go to Agence du Revenu du QuÃ©bec .","If you have stopped working because of COVID-19, the Canada Emergency Response Benefit (CERB) may provide you with temporary income support. Select “Apply” to continue to the application.","COVID-19: Temporary closure of Service Canada Centres Service Canada is ready to help. Our priority is the health and safety of all Canadians, while maintaining service to the public. In response to COVID-19, all in person Service Canada Centres are closed until further notice. In the meantime, you can access our programs and services online. For additional support, please fill out the service request form. If you are applying for the Canada Emergency Response Benefit (CERB) and you require additional suppo",Probable cases 11
+apple-mobile-web-app-capable,2,yes,,,,
+apple-mobile-web-app-status-bar-style,2,black,,,,
+apple-mobile-web-app-title,248,RCMP / GRC,,,,
+application-name,255,RCMP / GRC,Canadian Intergovernmental Conference Secretariat,Library and Archives Canada Blog,,
+article:modified_time,10,"Wed, 06/26/2019 - 20:29",2019-05-28T11:27:55-04:00,"Wed, 10/09/2019 - 14:54","Mon, 01/06/2020 - 17:18",2017-09-25T09:38:54-04:00
+article:published_time,10,"Mon, 08/26/2019 - 18:37","Tue, 08/28/2018 - 16:00","Mon, 08/27/2018 - 21:39",2019-05-28T11:27:55-04:00,2017-09-25T09:38:54-04:00
+article:publisher,1,https://www.facebook.com/connect2canada,,,,
+article:tag,7,RCAF,SAR,Operations and exercises,RCN featured,RCAF featured
+audienceGC,4,,,,,
+author,1782,Public Health Agency of Canada,Department of Finance Canada,Service Canada,Canada Revenue Agency,Employment and Social Development Canada
+bKGD bKGD_RGB,1,"red=255, green=255, blue=255",,,,
+bc2_name,4456,Money and finances,Health,Benefits,Employment and Social Development Canada,Canada Revenue Agency
+bc2_url,4456,/en/services/benefits.html,/en/services/health.html,/en/services/finance.html,/en/employment-social-development.html,/en/revenue-agency.html
+bc3_name,3966,Diseases and conditions,Financial literacy programs,ESDC Corporate information,Funding,Employment Insurance benefits
+bc3_url,3966,/en/public-health/services/diseases.html,/en/services/benefits/ei.html,/en/employment-social-development/services/funding.html,/en/employment-social-development/corporate.html,/en/financial-consumer-agency/services/financial-literacy-programs.html
+bc4_name,2488,Canada Emergency Response Benefit,Coronavirus disease (COVID-19),Notices,Your Financial Toolkit,EI sickness benefits: What these benefits offer
+bc4_url,2488,/en/services/benefits/ei/cerb-application.html,/en/financial-consumer-agency/services/financial-toolkit.html,/en/public-health/services/diseases/coronavirus-disease-covid-19.html,/en/employment-social-development/corporate/notices.html,/en/services/benefits/ei/ei-sickness.html
+cache-control,163,max-age=180,,,,
+cf-request-id,1,024d8897530000f232642ed200000001,,,,
+chapter,15,2,03,4,04,5
+collector.content-encoding,4440,ISO-8859-1,UTF-8,windows-1252,,
+collector.content-type,6101,text/html,,,,
+collector.depth,6101,1,2,3,4,5
+collector.is-crawl-new,6101,false,true,,,
+collector.redirect-trail,620,http://tsb-bst.gc.ca/eng/recommandations-recommendations/marine/2001/rec-m0103.html,http://www.bst-tsb.gc.ca/eng/recommandations-recommendations/aviation/2016/rec-a1601.html,http://www.bst-tsb.gc.ca/eng/recommandations-recommendations/marine/2017/rec-m1702.html,http://www.aadnc-aandc.gc.ca/eng/1100100020284/1100100020288,http://tsb-bst.gc.ca/eng/medias-media/communiques/rail/2015/recs-20150128.html
+collector.referenced-urls,1,https://www.canada.ca/en/public-health/services/reports-publications/learning-sars-renewal-public-health-canada.html,https://www.canada.ca/en/public-health/services/reports-publications/learning-sars-renewal-public-health-canada/chapter-7-public-health-human-resources.html,https://www.canada.ca/en/public-health/services/reports-publications/learning-sars-renewal-public-health-canada/chapter-9-some-legal-ethical-issues-raised-sars-infectious-diseases-canada.html,,
+collector.referrer-link-tag,6101,a.href,,,,
+collector.referrer-link-text,6101,Coronavirus disease (COVID-19) â Benefits and services,Canada Emergency Response Benefit,Canada Emergency Response Benefit to Launch on April 6,Canadaâs COVID-19 Economic Response Plan,Apply for Canada Emergency Response Benefit (CERB) with CRA
+collector.referrer-reference,6101,https://www.canada.ca/en/sr/srb.html?_charset_=UTF-8&q=cerb,https://www.canada.ca/en/sr/srb.html?_charset_=UTF-8&idx=10&q=Canada+Emergency+Response+Benefit,https://www.canada.ca/en/sr/srb.html?_charset_=UTF-8&idx=10&q=cerb,https://www.canada.ca/en/sr/srb.html?_charset_=UTF-8&idx=20&q=Canada+Emergency+Response+Benefit,https://www.canada.ca/en/sr/srb.html?_charset_=UTF-8&q=Canada+Emergency+Response+Benefit
+creator,1,Canada School of Public Service / École de la fonction publique du Canada,,,,
+csrf-param,2,authenticity_token,,,,
+csrf-token,2,i9dcrTMVPngGnqDPxTE3FP8cMsMWeSN1YmrBmeI6jrV3jZrHhSpscj59YQkrow5ohcP5Q2tx5mRrM5RTonWMpQ==,kZ0wYK4qUyq0TKVuvMWURsxkDW+Kk7Qq15oD3ik0AA9tx/YKGBUBIIyvZKhSV606trvG7/ebcTvew1YUaXsCHw==,,,
+date.created,12,2013-11-07,2012-10-03,2011-08-16,2011-08-08,2011-09-09
+date.modified,12,2012-10-02,2010-10-26,2013-11-20,2011-08-17,2011-09-09
+dateReviewed,58,2007-01-26,2009-07-09,2007-11-01,2013-02-19,2010-12-21
+date_modified,186,2018-12-20,2019-01-25,2019-01-14,2018-08-20,2020-04-21
+date_of_publication_textual,14,N/A,,,,
+datecreated,58,2009-03-06,2007-01-26,2009-07-09,2007-11-01,2013-02-19
+datemodified,60,2007-01-26,2009-07-09,2007-11-01,2013-02-19,2010-12-21
+dc.audience,196,business,business; consumers; general public; government; media; non-governmental organizations,business; general public; government,business; general public,general public; government
+dc.content-type,3,text/html;charsett=iso-8859-1,,,,
+dc.contributor,3,Plant Breeders' Rights Office,,,,
+dc.coverage,1,,,,,
+dc.coverage.spatial,179,Canada,,,,
+dc.creator,383,"Government of Canada, Department of National Defence, CDA","Government of Canada, Innovation, Science and Economic Development Canada, Office of the Deputy Minister, Communications and Marketing Branch","Government of Canada, Innovation, Science and Economic Development Canada, Office of the Deputy Minister, Industry Sector","Government of Canada, National Defence, Canadian Defence Academy, Canadian Military Journal","Government of Canada, Innovation, Science and Economic Development Canada, Office of the Deputy Minister, Corporate Management Sector"
+dc.date.created,202,2018-11-22,2020-04-05,2018-08-29,2018-12-06,2018-10-03
+dc.date.issued,193,2017-08-17,2016-04-07,2016-06-14,2014-08-14,2012-03-21
+dc.date.modified,221,2018-12-20,2019-01-25,2019-01-14,2018-08-20,2020-04-21
+dc.date.valid,1,2021-04-03,,,,
+dc.description,298,"The Department of National Defense (DND) is seeking a solution that will provide innovative, advanced real-time decision support solutions for civilian, municipal, provincial, and federal (Royal Canadian Mounted Police and DND) first responder command personnel (police, fire and paramedic) during critical incidents, where multiple jurisdictions and agencies work together.",Correctional Services Canada (CSC) is seeking a solution to monitor the life signs of inmates and identify critical conditions that would typically lead to death in custody and provide prompt notification of such situation thereby reducing the time for staff to respond to the situation.,COVID-19 Challenge — Point of Care and Home Diagnostic Kit for COVID-19,Listing of reserve service opportunities currently available in the Canadian Forces.,This challenge seeks innovations that will improve robot interactions with either humans or changing environments.
+dc.format,198,text/html,HTML,,,
+dc.identifier,4,http://www.canadainternational.gc.ca/united_kingdom-royaume_uni/media/newsletter-canada_plus-bulletin_nouvelles_03_2013.aspx?lang=eng,http://www.canadainternational.gc.ca/indonesia-indonesie/newsletter-bulletin/2017-08-newsletter-bulletin-01.aspx?lang=eng,http://www.canadainternational.gc.ca/mexico-mexique/offices-bureaux/2020-MX05.aspx?lang=eng,http://www.canadainternational.gc.ca/united_kingdom-royaume_uni/offices-bureaux/2016-01-EHM.aspx?lang=eng,
+dc.language,444,fra,fre,en,EN,eng
+dc.publisher,213,"Innovation, Sciences et Développement économique Canada","Government of Canada, Canada Border Services Agency, Communications","Innovation, Science and Economic Development Canada","Government of Canada, National Defence, Canadian Defence Academy",
+dc.spatial.country,17,Canada,,,,
+dc.subject,370,aerospace industry;aircraft;air transport industry;defence industry;industrial technology;sciences,Canadian Military Journal,businesses;entrepreneurship,financial statements;comptrollership;financial management;governance;planning;Public Accounts;public finance,transport industry
+dc.subject.category,58,Information Management and Technology,,,,
+dc.title,392,Improving Robot-Environment Interaction,Reserve Employment Opportunity - O-45146 - Readiness Training Officer,Logistics and Resource Management of Emergency Response Assets,Life Sign Monitoring System (LSMS),COVID-19 Challenge — Point of Care and Home Diagnostic Kit for COVID-19
+dc.type,274,Media Releases,Audit Reports,Landing Pages,Performance Reports,Legislation and Regulations;Service or Program Descriptions
+dc.type.infoCategory,18,,,,,
+dc:title,6100,Canada Emergency Response Benefit to Launch on April 6 - Canada.ca,Canada Emergency Response Benefit - Canada.ca,Coronavirus disease (COVID-19) – Benefits and services - Canada.ca,Canada’s COVID-19 Economic Response Plan - Canada.ca,Apply for Canada Emergency Response Benefit (CERB) with CRA - Canada.ca
+dcterms.Date,10,20020808,2005-06-22,2007-06-22,20020822,20030716
+dcterms.Description,10,ARCHIVED - DENIED - Proposal to implement simultaneous substitution on a regional basis across Quebec,ARCHIVED -  APPROVED - Change in the effective control of The Canadian Documentary Channel (Assets),ARCHIVED - Access to information contained in the incumbent local exchange carriers' Emergency 9-1-1 databases for the purpose of providing a Community Notification Service,ARCHIVED -  Flex Bundles - SmartTouch services and maintenance plans,ARCHIVED - APPROVED / DENIED - Applications for commercial radio stations to serve Winnipeg
+dcterms.Source,8,,,,,
+dcterms.Title,10,ARCHIVED - Applications for commercial radio stations to serve Winnipeg,ARCHIVED - Proposal to implement simultaneous substitution on a regional basis across Quebec,ARCHIVED - Access to information contained in the incumbent local exchange carriers' Emergency 9-1-1 databases for the purpose of providing a Community Notification Service,ARCHIVED - Change in the effective control of The Canadian Documentary Channel (Assets),ARCHIVED - Flex Bundles - SmartTouch services and maintenance plans
+dcterms.accessRights,144,2,,,,
+dcterms.activity,2,Budget,,,,
+dcterms.audience,976,general public,government,aboriginal peoples; general public,"Aboriginal peoples,business,employers,funding applicants,general public,government,job seekers,media,persons with disabilities,students,women",aboriginal peoples; funding applicants; government
+dcterms.content-type,16,guidance,international treaties,education and awareness,consultations,research
+dcterms.content.provider,23,AARTT,AARTA 00000000,ASRS 15299871,rail transport,AEAD 14309137
+dcterms.contributor,14,NRC Communications Branch,,,,
+dcterms.coverage,21,Canada,,,,
+dcterms.coverage.spatial,1,Canada,,,,
+dcterms.created,212,2010-05-01,2012-06-20,2013-06-21,2014-09-02,2004-02-25
+dcterms.creator,5388,Public Health Agency of Canada,Department of Finance Canada,Service Canada,Canada Revenue Agency,Employment and Social Development Canada
+dcterms.date,8,2007-10-25,2008-06-10,2007-11-01,2002-05-30,2004-07-14
+dcterms.date.created,6,1993-08-30,1994-09-16,1994-10-20,1993-07-23,1995-03-24
+dcterms.date.modified,6,1993-08-30,1994-09-16,1994-10-20,1993-07-23,1995-03-24
+dcterms.description,2785,Learn more about Canada’s actions to help Canadians and businesses facing hardship as a result of the COVID-19 outbreak.,"Apply for the Canada Emergency Response Benefit (CERB) with the CRA: who is eligible, how to apply, when to apply, and what to expect after applying.","Information and updates about coronavirus in the workplace, in the Service Canada Centres and how it affects ESDC programs such as EI.","The Government of Canada is continuing to take strong, immediate and effective action to support Canadians impacted by the global COVID-19 pandemic. ","COVID-19 support for individuals , Canada Emergency Response Benefit"
+dcterms.format,197,text/html,HTML,,,
+dcterms.identifier,1722,Service_Canada,Canada_Revenue_Agency,Department_of_Finance_Canada,Employment_and_Social_Development_Canada,Public_Health_Agency_of_Canada
+dcterms.issued,5584,2020-04-23,2020-04-01,2020-04-22,2020-04-24,2020-04-21
+dcterms.keywords,11,"severe acute respiratory syndrome, sars, coronavirus, corona virus, infection control, personal hygiene practices, ppe, respiratory protective equipment, respirator, respirators, surgical mask, disease prevention","governor general,canada,rideau hall,vice regal,head of state,government,canadian honours system,order of canada,order of military merit,decorations for bravery,medal of bravery,star of courage,cross of valour,meritorious service decorations,meritorious service medal,meritorious service cross,caring canadian award,exemplary service medal,academic medal,governor general awards,eduzone,heraldry,canadian heraldic authority,gg,david l johnston,david johnston,sharon johnston,stephen wallace,gov gen,office of the ",,,
+dcterms.language,5452,eng-ISO639-2,eng / fra,en,EN,eng
+dcterms.modifed,26,2017-03-06,2012-05-09,2016-03-04,yyyy-mm-dd,2018-04-16
+dcterms.modified,5555,2020-04-23,2020-04-22,2020-04-03,2020-04-24,2020-04-21
+dcterms.publisher,498,Canadian Radio-television and Telecommunications Commission,"Government of Canada, Public Works and Government Services Canada, Integrated Services Branch, Canada Gazette","Government of Canada, Canadian Radio-television and Telecommunications Commission (CRTC)","Government of Canada, Public Works and Government Services Canada, Consulting, Information and Shared Services Branch, Canada Gazette",Industry Canada
+dcterms.relation.hasversion,1,/fr/dpe/rapports/2010/investissements-publics/page17.shtml,,,,
+dcterms.service,171,GAC-AMC_Web,OCI-BEC,BAC-LAC,PSPC-SPAC_GCPublications,ca
+dcterms.source,1406,gcnws,aem,,,
+dcterms.spatial,1802,Canada,Canada;Ontario;Ottawa,Canada;China;Japan,Canada;Australia;Brazil;Chile;Colombia;Costa Rica;Hong Kong;Japan;Malawi;Mexico;New Zealand;Paraguay;Peru;Qatar;Republic of Korea (South Korea);Singapore;Switzerland;Ukraine;United Kingdom;United States of America;Uruguay,Canada;Atlantic;Nova Scotia;Cape Breton
+dcterms.subject,4582,EC Economics and Industry;Benefits,"EC Economics and Industry,ET Education and Training,GV Government and Politics,LB Labour,PE Persons,PR Processes,Insurance;Employment insurance","EC Economics and Industry;Finance,Financial assistance,Debt,Employment,Taxes,,HE Health and Safety;Diseases,Income,Industry,Emergency relief,Economy",HE Health and Safety;Diseases,IN Information and Communications
+dcterms.title,5455,Canada Emergency Response Benefit,Coronavirus disease (COVID-19) – Benefits and services,Canada Emergency Response Benefit to Launch on April 6,Canada’s COVID-19 Economic Response Plan,Apply for Canada Emergency Response Benefit (CERB) with CRA
+dcterms.tp,2,TP 185,,,,
+dcterms.type,1675,notices,navigation page,financial material,news releases,campaigns;navigation page
+dcterms.valid,1,2022-06-20,,,,
+dcterms.year,103,2019,2018,2016,1993-,2020
+dcterms:accessRights,877,2,,,,
+dcterms:audience,50,business,scientists,students;scientists;educators,scientists;business,
+dcterms:creator,94,Agriculture and Agri-Food Canada,Lethbridge Research Centre;Agriculture and Agri-Food Canada;Government of Canada,Treasury Board of Canada Secretariat,Agriculture and Agri-Food Canada;Government of Canada,"Government of Canada,  Office of the Procurement Ombudsman"
+dcterms:description,60,"These Ministerial briefing books were prepared for the Minister of Agriculture and Agri-Food Canada sworn in on March 1, 2019.Some sections of these materials have been redacted based on the. 10,9. 0,6. Primary Agriculture. 18,5. 1,1. Food and Beverage Processing. 1941. 1951. 1956. 1961. 1966.","The Department of Agriculture and Agri-Food was created in 1868 – one year after Confederation – because of the importance of agriculture to the economic, social and cultural development of Canada. Today, the Department helps create the conditions for the long-term profitability, sustainability and adaptability of the Canadian agricultural sector. Agriculture and Agri-Food Canada supports the sector through initiatives that promote innovation and competitiveness, and that proactively manage risk. The Depart",2013-14 Departmental Performance Report 2013–14 Departmental Performance Report. Sub-Program 2.3.2: Market Growth. Sub-Sub-Program 2.3.2.1: Market Development. Program 3.3: Rural and Co-operatives Development.,"Stay up-to-date on Agriculture and Agri-Food Canada's programs and services, and receive quarterly industry, markets, trade, science and innovation information. Agri-info will also be used to issue timely updates and important notices.","Alternative Formats. International Standard Serial Number: 2292-1524. Sub-Program 2.1.6: Federal-Provincial-Territorial Cost-shared Environment. Agriculture and Agri-Food Canada provides leadership in the growth and development of a competitive, innovative and sustainable Canadian agriculture and agri-food sector.Responsibilities."
+dcterms:format,50,text/html,,,,
+dcterms:issued,65,2016-07-12,2015-01-15,2019-05-17,2016-01-25,2018-05-07
+dcterms:language,98,eng,,,,
+dcterms:minister,76,"Hon. Carla Qualtrough,Hon. Diane Lebouthillier,Hon. Jean-Yves Duclos",Hon. Mona Fortier,Hon. Mélanie Joly,Hon. Bernadette Jordan,"Hon. William Francis Morneau,Hon. Mary Ng,Hon. Navdeep Singh Bains"
+dcterms:modified,74,2020-03-03,2016-08-30,2019-05-17,2018-06-04,2016-01-25
+dcterms:service,1008,SPAC-PSPC_PLD-PAG,JUS-Laws_Lois,AAFC-AAC,CIAR-RCEI,OPO-BOA
+dcterms:spatial,67,Canada,,,,
+dcterms:subject,57,architectural heritage;architecture;isolated communities,statistics;architectural heritage;architecture,agricultural technology;agricultural assistance;agri-food industry,architectural heritage;architecture;statistics,government publications;government information;agricultural policy
+dcterms:title,98,What We Heard – Emergency Management in Canada's Agriculture Sector,Livestock Market Interruption Strategy - Helping the Livestock Industry and Governments Get Prepared,2014-15 Departmental Performance Report,Seventeenth meeting of the Grains Roundtable: Record of decision,Agri-info Newsletter
+dcterms:type,50,presentation,geospatial material,sound,report,abstract
+description,5207,Learn more about Canada’s actions to help Canadians and businesses facing hardship as a result of the COVID-19 outbreak.,"Apply for the Canada Emergency Response Benefit (CERB) with the CRA: who is eligible, how to apply, when to apply, and what to expect after applying.","Information and updates about coronavirus in the workplace, in the Service Canada Centres and how it affects ESDC programs such as EI.","The Government of Canada is continuing to take strong, immediate and effective action to support Canadians impacted by the global COVID-19 pandemic. ","COVID-19 support for individuals , Canada Emergency Response Benefit"
+discipline,1,Life Sciences Related to Human Health and Disease,,,,
+dnd.date.nextReviewDate,16,YYYY-MM-DD,2013-08-27,2016-10-21,2012-05-16,2016-06-14
+dnd.identifier.docid,18,,,,,
+dnd.securityMarking.classification,18,UNCLASSIFIED,,,,
+dnd.status,18,,,,,
+dnd.status.version,18,,,,,
+document.contentEncoding,4440,ISO-8859-1,UTF-8,windows-1252,,
+document.contentFamily,6101,html,,,,
+document.contentType,6101,text/html,,,,
+document.reference,6101,https://www.canada.ca/en/employment-social-development/news/2020/04/canada-emergency-response-benefit-to-launch-on-april-6.html,https://www.canada.ca/en/department-finance/economic-response-plan.html,https://www.canada.ca/en/services/benefits/ei/cerb-application.html,https://www.canada.ca/en/employment-social-development/corporate/notices/coronavirus.html,https://www.canada.ca/en/revenue-agency/services/benefits/apply-for-cerb-with-cra.html
+eic.rate,179,,,,,
+embeddedResourceType,6,INLINE,,,,
+expires,2,-1,,,,
+fb:admins,1,100004211408769,,,,
+fb:app_id,282,1909567142706283,533670243330291,,,
+fb:pages,1394,"378967748836213, 160339344047502, 184605778338568, 237796269600506, 10860597051, 14498271095, 209857686718, 160504807323251, 111156792247197, 113429762015861, 502566449790031, 312292485564363, 1471831713076413, 22724568071, 17294463927, 1442463402719857, 247990812241506, 730097607131117, 1142481292546228, 1765602380419601, 131514060764735, 307780276294187, 427238637642566, 525934210910141, 1016214671785090, 192657607776229, 586856208161152, 1146080748799944, 408143085978521, 490290084411688, 163828286987751",,,,
+file_number,2,XXX,,,,
+format-detection,177,telephone=no,,,,
+gc.description.Long,7,"Sets a strategic direction and provides authority to reform administrative management and the role of common service organizations to create a more streamlined, efficient and responsive public service.",Assists directors and managers in implementing the government’s policy and directives related to materiel management and management of light-duty vehicles.,"The Directive on Government Contracts, Including Real Property Leases, in the Nunavut Settlement Area ensures that government contracting in the Nunavut Settlement Area will meet the Government of Canada’s obligations under Article 24 of the Nunavut Agreement.","Enables mobility between the core public administration and organizations in the private, public and not‑for‑profit sectors in Canada and abroad to support job enrichment, talent management and skills exchange.","Requirements for the design, construction, installation, inspection, testing and maintenance of fire alarm systems."
+gc.institution,17,Government of Canada,,,,
+gcterms.activityLocation,4,,,,,
+gcterms.topic,179,Financing;Operations and Administration,"Government, Policy and Law;Operations and Administration",Industries and Products,Operations and Administration,Business
+gcterms.topicTaxonomy,80,CIRNAC / ISC > Regional Offices,CIRNAC / ISC > Topics > About Indigenous and Northern Affairs Canada > Activities and responsibilities > Transfer Payments > Transfer Payments - Terms and Conditions > Terms and conditions for CIRNAC and ISC  transfer payments,CIRNAC / ISC > Regional Offices > Ontario Region > Publications,"CIRNAC / ISC > Topics > Consultation, engagement and the duty to consult > Consultation and engagement at Crown-Indigenous Relations and Northern Affairs Canada and Indigenous Services Canada > Comprehensive funding agreement model:  Engagement 2018","CIRNAC / ISC > Topics > Consultation, engagement and the duty to consult > Consultation and engagement at Crown-Indigenous Relations and Northern Affairs Canada and Indigenous Services Canada > Family Homes on Reserves and Matrimonial Interests or Rights Act: Engagement 2017-2018"
+generator,89,WordPress.com,WordPress 5.3.2,Drupal 8 (https://www.drupal.org),Powered by WPBakery Page Builder - drag and drop page builder for WordPress.,Drupal 8 (https://drupal.org)
+geo.placename,2,"Ottawa, Ontario","Biarritz, France",,,
+google-site-verification,151,UA-3026813-28,PpjDVVDFf2LdXKJvsaEdZFRliPMrknoxN0p8cEjmPkQ,PRqeEWB3J0t90cukf7xZ-yeNF6ISzzOexIwlIcwGSZ0,7vqFrmpbqyQt4NYCWf9BhwXcppPBNi6rjOVqyfsrlsw,KEnijyZvWNaJ_ED3usIuxp0mpPtAGdetjY_pD3Xjtg0
+googlebot,43,noarchive,nosnippet,,,
+granting_council,1,Canadian Institutes of Health Research,,,,
+h2,5119,On this page,Eligibility criteria for CERB have changed,Who can apply,How to apply,You cannot apply for the CERB with CRA if you already applied through Service Canada
+height,6,16,339,,,
+host,15,prd.cpd.ic.gc.ca,intellect.ic.gc.ca,,,
+iTXt iTXtEntry,1,"keyword=Comment, compressionFlag=false, compressionMethod=0, languageTag=, translatedKeyword=, text=Created with GIMP",,,,
+ice.dcr,4,Y:\dfait-maeci\main\internet-internet\ci-ci\indonesia-indonesie\WORKAREA\content-contenu\templatedata\pages-pages\generic-generique\data\newsletter-bulletin\2017-08-newsletter-bulletin-01,Y:\dfait-maeci\main\internet-internet\ci-ci\united_kingdom-royaume_uni\WORKAREA\content-contenu\templatedata\pages-pages\generic-generique\data\media\newsletter-canada_plus-bulletin_nouvelles_03_2013,Y:\dfait-maeci\main\internet-internet\ci-ci\mexico-mexique\WORKAREA\content-contenu\templatedata\pages-pages\generic-generique\data\offices-bureaux\2020-MX05,Y:\dfait-maeci\main\internet-internet\ci-ci\united_kingdom-royaume_uni\WORKAREA\content-contenu\templatedata\pages-pages\generic-generique\data\offices-bureaux\2016-01-EHM,
+instrumentversion,8,Rescinded,Current,Archived,,
+instrumentversionid,8,3,7,261,,
+iwovpath,1,/hrsdc-rhdsc/main/IntERnet/ecd-elcc_dpe-agje/WORKAREA/ecd-elcc_dpe-agje/templatedata/ecd-elcc_dpe-agje/generic/data/docs/ecd-elcc_dpe-agje/en/ecd/reports/2010/public-investments/page17,,,,
+keywords,3337,"COVID-19, coronavirus, Economic Response Plan, individuals, families, income, indigenous peoples, seniors, students, businesses, employers, employees, layoffs, reduced payments, deferred payments, credit, finances, financial stability, self-employed, industry, Canada Emergency Wage Subsidy, CEWS, Temporary Wage Subsidy, Work-Sharing program, Business Credit Availability Program, BCAP, Canada Emerg","CERB apply; CERB; Canada emergency response benefit; CERB application; apply CERB; CERB benefit; COVID 19 benefit; covid-19 benefit; applying for cerb; who can apply cerb; how to apply for CERB; who is eligible for CERB; CERB eligibility; when to apply for cerb; return CERB; repay CERB; apply CERB online; apply CERB by phone; CERB phone number; when is CERB sent; when do i get CERB; ","COVID-19 support for individuals , Canada Emergency Response Benefit","EC Economics and Industry,ET Education and Training,GV Government and Politics,LB Labour,PE Persons,PR Processes,Employment insurance,Employment and Social Development Canada,Canada,Benefits,Jobs and the workplace,Money and finances,Aboriginal peoples,business,employers,funding applicants,general public,government,job seekers,media,persons with disabilities,students,women,news releases,Hon. Carla Qualtrough,Hon. Diane Lebouthillier,Hon. Jean-Yves Duclos","COVID-19, Coronavirus, Corona virus, disease, Service Canada, Service Canada offices, fever, cough, quarantine, self-isolation, difficulty breathing, health, safety, labour, risk, prevention, responsibilities, Canada Labour Code, Hazard Prevention Program, workplace, illness, virus, infection, symptoms, treatment"
+language,12,eng,,,,
+legalName,1365,Department_of_National_Defence,Department_of_Indian_Affairs_and_Northern_Development,Canadian_Institutes_of_Health_Research,Department_of_Foreign_Affairs__Trade_and_Development,agriculture_and_agri_food_canada
+meta_date,15,2006-01-18,0000-00-00,2012-07-27,,
+month,15,11,12,03,04,10
+msapplication-TileColor,350,"#0072C6","#ba1115","#ffffff","#FFFFFF","#ff0000"
+msapplication-TileImage,301,/_layouts/15/images/SharePointMetroAppTile.png,/ms-icon-144x144.png,https://horizons.gc.ca/wp-content/uploads/2019/02/cropped-Policy-Horizons-Favicon-3-02-270x270.png,/dist/mstile-144x144.png?v=wAvmWKJLpQ,https://scics.ca/wp-content/themes/Artificial-Reason-WP-child/img/favicons/mstile-144x144.png
+msapplication-config,290,/dist/browserconfig.xml?v=wAvmWKJLpQ,none,,,
+msapplication-navbutton-color,214,"#000000",,,,
+msapplication-square150x150logo,1,https://scics.ca/wp-content/themes/Artificial-Reason-WP-child/img/favicons/mstile-150x150.png,,,,
+msapplication-square310x310logo,1,https://scics.ca/wp-content/themes/Artificial-Reason-WP-child/img/favicons/mstile-310x310.png,,,,
+msapplication-square70x70logo,1,https://scics.ca/wp-content/themes/Artificial-Reason-WP-child/img/favicons/mstile-70x70.png,,,,
+msapplication-task,6,name=Subscribe;action-uri=https://thediscoverblog.com/feed/;icon-uri=https://secure.gravatar.com/blavatar/2b6eb89e03139f52289ec99ed77c14fd?s=16,name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico,name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico,name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=https://s1.wp.com/i/favicon.ico,
+msapplication-wide310x150logo,1,https://scics.ca/wp-content/themes/Artificial-Reason-WP-child/img/favicons/mstile-310x150.png,,,,
+msapplication-window,6,width=device-width;height=device-height,,,,
+name,1,Trushar R Patel,,,,
+nserc.author,60,CPP,RPP,"RGS, RPP",Secretariat,RGS
+nserc.datecreated,60,2019-04-24,2018-11-05,2016-06-28,2018-04-17,2020-03-31
+nserc.datemodified,60,2020-04-22,2014-05-20,2018-11-05,2020-03-31,2012-01-10
+nserc.department,60,CPP,RPP,"RGS,RPP",Secretariat,RGS
+nserc.template,60,CLF 2.0 - VERSION 1.04,WET 4.0 - VERSION 4.0.11,,,
+nserc.title,23,NSERC - NSERC Alliance COVID-19 grants,NSERC - Alliance Grants - Apply,NSERC - Media Room - Latest News - Tri-agency message on COVID-19,"NSERC - Media Room - Latest News - Update on COVID-19 and impact on policies, programs, and operations",NSERC - NSERC Alliance COVID-19 grants - Partners
+ntCoent-Length,156,21065,25111,28107,21041,25688
+og:description,637,Evaluation of the Canadian Space Agency Satellite Communications Business Line,"Get quick, easy access to all Canadian Centre for Cyber Security services and information.",Comprehensive Socio-Economic Impact Assessment of the Canadian Space Sector,GBA+ Awareness Week 2017,Travel Advice and Advisories from the Government of Canada
+og:image,352,http://travel.gc.ca/vt/custom/images/flags/200/GN.jpg,http://travel.gc.ca/vt/custom/images/flags/200/CF.jpg,http://travel.gc.ca/vt/custom/images/flags/200/SN.jpg,https://cyber.gc.ca/sites/default/files/cccs-banner.png,http://travel.gc.ca/vt/custom/images/flags/200/ZM.jpg
+og:image:alt,9,Your flexibility and professionalism as we work through this crisis period continue to motivate me to stay focused and keep going. Thank you. Below are a few updates for you.,"We would like to provide the Defence Team with the latest information related to the rapidly evolving 2019 novel coronavirus (COVID-19) and the steps we are taking to minimize the risk to Defence team members. ","Using alternatives to DVPNI to communicate during our COVID-19 response will enable us to maximize our limited bandwidth and reserve DND/CAF network access for critical activities only. ",This message contains updated information from the Government of Canada’s Office of the Chief Human Resources Officer (OCHRO) for all Public Service employees.,Letter from Chief of the Defence Staff (CDS) regarding COVID-19
+og:image:height,6,100,200,627,,
+og:image:secure_url,9,https://www.btb.termiumplus.gc.ca/images/mobile/tplus.png,https://www.clo-ocol.gc.ca/sites/default/files/timeline_images/,https://www.cbsa-asfc.gc.ca/travel-voyage/images/declare0519e.jpg,,
+og:image:type,5,image/png,image/jpeg,,,
+og:image:width,6,100,200,1200,,
+og:locale,14,en_CA,en_US,,,
+og:locality,2,"Ottawa, Ontario","Biarritz, France",,,
+og:site_name,459,Canadian Centre for Cyber Security,ESDC-Consultations,Travel.gc.ca,The Maple Leaf,Prime Minister of Canada
+og:title,666,Canadian Centre for Cyber Security,Travel Advice and Advisories for Central African Republic,Travel Advice and Advisories for Guinea,Travel Advice and Advisories for Senegal,Travel Advice and Advisories for Zambia
+og:type,349,website,Article,profile,Website,article
+og:updated_time,10,"Wed, 06/26/2019 - 20:29",2019-05-28T11:27:55-04:00,"Wed, 10/09/2019 - 14:54","Mon, 01/06/2020 - 17:18",2017-09-25T09:38:54-04:00
+og:url,560,http://travel.gc.ca/destinations/zambia,http://travel.gc.ca/destinations/guinea,http://travel.gc.ca/destinations/central-african-republic,https://cyber.gc.ca/en/,http://travel.gc.ca/destinations/senegal
+owner,2,"Srivastava, Vikesh",,,,
+pHYs,1,"pixelsPerUnitXAxis=2835, pixelsPerUnitYAxis=2835, unitSpecifier=meter",,,,
+partNo,58,2,3,4,5,9
+plannedaction,3,None,,,,
+plannedactionid,8,266,,,,
+platform,60,www,,,,
+pragma,2,no-cache,,,,
+prodkeydate1,179,2003-03-31,2005-03-31,2004-11-23,,
+prodkeyword1,179,Law,h2ea,tpc,NewsResources,Business
+prodkeyword2,179,EnforceGuide,Reports,publications,,
+prodkeyword3,179,,,,,
+prodkeyword4,179,,,,,
+prodkeyword5,179,,,,,
+prodkeyword6,35,archived,,,,
+prodkeyword7,179,0,-1,,,
+progId,2,FrontPage.Editor.Document,,,,
+progid,6,FrontPage.Editor.Document,SharePoint.WebPartPage.Document,,,
+province,1,Alberta,,,,
+pwgsc.contact.email,149,questions@pwgsc-tpsgc.gc.ca,,,,
+referrer,59,same-origin,,,,
+refresh,2,2; URL=https://www.notmar.gc.ca,,,,
+request-id,51,d2e04b9f-302c-80c3-fcbc-a271ccb8ccc0,f8e04b9f-00c8-80c3-fcbc-a90f81fd2783,1ce14b9f-ce99-f0da-ff96-e48975b77090,dee04b9f-f0bc-80c3-fcbc-a1cc9eed7fda,d9e04b9f-12f6-c0de-c82e-c9519a3d6c13
+review_date,296,2019-09-14,1993-08-30,2019-03-26,2016-02-04,2014-05-24
+robots,141,"noindex, nofollow, noarchive",noarchive,noindex,"index, follow","index, follow, noarchive"
+searchrank,58,2000,,,,
+site_product_code,179,101,740,017,669,082
+status,8,Approved,,,,
+statusid,8,1,,,,
+subject,14,Agriculture;Awareness;Benefits;Best practices;Businesses;Clients;Complaints;Compliance;Contact;Development;Electronic mail;Employees;English;Food;Food inspection;Francophonie;French;Game;Guidelines;Health;Heritage;Human resources;Information;Inspection;Languages;Linguistic duality;Management;Meetings;Monitoring;National Capital;Needs;Offices;Official languages;Participation;Policy;Program management;Public service;Requirements;Review;Schools;Software;Staff;Statistics;Tools;Training;Workforce;Workplace,Accountability;Acts;Administration;Administration of justice;Adoption;Advertising;Advocacy;Aged;Agreements;Agriculture;Air;Air traffic;Air transport;Alliance;Ambassadors;Amendments;Analysis;Annual reports;Artists;Arts;Assessment;Associations;Athletes;Atlantic provinces;Awareness;Bank notes;Bilingual services;Bilingualism;Bills;Birth;Broadcasting;Canadian identity;Candidates;Change;Charter of rights and freedoms;Child care;Childhood;Children;Cities;Citizenship;Clients;Commerce;Committees;Communications;Commu,Aboriginal affairs;Access to information;Accountability;Active offer of bilingual services;Acts;Adults;Adverse effects;Aging;Agreements;Agriculture;Air;Air carriers;Air transport;Airports;Analysis;Anniversaries;Annual reports;Appointments;Artists;Arts;Assessment;Assets;Associations;Atlantic provinces;Audit;Awareness;Behaviour;Benefits;Best practices;Bilingual services;Bilingualism;Birth;Board of directors;Bridges;Broadcasting;Business development;Businesses;Canadian history;Canadian identity;Candidates;Cele,Aboriginal languages;Accountability;Acts;Administration;Adoption;Appointments;Archives;Audit;Benefits;Bilingualism;Boundaries;Bridges;Charter of rights and freedoms;Children;Citizenship;Civil servants;Civil service;Climate;Colleges;Communications;Competencies;Concrete;Constitution;Constitution act;Constitutional law;Courts;Crisis;Demand;Demography;Development;Economic development;Education;Elementary schools;Employees;English;English language;Expectations;Fabric;Federal government;Federal institutions;Forei,Amendments;Analysis;Benefits;Best practices;Bilingualism;Community development;Contact;Development;Evaluation;Federal institutions;Implementation;Indicators;Information;Interviews;Languages;Linguistic duality;Literature;Official languages;Parliament;Planning;Programs;Representatives;Research;Review;Tools
+subjectid,2,115,116,3088,1627,54
+tIME,1,"year=2017, month=4, day=21, hour=19, minute=25, second=13",,,,
+tec-api-origin,1,http://sopf.gc.ca,,,,
+tec-api-version,1,v1,,,,
+theme-color,581,"#ffffff","#e2e2e2","#634f70","#000000",
+tier,1,2,,,,
+tiff:BitsPerSample,6,8 8 8 8,,,,
+tiff:ImageLength,6,16,339,,,
+tiff:ImageWidth,6,266,16,,,
+title,6079,Canada Emergency Response Benefit to Launch on April 6 - Canada.ca,Canada Emergency Response Benefit - Canada.ca,Coronavirus disease (COVID-19) – Benefits and services - Canada.ca,Canada’s COVID-19 Economic Response Plan - Canada.ca,Apply for Canada Emergency Response Benefit (CERB) with CRA - Canada.ca
+topic,4,Commons services,Staffing and Employee Integration,"Employee Performance, Learning, Development and Recognition","Service, GC 2.0 and community enablement",Hiring
+topicarea,3,People management,Service and digital,"Service ",Assets and acquired services,
+topicareaid,3,27,50,40,96,
+topicid,4,34,45,78,97,76
+twitter:alt,1,,,,,
+twitter:app:country,5,,,,,
+twitter:app:id:google,5,,,,,
+twitter:app:id:ipad,5,,,,,
+twitter:app:id:iphone,5,,,,,
+twitter:app:name:google,5,,,,,
+twitter:app:name:ipad,5,,,,,
+twitter:app:name:iphone,5,,,,,
+twitter:app:url:google,5,,,,,
+twitter:app:url:ipad,5,,,,,
+twitter:app:url:iphone,5,,,,,
+twitter:card,324,summary,summary_large_image,http://www.nserc-crsng.gc.ca/img/,http://www.nserc-crsng.gc.ca/img/nserc_fr.jpg,http://www.nserc-crsng.gc.ca/img/nserc_en.jpg
+twitter:creator,53,@LibraryArchives,@connect2canada,@cybercentre_ca,@LibraryArchivesCanada,@ccohs
+twitter:description,59,Evaluation of the Canadian Space Agency Satellite Communications Business Line,"Get quick, easy access to all Canadian Centre for Cyber Security services and information.",Does Climate Change Affect Us All the Same Way?,Comprehensive Socio-Economic Impact Assessment of the Canadian Space Sector,"The Prime Minister, Justin Trudeau, today announced changes to the structure and mandate of Cabinet committees to make them even more efficient and responsive to the needs of Canadians, and to reflect recent changes to the Ministry. The new and modified Cabinet committees reflect the Government of Canada’s top priorities: delivering economic growth, diversifying international trade, strengthening the middle class, advancing reconciliation with Indigenous peoples, and fighting climate change. "
+twitter:domain,1,cic.gc.ca,,,,
+twitter:image,54,https://www.btb.termiumplus.gc.ca/images/mobile/tplus.png,https://pm.gc.ca/sites/pm/files/media/override_sharing/priority_override/2018-08/cabinet_committees_eng.jpg,https://www.asc-csa.gc.ca/images/og-asc-200x267.png,https://cyber.gc.ca/sites/default/files/cccs-banner.png,https://cfc-swc.gc.ca/images/med/multimedia/climate-climat-en.jpg
+twitter:image:src,3,https://horizons.gc.ca/wp-content/uploads/2012/10/shutterstock_447476002-394x218.jpg,https://www.justice.gc.ca/eng/csj-sjc/pl/charter-charte/twittercard/c14-twittercard-en.jpg,http://www.cic.gc.ca/images/og/og-eta-eng.jpg,,
+twitter:site,112,@LibraryArchives,@Femmes_Canada,<st_metadata_twitter_site_content/>,@cybercentre_ca,@LibraryArchivesCanada
+twitter:site:id,1,91193025,,,,
+twitter:title,55,Evaluation of the Canadian Space Agency Satellite Communications Business Line,Canadian Centre for Cyber Security,Does Climate Change Affect Us All the Same Way?,Comprehensive Socio-Economic Impact Assessment of the Canadian Space Sector,Prime Minister announces changes to the Cabinet committees
+twitter:url,27,https://www.asc-csa.gc.ca/eng/publications/pr-2015.asp,https://www.asc-csa.gc.ca/eng/publications/er-1415-0204.asp,https://www.asc-csa.gc.ca/eng/publications/er-1314-0202.asp,https://www.asc-csa.gc.ca/eng/publications/2015-assessment-canadian-space-sector.asp,https://www.asc-csa.gc.ca/eng/publications/er-1617-0204.asp
+type,8,Policy,Standard,Directive,Guidelines,
+typeid,8,36,27,83,73,
+university,1,University of Lethbridge,,,,
+url,9,https://www.tbs-sct.gc.ca/agreements-conventions/view-visualiser.aspx?id=24,https://www.tbs-sct.gc.ca/agreements-conventions/view-visualiser.aspx?id=19,https://www.tbs-sct.gc.ca/agreements-conventions/view-visualiser.aspx?id=24&m=a,https://www.tbs-sct.gc.ca/agreements-conventions/view-visualiser.aspx?id=20,https://www.tbs-sct.gc.ca/agreements-conventions/view-visualiser.aspx?id=25&m=a
+user-agent,156,Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;),,,,
+version,2,10.2.5,,,,
+viewport,5369,"width=device-width, initial-scale=1",width=device-width,"width=device-width,initial-scale=1","width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0","width=device-width, initial-scale=1.0"
+webType,58,1,,,,
+width,6,266,16,,,
+x-frame-options,1,SAMEORIGIN,,,,
+x-ua-compatible,38,IE=11,ie=edge,IE=EDGE,,
+year,15,2007,2018,2004,2011,2010

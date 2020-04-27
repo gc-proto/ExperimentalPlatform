@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layouts/default}"
+    lang="en">
+
+<head>
+  <title>Results Grouping</title>
+</head>
+<body>
+
+<div layout:fragment="page_about">
+  <ul class="mb-0">
+    <li>
+      <strong>Purpose:</strong> show how results can be grouped using Solr 
+      <a rel="noopener noreferrer" target="_BLANK" 
+          href="https://lucene.apache.org/solr/guide/8_3/collapse-and-expand-results.html">
+      Collapse and Expand Results</a> feature. 
+    </li>
+    <li>
+      Collapsing/expanding is performed on <strong>recall number</strong>. 
+    </li>
+    <li>
+      When grouped, <strong>only 1 document of each group is returned</strong>
+      in the main results.
+      You need to "expand" the group to get the associated elements of the 
+      group.  Here all groups are expanded in the same request, but it could 
+      be done as separate requests on user selection (e.g., "click to expand").
+    </li>
+    <li>
+      Search is purposely <strong>very basic</strong> to focus on grouping only:
+      <ul class="small">
+        <li>
+          Searching on <strong>vehicle</strong> only with no highlight, 
+          no field boosting, no spell check, no pagination, etc. 
+        </li>
+        <li>
+          Showing only 20 results. 
+        </li>
+        <li>
+          Results are sorted by date. 
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div layout:fragment="page_content" id="page_content">
+
+  <h2>Result Collapsing <small class="text-muted">(vehicles)</small></h2>
+
+  <form id="searchForm"  
+      action="#" th:action="@{''}" method="get">
+    <div class="form-row">
+      <div class="col-12">
+        <div class="input-group">
+          <input id="terms" th:name="terms"
+              type="text" class="form-control"
+              th:value="${param.terms}" 
+              autocomplete="off" 
+              placeholder="Search for recalls..." 
+              aria-label="Search recalls" 
+              aria-describedby="btnGroupAddon">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+              <span class="fas fa-search" aria-hidden="true"></span>
+              Search
+            </button>
+          </div>          
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="row mt-3">
+
+    <div id="searchResults" class="col-12">
+
+      <!--/* NO RESULTS */-->
+
+      <div id="noResults" th:if="${searchResults.empty}">
+        <h4>
+          <span class="fas fa-info-circle"></span> 
+          No recalls were found matching your criteria.
+        </h4>
+        <div class="ml-3 mb-2 text-muted"><small>Try with different search terms.</small></div>
+        <div class="text-center bg-light border mb-5" style="overflow: hidden;">
+          <img alt="No results" src="#" th:src="@{/images/no-results.gif}"
+              style="max-width: 75%; min-width: 300px; margin-top: -50px;">
+        </div>
+      </div>
+
+      <!--/* RESULTS */-->
+
+      <div th:unless="${searchResults.empty}">
+      
+        <th:block th:each="group,it: ${searchResults}">
+
+          <div class="card border-0 mb-3">
+            <h4 class="card-header doc-title bg-transparent py-0 border-0">
+              <div class="d-flex align-items-center">
+                <div class="mr-3 mb-1">
+                  <span class="fas fa-lg fa-car text-dark" aria-hidden="true"></span>
+                </div>
+                <a class="flex-grow-1" href="#" th:href="@{${group.url}}">
+                  <th:block th:text="${group.make}">Make</th:block> Recall - 
+                  <th:block th:text="${group.systemType}">System Type</th:block>
+                  <small class="text-muted">(#<th:block th:text="${group.recallNo}">666</th:block>)</small>
+                </a>
+                <small class="text-dark" title="Recall date">
+                  <span class="far fa-calendar-alt"></span>
+                  <th:block th:text="${ui.formatDate(group.date)}">August 16, 2019</th:block>
+                </small>
+              </div>
+            </h4>
+            <div class="card-body pt-1 pb-3">
+              <div class="card-text">
+
+                <div class="row bg-light border px-2">
+                  <div class="col-sm-12 col-md-6 col-lg-3 p-2">
+                    <small><strong>System type:</strong></small><br>
+                    <th:block th:text="${group.systemType}">System type</th:block>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-3 p-2">
+                    <small><strong>Notification type:</strong></small><br>
+                    <th:block th:text="${group.notificationType}">Notification type</th:block>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-3 p-2">
+                    <small><strong>Department:</strong></small><br>
+                    <th:block th:text="${group.department}">Department</th:block>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-3 p-2">
+                    <small><strong>Quantity affected:</strong></small><br>
+                    <th:block th:text="${ui.formatNumber(group.numberAffected)}">666</th:block>
+                  </div>
+                </div>
+
+                <div class="text-justify py-2" th:utext="${group.description}">
+                  Dynamic Summary
+                </div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <strong>Affected units:</strong>
+                    <div class="border-top border-bottom border-top-dashed border-bottom-dashed border-1">
+                      <ul class="affected-units"
+                          style="max-height: 10rem; overflow-y: auto; font-size: smaller;">
+                        <li th:each="doc: ${group.recalls}">
+                          <th:block th:text="${doc.make}">Make</th:block>
+                          <th:block th:text="${doc.model}">Model</th:block>
+                          <th:block th:text="${#strings.listJoin(doc.years, ', ')}">1984</th:block>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </th:block>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<script type="text/javascript" layout:fragment="scripts">
+$(document).ready(function() {
+//     $(".affected-units").niceScroll({
+//         zindex: 2,
+//         enableobserver: true,
+//         disablemutationobserver: false
+//     });
+//     $(".affected-units").mouseover(function() {
+//         $(this).getNiceScroll().resize();
+//     });
+});
+</script>
+
+</body>
+</html>

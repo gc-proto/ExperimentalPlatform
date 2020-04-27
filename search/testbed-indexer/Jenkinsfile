@@ -1,0 +1,232 @@
+pipeline {
+    agent none 
+    
+    options {
+        // Only keep the 10 most recent builds
+        buildDiscarder(logRotator(numToKeepStr:'10'))
+    }
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2'
+                }
+            }
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
+        stage('Test') {
+            agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2'
+                }
+            }
+            steps {
+                sh 'mvn test'                
+            }
+            post {
+                always {
+                    // junit 'target/surefire-reports/*.xml'
+                    echo 'finished test'
+                }
+
+            }
+        }
+        stage('Install Local') {
+            agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2'
+                }
+            }
+            steps {
+                // installs the package into the local repository, 
+                // for use as a dependency in other projects locally.
+                sh 'mvn install'
+            }
+        }
+        stage('Deploy Private Maven') {
+            agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2'
+                }
+            }
+            when {
+                branch "master"
+            }
+            steps {
+                // installs the package into the local repository, 
+                // for use as a dependency in other projects locally.
+                sh 'mvn deploy'
+            }
+        }
+        
+        stage('Build SQL Docker Image') {
+            agent any
+            environment {
+                registry = "tbs/testbed/indexer-sql"
+                registryCredential = 'dockerNorconex'
+                dpath = "src/test/data/sql-dump"
+              }
+            // Build and push docker image only when in master branch
+            when {
+                branch "master"
+            }
+            steps {    
+                script {
+                    // Tag of image update as build number update
+                    dockerImage = docker.build( registry + ":$BUILD_NUMBER", dpath)
+                    docker.withRegistry( 'https://docker.YOUR_HOST.com', registryCredential ) {                                                   
+                        dockerImage.push()
+                    }
+                }
+                sh "docker rmi $registry:$BUILD_NUMBER"      
+            }                    
+        }
+        // Removing Clean up chart because it would not exist to start with
+//        stage('Clean SQL Chart') {
+//            agent {
+//                docker {
+//                    image 'docker.YOUR_HOST.com/k8s/k8s-tools'
+//                    args ' -v /home/ubuntu:/opt/k8s -e HOME=/opt/k8s'
+//                }
+//            }
+//            // Build and push docker image only when in master branch
+//            when {
+//                branch "master"
+//            }
+//            steps {
+//              catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+//                  // Remove it even if does not exist
+//                  sh 'helm delete --purge tbs-testbed-indexer-sql'
+//              }
+//            }
+//        }
+        stage('Install SQL Chart') {
+            agent {
+                docker {
+                    image 'docker.YOUR_HOST.com/k8s/k8s-tools'
+                    args ' -v /home/ubuntu:/opt/k8s -e HOME=/opt/k8s'
+                }
+            }
+            // Build and push docker image only when in master branch
+            when {
+                branch "master"
+            }
+            steps {
+                script {
+                  // Install the latest helm chart with matching tag $BUILD_NUMBER
+                  sh 'helm install tbs-testbed-indexer-sql src/test/data/sql-dump/helmchart/ --set image.tag=$BUILD_NUMBER'
+                }
+                // Add time for the indexer-sql deployment to finish 
+                sleep(time:3,unit:"MINUTES")
+            }
+        }
+        
+        stage('Build Indexer Docker Image') {
+            agent any
+            environment {
+                registry = "tbs/testbed/indexer"
+                registryCredential = 'dockerNorconex'
+              }
+            // Build and push docker image only when in master branch
+            when {
+                branch "master"
+            }
+            steps {    
+                script {
+                    // Tag of image update as build number update
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    docker.withRegistry( 'https://docker.YOUR_HOST.com', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+                sh "docker rmi $registry:$BUILD_NUMBER"      
+                
+                // Add time for the indexer-sql deployment to finish 
+                sleep(time:2,unit:"MINUTES")
+                
+            }                    
+        }
+        // Remove the clean up chart stage, because it would not exist
+//        stage('Clean Indexer Chart') {
+//            agent {
+//                docker {
+//                   image 'docker.YOUR_HOST.com/k8s/k8s-tools'
+//                    args ' -v /home/ubuntu:/opt/k8s -e HOME=/opt/k8s'
+//                }
+//            }
+//            // Build and push docker image only when in master branch
+//            when {
+//                branch "master"
+//            }
+//            steps {
+//              catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+//                  // Remove it even if does not exist
+//                  sh 'helm delete --purge tbs-testbed-indexer'
+//              }
+//            }
+//        }
+        stage('Install Indexer Chart') {
+            agent {
+                docker {
+                    image 'docker.YOUR_HOST.com/k8s/k8s-tools'
+                    args ' -v /home/ubuntu:/opt/k8s -e HOME=/opt/k8s'
+                }
+            }
+            // Build and push docker image only when in master branch
+            when {
+                branch "master"
+            }
+            steps {
+                script {
+                  // Install the latest helm chart with matching tag $BUILD_NUMBER
+                  sh 'helm install tbs-testbed-indexer helmchart/ --set image.tag=$BUILD_NUMBER --set env.solr_url="http://tbs-testbed-solr:8983/solr"'
+                }
+                
+                // Add time for the indexing deployment run to finish 
+                sleep(time:8,unit:"MINUTES")
+            }
+        }
+        stage('Remove Indexer Deployed') {
+            agent {
+                docker {
+                    image 'docker.YOUR_HOST.com/k8s/k8s-tools'
+                    args ' -v /home/ubuntu:/opt/k8s -e HOME=/opt/k8s'
+                }
+            }
+            // Build and push docker image only when in master branch
+            when {
+                branch "master"
+            }
+            steps {
+              catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                  // Remove it even if does not exist
+                  sh 'helm delete tbs-testbed-indexer'
+              }
+            }
+        }
+        stage('Remove SQL Deployed') {
+            agent {
+                docker {
+                    image 'docker.YOUR_HOST.com/k8s/k8s-tools'
+                    args ' -v /home/ubuntu:/opt/k8s -e HOME=/opt/k8s'
+                }
+            }
+            // Build and push docker image only when in master branch
+            when {
+                branch "master"
+            }
+            steps {
+              catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                  // Remove it even if does not exist
+                  sh 'helm delete tbs-testbed-indexer-sql'
+              }
+            }
+        }
+    }
+}

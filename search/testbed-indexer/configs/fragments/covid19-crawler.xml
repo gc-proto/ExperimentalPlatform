@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<!-- To be defined in parent configuration or elsewhere (e.g., variables 
+	file): $lang = "en" or "fr" $workdir = "path to working directory" $solrURL 
+	= "Solr URL" -->
+<crawler id="Covid-19 Crawler ${lang}">
+
+	<startURLs stayOnDomain="false" stayOnPort="false"
+		stayOnProtocol="false">
+		 
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=covid&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=coronavirus&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=cerb&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=&amp;exctq=Canada+Emergency+Response+Benefit&amp;anyq=&amp;noneq=&amp;fqupdate=&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=sars&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=pcu&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		
+		<!--  basic search -->
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=covid</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=coronavirus</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=pcu</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=cerb</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=sars</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Canada+Emergency+Response+Benefit</url>
+		
+		
+	</startURLs>
+	<userAgent>TreasuryBoard/Covid crawler</userAgent>
+
+	<workDir>$workdir</workDir>
+
+	<!-- We go unlimited depth to make sure we follow all the pagination. - 
+		We are filtering out every that does not come from search results. -->
+	<maxDepth>-1</maxDepth>
+
+	<!-- Aggressiveness: no point being too aggressive here. -->
+	<numThreads>2</numThreads>
+	<delay default="500" ignoreRobotsCrawlDelay="false" scope="site" />
+
+	<!-- Because we are explicit in the pages we want, we ignore most site crawling 
+		directives. -->
+	<robotsMeta ignore="true" />
+	<robotsTxt ignore="true" />
+	<canonicalLinkDetector ignore="true" />
+	<sitemapResolverFactory ignore="true" />
+
+	<!-- If no longer found in search results, do not keep it. -->
+	<orphansStrategy>PROCESS</orphansStrategy>
+
+	<!-- Useful to uncomment for troubleshooting: -->
+	<!-- <maxDocuments>12</maxDocuments> <metadataChecksummer disabled="true" 
+		/> <documentChecksummer disabled="true" /> -->
+
+	<!-- Extract/follow links from search result only. -->
+	<linkExtractors>
+		<extractor
+			class="ca.canada.treasury.testbed.extractor.CanadacaExtractor"
+			ignoreNofollow="true">
+			<extractBetween>
+				<start><![CDATA[<section class="results.*?">]]></start>
+				<end><![CDATA[</section>]]></end>
+			</extractBetween>
+			<extractBetween>
+				<start><![CDATA[<ul class="pagination.*?">]]></start>
+				<end><![CDATA[</ul>]]></end>
+			</extractBetween>
+		</extractor>
+	</linkExtractors>
+	<!-- We only index pages coming from search results, except other result 
+		- pages. -->
+	<documentFilters>
+		<filter
+			class="com.norconex.collector.core.filter.impl.ExtensionReferenceFilter"
+			onMatch="exclude" caseSensitive="false">pdf,doc</filter>
+		<filter
+			class="com.norconex.collector.core.filter.impl.RegexReferenceFilter"
+			onMatch="exclude">
+			^https://www\.canada\.ca/${lang}/sr/.*$
+		</filter>
+		<filter
+			class="com.norconex.collector.core.filter.impl.RegexMetadataFilter"
+			field="collector.referrer-reference" onMatch="include">
+			^https://www\.canada\.ca/${lang}/sr/srb/sra\.html.*$
+		</filter>
+		<filter
+			class="com.norconex.collector.core.filter.impl.RegexMetadataFilter"
+			field="collector.referrer-reference" onMatch="include">
+			^https://www\.canada\.ca/${lang}/sr/srb\.html.*$
+		</filter>
+	</documentFilters>
+
+	<importer>
+
+		<preParseHandlers>
+
+			<!-- Store a flag if the page contains an alert about COVID-19 -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom
+					selector=".alert.alert-warning, .alert.alert-danger, .bg-warning"
+					extract="text" toField="alert_tmp" />
+			</tagger>
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ReplaceTagger">
+				<replace fromField="alert_tmp" toField="alert" regex="true"
+					wholeMatch="true">
+					<fromValue>^.*(covid-19|coronavirus|cerb|pcu|Canada Emergency
+						Response Benefit|Prestation canadienne d'urgence).*$</fromValue>
+					<toValue>true</toValue>
+				</replace>
+			</tagger>
+
+			<!-- Extract all H2 and bread crumb levels 2, 3, 4 if they exist: -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector=".breadcrumb li:eq(1) a" extract="text"
+					toField="bc2_name" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(1) a" extract="attr(href)"
+					toField="bc2_url" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(2) a" extract="text"
+					toField="bc3_name" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(2) a" extract="attr(href)"
+					toField="bc3_url" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(3) a" extract="text"
+					toField="bc4_name" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(3) a" extract="attr(href)"
+					toField="bc4_url" overwrite="true" />
+			</tagger>
+
+			<!-- Remove portions of a page we do not care about (e.g., "noise"): -->
+			<transformer
+				class="com.norconex.importer.handler.transformer.impl.StripBetweenTransformer"
+				inclusive="true">
+				<restrictTo field="document.contentType">text/html</restrictTo>
+				<stripBetween>
+					<start><![CDATA[<ul id="wb-tphp">]]></start>
+					<end><![CDATA[</ul>]]></end>
+				</stripBetween>
+				<stripBetween>
+					<start><![CDATA[<header\b.*?>]]></start>
+					<end><![CDATA[</header>]]></end>
+				</stripBetween>
+				<stripBetween>
+					<start><![CDATA[<footer\b.*?>]]></start>
+					<end><![CDATA[</footer>]]></end>
+				</stripBetween>
+				<stripBetween>
+					<start><![CDATA[<nav\b.*?>]]></start>
+					<end><![CDATA[</nav>]]></end>
+				</stripBetween>
+			</transformer>
+
+			<!-- We extract H2 after we cleanded up some portions (headfoot). -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector="h2" extract="text" toField="h2" overwrite="false" />
+			</tagger>
+
+		</preParseHandlers>
+
+		<postParseHandlers>
+
+			<!-- - TODO: Maybe store flag if covid-19 or coronavirus is found in - 
+				body after alert is taken out (to know if found in alert only). -->
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.FieldReportTagger"
+				maxSamples="5" withHeaders="true" withOccurences="true"
+				truncateSamplesAt="512" file="${workdir}/discovered-fields.csv" />
+
+
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ReplaceTagger">
+				<replace fromField="document.reference" toField="domain"
+					regex="true">
+					<fromValue>https://(.*?)/.*$</fromValue>
+					<toValue>$1</toValue>
+				</replace>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ReplaceTagger">
+				<replace fromField="title" regex="true">
+					<fromValue>(.*?)\s*-?\s*canada.ca</fromValue>
+					<toValue>$1</toValue>
+				</replace>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.RenameTagger">
+				<rename fromField="document.contentFamily" toField="filetype"
+					overwrite="true" />
+				<rename fromField="dcterms.subject" toField="subject"
+					overwrite="true" />
+				<rename fromField="dcterms.audience" toField="audience"
+					overwrite="true" />
+				<rename fromField="description" toField="desc"
+					overwrite="true" />
+				<rename fromField="dcterms.type" toField="category"
+					overwrite="true" />
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.SplitTagger">
+				<split fromField="audience" regex="true">
+					<separator>\s*,\s*</separator>
+				</split>
+				<split fromField="keywords" regex="true">
+					<separator>\s*,\s*</separator>
+				</split>
+				<split fromField="category" regex="true">
+					<separator>\s*;\s*</separator>
+				</split>
+				<split fromField="subject" regex="true">
+					<separator>\s*;\s*</separator>
+				</split>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DateFormatTagger"
+				fromField="dc.modified" toField="lastmodified"
+				toFormat="yyyy-MM-dd'T00:00:00.000Z'">
+				<fromFormat>yyyy-MM-dd</fromFormat>
+			</tagger>
+			<!-- Consider a few "modified" dates, but keep the first one only: -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DateFormatTagger"
+				fromField="dcterms.modified" toField="lastmodified"
+				toFormat="yyyy-MM-dd'T00:00:00.000Z'">
+				<fromFormat>yyyy-MM-dd</fromFormat>
+			</tagger>
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DateFormatTagger"
+				fromField="Last-Modified" toField="lastmodified"
+				toFormat="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'">
+				<fromFormat>EEE, dd MMM yyyy HH:mm:ss zzz</fromFormat>
+				<fromFormat>EPOCH</fromFormat>
+			</tagger>
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ForceSingleValueTagger">
+				<singleValue field="lastmodified" action="keepFirst" />
+				<singleValue field="alert" action="keepFirst" />
+			</tagger>
+			
+			<filter
+				class="com.norconex.importer.handler.filter.impl.DateMetadataFilter"
+				onMatch="include" field="lastmodified" format="yyyy-MM-dd'T00:00:00.000Z'">
+				 <condition operator="ge" date="TODAY-1Y" />
+      			<condition operator="lt" date="TODAY" />
+			</filter>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
+				field="lastcrawled" format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" />
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.CharacterCaseTagger">
+				<characterCase fieldName="author" type="lower"
+					applyTo="field" />
+				<characterCase fieldName="keywords" type="lower"
+					applyTo="field" />
+				<characterCase fieldName="title" type="lower"
+					applyTo="field" />
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ConstantTagger"
+				onConflict="replace">
+				<constant name="language">${lang}</constant>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
+				<fields>
+					domain,
+					language,
+					filetype,
+					lastmodified,
+					lastcrawled,
+					author,
+					subject,
+					audience,
+					category,
+					keywords,
+					title,
+					desc,
+					h2,
+					bc2_name,
+					bc2_url,
+					bc3_name,
+					bc3_url,
+					bc4_name,
+					bc4_url,
+					alert
+				</fields>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="title" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="author" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="subject" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="audience" maxLength="5096" overwrite="true"
+				suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="category" maxLength="5096" overwrite="true"
+				suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="keywords" maxLength="5096" overwrite="true"
+				suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="desc" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="h2" maxLength="5096" overwrite="true" suffix="[...]" />
+
+			<transformer
+				class="com.norconex.importer.handler.transformer.impl.ReplaceTransformer">
+				<replace>
+					<fromValue>(\s\s\s)\s+</fromValue>
+					<toValue>$1</toValue>
+				</replace>
+				<replace>
+					<fromValue>^\s+</fromValue>
+					<toValue></toValue>
+				</replace>
+				<replace>
+					<fromValue>\s+$</fromValue>
+					<toValue></toValue>
+				</replace>
+			</transformer>
+
+		</postParseHandlers>
+
+	</importer>
+
+	<committer class="com.norconex.committer.solr.SolrCommitter">
+		<solrURL>${solrURL}</solrURL>
+		<queueDir>${workdir}/solrcommitter-queue_${lang}</queueDir>
+		<queueSize>20</queueSize>
+		<commitBatchSize>20</commitBatchSize>
+		<maxRetries>3</maxRetries>
+		<maxRetryWait>10 seconds</maxRetryWait>
+	</committer>
+	<!-- <committer class="com.norconex.committer.core.impl.JSONFileCommitter"> 
+		<directory>${workdir}/crawledfiles_${lang}</directory> <pretty>true</pretty> 
+		</committer> -->
+
+</crawler>

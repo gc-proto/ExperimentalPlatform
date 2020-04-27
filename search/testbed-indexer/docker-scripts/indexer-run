@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Run the indexer java class and data file arguments
+set -e
+
+if [[ "$VERBOSE" == "yes" ]]; then
+    set -x
+fi
+
+# Run the indexing from the java jar and their classes
+java -version
+
+echo $SOLR_URL
+echo ${SPATH}
+
+
+java -Dfile.encoding=UTF8 -classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" com.norconex.collector.http.HttpCollector -a start -c /opt/indexer-configs/covid19-collector.xml -k -v /opt/indexer-configs/covid19-collector-prod.variables
+
+
+

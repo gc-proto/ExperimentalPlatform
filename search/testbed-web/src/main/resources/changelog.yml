@@ -1,0 +1,258 @@
+changelog:
+- date: 2020-03-31
+  pages:
+  - path: /covid19/monitor
+    changes:
+      - Added browsing/filtering of related concepts.
+- date: 2020-03-30
+  pages:
+  - path: /covid19/monitor
+    changes:
+      - Added filtering/faceting options.
+- date: 2020-03-28
+  pages:
+  - path: /covid19/monitor
+    changes:
+      - Now extracting breadcrumb levels 2, 3 and 4.
+      - Now extracting all <H2> values that are in the content section of a 
+        page.
+      - Now identifies pages that have an alert talking about covid-19.
+      - Last modified date will first consider "dcterms.modified" if present,
+        then falls back on "Last-Modified" date from the HTTP header, if 
+        present.
+      - Full content now downloadable in MS-Excel format, with predefined
+        cells width.
+      - Now truncating long values to 5096 characters max to facilitate
+        spreadsheet export.
+      - Can now refresh the table with "refresh" button.
+      - Now remembers column state.
+- date: 2020-03-26
+  pages:
+  - path: /covid19/monitor
+    changes:
+      - New page tracking COVID-19 content across federal departments.
+  - path: /
+    changes:
+      - Where data was filtered on "last two years", it is now filtered
+        up to to years before the dataset last updated date.
+- date: 2019-12-18
+  pages:
+  - path: /tool/relevancytuner
+    changes:
+      - New page showing an example of a relevancy tuning tool.
+- date: 2019-11-30
+  pages:
+  - path: /example/generic
+    changes:
+      - Now only showing last two years of Food and Health recalls.
+      - If "awr_date" is null, falling back to "date_last_update", then
+        date_created as last resort.
+      - Added "info_problem_issue" as a description field.
+      - Stemming and additional tuning added to recall matching strategy.
+- date: 2019-11-28
+  pages:
+  - path: /example/resultgrouping
+    changes:
+      - New page showing results grouping on brand/company. 
+  - path: /example/resultclustering
+    changes:
+      - Renaming of Result Grouping to Result Clustering. 
+  - path: /
+    changes:
+      - Applied changes to category mappings from Jane (shared on 2019-11-27). 
+      - Recalls can now be associated with more than one recall types 
+        (needed for Miguel category mappings and possibly more in the future). 
+- date: 2019-11-26
+  pages:
+  - path: /
+    changes:
+      - Applied latest category mappings from Miguel. 
+      - Now indexing bar codes from "drug.din_npn_din_hm", 
+        "products_affected.upc", and 
+        "products_affected_details.code_on_product".
+      - Now indexing brands from "company.company_name", and "make.make_name".
+  - path: /example/barcodescanner
+    changes:
+      - Added ability to select which barcode decoder to use.
+  - path: /example/smartsuggest
+    changes:
+      - Fixed category facet causing issues with Post-Search Smart Suggest.
+        No longer mixing recall types and categories.
+- date: 2019-11-24
+  pages:
+  - path: /example/barcodescanner
+    changes:
+      - New page for testing scanning of barcode (UPC-A) using device camera.
+- date: 2019-11-22
+  pages:
+  - path: /example/generic
+    changes:
+      - Product common name, additional_name, and trade-name are now searchable
+        and play a part in generating the summary.
+      - Consumer products with database values set for "info_summary_*" fields
+        how show a static summary with "Product", "Issue", and "What to do"
+        entries. 
+  - path: /example/resultgrouping
+    changes:
+      - Remove duplicates in recall groups.
+      - No longer mixing makes in same group, even if they share the same
+        recall number (they are shown separately).
+- date: 2019-11-21
+  pages:
+  - path: /example/generic
+    changes:
+      - Added ability to change sorting. Defaults to relevancy + date.
+      - Now defaults with showing the last 5 years only. 
+  - path: /example/resultgrouping
+    changes:
+      - Remove duplicates in recall groups.
+      - No longer mixing makes in same group, even if they share the same
+        recall number (they are shown separately).
+- date: 2019-11-20
+  pages:
+  - path: /example/generic
+    changes:
+      - Audiences are now lowercase except for first letter. 
+      - Vehicle category are now lowercase except for first letter
+        (non-vehicles character are as per category mappings spreadsheet). 
+      - Added new alert type facet (recall/advisory). Only showing when a 
+        recall type is selected. 
+      - Removed audience, category, and department from result recall
+        fields. Moved fields used for summary above the summary.
+      - Facet selection are added to the top to quickly identify and
+        possibly dispose them.
+      - Category facet is now separate from recall types.
+      - Only showing category facet when a recall type is selected.
+      - Only showing audience facet when a non-vehicle recall type is selected.
+      - Only showing make and model year when vehicles recall type is selected.
+  - path: /example/smartsuggest
+    changes:
+      - Added "post-search" smart suggestions taking advantage of categories.
+      - Each smart suggesters now in their own tab.
+- date: 2019-11-19
+  pages:
+  - path: /
+    changes:
+      - A "Children's Products" category now automatically add 
+        "Affects children, pregnant or breast feeding women" to audience.
+      - DB entries without categories (if any) will fall under "Uncategorized".
+- date: 2019-11-18
+  pages:
+  - path: /
+    changes:
+      - Removed vehicle fields that are already in vehicle title.
+      - Content is stripped of its HTML to improve searching/display.
+  - path: /example/generic
+    changes:
+      - Added audiences and categories facets, removing vehicle ones.
+      - Categories facet displayed with a hierarchy. 
+      - Remapped categories to a manually curated list, and added 
+        sub-categories.
+      - Category "Affects children, pregnant or breast feeding women" has been
+        remapped to Audience.
+      - Can now make only one selection in Recall Type/Categories facet.
+      - Facets now sorted alphabetically.
+- date: 2019-11-13
+  pages:
+  - path: /example/smartsuggest
+    changes:
+      - Added a fancier auto-suggester that groups results with a heading,
+        offer typeahead, and optional recall type filtering.
+      - Slightly improved suggestions.
+  - path: /
+    changes:
+      - Improved matches in most places by adding stop words.
+- date: 2019-11-11
+  pages:
+  - path: /
+    changes:
+      - All fields dialog now shows all vehicle fields as well.
+- date: 2019-11-09
+  pages:
+  - path: /
+    changes:
+      - Recalls now have URLs. They were derived, please report errors. 
+- date: 2019-11-08
+  pages:
+  - path: 
+    changes:
+      - Vehicle title now matches "<manufacturer-name> Recall - <system_type>".
+      - Vehicle make and model are now capitalized (lowercase except 
+        first letter of each words).
+  - path: /example/resultclustering
+    changes:
+      - Fixed clusters now filtering properly when docId was integer.
+- date: 2019-11-07
+  pages:
+  - path: /example/resultclustering
+    changes:
+      - Improved clustering and added examples.
+- date: 2019-11-06
+  pages:
+  - path: /example/generic
+    changes:
+      - No longer indexing/showing vehicle category/class (due to identified
+        issue at the source). Replaced the facet for it by one on make.
+      - No longer indexing/showing vehicle manufacturer recall no given 
+        its identified lack of usefulness to users.
+      - Now displaying "system type" as the title for vehicles.
+- date: 2019-11-05
+  pages:
+  - path: /example/resultclustering
+    changes:
+      - New page to showcase result clustering.  That is, extracted concepts
+        and similar/related terms from a search result. 
+- date: 2019-11-04
+  pages:
+  - path: /example/generic
+    changes:
+      - Food, health and consumer products now has richer data as it now 
+        comes from Health Canada recall database snapshot 
+        (most relevant fields of 54 tables). 
+      - Now showing title when available in source. 
+      - Added button/dialog next to each recall title to view all available
+        fields in a dialog.
+- date: 2019-10-29
+  pages:
+  - path: /example/resultgrouping
+    changes:
+      - New page to showcase grouping of results.
+- date: 2019-10-27
+  pages:
+  - path: /example/smartsuggest
+    changes:
+      - New page to showcase more advanced auto-suggest usage.
+- date: 2019-10-23
+  pages:
+  - path: /tool/suggestercomparator
+    changes:
+      - New test page to compare various Solr Suggester implementations.
+- date: 2019-10-19
+  pages:
+  - path: /example/generic
+    changes:
+      - Added "Did you mean?" feature (for mispellings). 
+      - Added other recall categories from Open Data. Could only get 
+        a subset due to Open Data API restrictions.
+      - Changed facets to work with all categories and added new ones.
+      - Getting zero results will still show available facets, including
+        active ones with a count of zero.
+- date: 2019-10-11
+  pages:
+  - path: /
+    changes:
+      - Now using Vehicle Recall data from Open Data.
+- date: 2019-10-04
+  pages:
+  - path: 
+    changes:
+      - Removed GoC header and general UI update.
+      - Most collapsible states now remembered (per browser).
+  - path: /home
+    changes:
+      - Added "Latest Changes" and "Backlog & Ideas" to home page.
+- date: 2019-09-30
+  pages:
+  - path: /example/generic
+    changes:
+      - New example page showing classic search features.

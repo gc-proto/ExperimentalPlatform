@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+# Run the indexer java class and data file arguments
+set -e
+
+if [[ "$VERBOSE" == "yes" ]]; then
+    set -x
+fi
+
+# Run the indexing from the java jar and their classes
+java -version
+
+echo $SOLR_URL
+echo ${SPATH}
+
+
+java -Dlog4j.configuration="file:${SPATH}/${ZNAME}/classes/log4j2.xml" \
+-Xdebug -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n \
+-Dfile.encoding=UTF8 \
+-classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" \
+ca.canada.treasury.testbed.indexer.impl.NaicsIndexer \
+-file "${SPATH}/${ZNAME}/Data/naics-scian-2017-structure-v3-eng.csv.gz" \
+-batch 10000 \
+-levels 5 \
+-solr "$SOLR_URL/naics" 
+
+# Install Data from MySQL Server
+
+java -Dlog4j.configuration="file:${SPATH}/${ZNAME}/classes/log4j2.xml" \ 
+-Xdebug -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n \
+-Dfile.encoding=UTF8 \
+-classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" \
+ca.canada.treasury.testbed.indexer.impl.DBHealthRecallsIndexer \
+-max -1 \
+-batch 10000 \
+-dbuser Norconex \
+-dbpass PASSWORD \
+-dburl "jdbc:mysql://testbed_mysql/awr_schema?zeroDateTimeBehavior=convertToNull" \
+-solr "$SOLR_URL/recalls"  
+
+java -Dlog4j.configuration="file:${SPATH}/${ZNAME}/classes/log4j2.xml" \
+-Xdebug -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n \
+-Dfile.encoding=UTF8 \
+-classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" \
+ca.canada.treasury.testbed.indexer.impl.OpenDataVehicleRecallsIndexer \
+-file "${SPATH}/${ZNAME}/Data/vrdb_full_monthly-2019-10-06.csv.gz" \
+-batch 1000 \
+-solr "$SOLR_URL/recalls" 
+
+java -Dlog4j.configuration="file:${SPATH}/${ZNAME}/classes/log4j2.xml" \
+-Xdebug -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n \
+-Dfile.encoding=UTF8 \
+-classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" \
+ca.canada.treasury.testbed.indexer.impl.ManualAdditionsRecallsIndexer \
+-file "${SPATH}/${ZNAME}/Data/manual-additions.csv.gz" \
+-batch 1000 \
+-solr "$SOLR_URL/recalls" 
+
+java -Dlog4j.configuration="file:${SPATH}/${ZNAME}/classes/log4j2.xml" \
+-Xdebug -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n \
+-Dfile.encoding=UTF8 \
+-classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" \
+ca.canada.treasury.testbed.indexer.impl.ManualDeletionsRecallsIndexer \
+-file "${SPATH}/${ZNAME}/Data/manual-deletions.txt" \
+-batch 50 \
+-solr "$SOLR_URL/recalls" 
+
+

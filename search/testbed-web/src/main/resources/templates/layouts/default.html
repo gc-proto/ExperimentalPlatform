@@ -1,0 +1,212 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en">
+  <head>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">TB Search Testbed</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Treasury Board Testbed application."/>
+    <link rel="stylesheet" 
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous"> 
+    <link rel="stylesheet" href="/css/testbed.css" th:href="@{/css/testbed.css}">
+    <link rel="stylesheet" href="/css/jqcloud.min.css" th:href="@{/css/jqcloud.min.css}">
+    <link rel="stylesheet" href="/css/jquery.typeahead.min.css" th:href="@{/css/jquery.typeahead.min.css}">
+    <link rel="shortcut icon" href="images/favicon.ico" th:href="@{/images/favicon.ico}" type="image/x-icon">
+    <link rel=icon href="images/favicon.ico" th:href="@{/images/favicon.ico}" type="image/x-icon">
+    <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
+        integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs="
+        crossorigin="anonymous"
+        data-auto-replace-svg="nest"
+        data-search-pseudo-elements
+        ></script>
+    <!--/* Consider moving jquery(ui) back to bottom if no fragments need it already loaded */-->
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+    <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+    <script th:src="@{/js/jquery.typeahead.min.js}"></script>
+  </head>
+  <body>
+    <div id="testbed">
+
+      <!-- Header -->
+      <header class="container-fluid py-2 px-4">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="media">
+              <span class="fas fa-search fa-3x mr-3 text-dark align-self-center" aria-hidden="true"></span>
+              <div class="media-body">
+                <h1 class="my-0">Search Testbed</h1>
+                <div>Treasury Board of Canada Secretariat</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6 text-right align-self-center">
+            <img alt="Government of Canada" id="header-logo"
+                 style="max-height: 32px; max-width: 325px;" src="#" th:src="@{/images/sig-blk-en.svg}">
+          </div>
+        </div>
+      </header>
+
+      <!-- Toolbar -->
+
+      <nav id="toolbar" class="navbar navbar-expand-lg navbar-light bg-light px-lg-0 mb-0" aria-label="Top Navbar">
+        <div class="container-fluid">
+
+          <button type="button" id="sidebarCollapse" class="btn btn-dark btn-sm">
+            <i class="fas fa-align-left" aria-hidden="true"></i>
+            <span>Toggle Sidebar</span>
+          </button>
+          <button class="btn btn-dark d-inline-block d-lg-none ml-auto"
+              type="button" data-toggle="collapse" 
+              data-target="#navbarSupportedContent" 
+              aria-controls="navbarSupportedContent" 
+              aria-expanded="false" 
+              aria-label="Toggle navigation">
+            <i class="fas fa-align-justify" aria-hidden="true"></i>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto small">
+    
+              <li class="nav-item">
+                <a href="#page_about" id="pageAboutCollapse" data-toggle="collapse" 
+                    aria-expanded="false" class="btn btn-info btn-sm dropdown-toggle collapsed"
+                    role="button" aria-controls="page_about">
+                  <i class="fas fa-info-circle" aria-hidden="true"></i>
+                  <span>About</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+
+      <div class="sidebar-content-wrapper">
+
+        <!-- Sidebar -->
+  
+        <nav id="sidebar" aria-label="Sidebar menu">
+          <div th:include="fragments/sidebar-menu-items :: sidebar-menu-items" th:with="menuItems=${@menu}"></div>                  
+        </nav>
+
+        <div class="w-100">
+          
+          <!-- Page About -->
+          <div id="page_about" class="collapse container show-by-default">
+            <div class="card my-3 border-info">
+              <div class="card-header text-info border-top-0">
+                <h4 class="m-0 p-0">
+                  <i class="fas fa-info-circle" aria-hidden="true"></i>
+                  About this page
+                  <button type="button" class="close" aria-label="Close"
+                      data-toggle="collapse" aria-expanded="false" 
+                      data-target="#page_about" aria-controls="page_about">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </h4>
+              </div>
+              <div class="card-body">
+                <div layout:fragment="page_about"></div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Content -->
+
+          <div id="content" class="w-100 container mb-4">
+            <div layout:fragment="page_content"></div>
+          </div>
+
+        </div>
+
+
+      </div>
+
+      <!-- Footer  -->
+
+      <footer class="bg-light border-top">
+        <nav class="navbar navbar-light" aria-label="Footer">
+          <div class="d-flex py-4 px-5 w-100">
+            <div class="flex-grow-1">
+              <p class="small text-uppercase"><strong>Useful Links</strong></p>
+              <ul class="list-unstyled">
+                <li class="pb-1">
+                  <a rel="noopener noreferrer" target="_BLANK" 
+                      href="https://docs.google.com/spreadsheets/d/1uUc-jw96btNrGpaJIUPn_-AzLKu5rh0ZCUlRbuJMFb8/edit">
+                    Master project Google sheet</a>
+                </li>
+                <li class="pb-1">
+                  <a rel="noopener noreferrer" target="_BLANK" 
+                      href="https://www.healthycanadians.gc.ca/recall-alert-rappel-avis/index-eng.php">
+                    Live search</a>
+                </li>
+                <li class="pb-1">
+                  <a rel="noopener noreferrer" target="_BLANK" 
+                      href="http://search-recherche.gc.ca/rGsPreview/s_r?st=s&s5bm3ts21rch=x&num=10&st1rt=0&langs=eng&cdn=rasf&dspl_shwmr=&q=vegetable&dspl=cat&fq_pcat=Food">
+                    UI Prototypes</a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <a class="h5" rel="noopener noreferrer" target="_BLANK" 
+                  title="Slack channel for this project"
+                  href="https://canada-ca.slack.com/messages/CMV1P9AKA">
+                <img th:src="@{/images/slack-mark.svg}" width="62" alt="Slack logo">Let's chat!</a>
+            </div>
+          </div>
+        </nav>
+      </footer>
+
+      <script 
+          src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+          integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o"
+          crossorigin="anonymous"></script>
+      <script 
+          src="https://cdnjs.cloudflare.com/ajax/libs/Readmore.js/2.2.1/readmore.min.js"
+          integrity="sha256-ygz7RPJkJA9GMkV/1XKiK5GEfenXOdkEj2yhi8LRipU="
+          crossorigin="anonymous"></script>
+      <script 
+          src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js" 
+          integrity="sha256-LJkWYMcB83+zN8VO3EnSoNYHiBo93miOF47ZfsPSNDQ=" 
+          crossorigin="anonymous"></script>
+<!--/*
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js" 
+          integrity="sha256-Ka8obxsHNCz6H9hRpl8X4QV3XmhxWyqBpk/EpHYyj9k="
+          crossorigin="anonymous"></script>          
+      <script 
+          src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min.js" 
+          integrity="sha256-nORlj0J8ZjvGz+6rtHb2Jcc0QDASsDUNOwUkfcwoW8A=" 
+          crossorigin="anonymous"></script>          
+*/-->
+      <script th:src="@{/js/testbed.js}"></script>
+      <script th:src="@{/js/jqcloud.min.js}"></script>
+      <script type="text/javascript">
+          $(document).ready(function () {
+              var sidebarStoreKey = 'sidebar-collapsible-state';
+              var sidebarState = localStorage.getItem(sidebarStoreKey);
+              var showSidebar = sidebarState === null || sidebarState == 'show';
+
+              $('#sidebar').toggleClass('active', !showSidebar);
+              
+              $('#sidebarCollapse').on('click', function () {
+                  $('#sidebar').toggleClass('active');
+                  localStorage.setItem(sidebarStoreKey, 
+                          $('#sidebar').hasClass('active') ? 'hide' : 'show');
+              });
+          });
+      </script>
+      <th:block layout:fragment="scripts"></th:block>
+    </div>
+  </body>
+</html>

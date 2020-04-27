@@ -1,0 +1,7 @@
+(?i)covid-19
+(?i)coronavirus
+(?i)coronavirus covid-19
+(?i)covid-19 coronavirus
+(?i)canada
+(?i)other languages
+(?i)other

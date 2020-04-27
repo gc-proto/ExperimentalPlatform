@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<!-- To be defined in parent configuration or elsewhere (e.g., variables 
+	file): $lang = "en" or "fr" $workdir = "path to working directory" $solrURL 
+	= "Solr URL" -->
+<crawler id="Covid-19 Manual Crawler ${lang}">
+
+	<startURLs stayOnDomain="true" stayOnPort="false"
+		stayOnProtocol="false">
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200323-eng.pdf</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-annex-a-eng.pdf</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3249.htm</url>
+		<url>https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada.html</url>
+		<url>https://canadacouncil.ca/covid-19-information</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3250.htm</url>
+		<url>https://www.tradecommissioner.gc.ca/campaign-campagne/commerce-international-covid-19-international-trade.aspx?lang=eng</url>
+		<url>https://www.international.gc.ca/world-monde/international_relations-relations_internationales/information_development_partners-information_partenaires_developpement.aspx?lang=eng</url>
+		<url>https://www.tc.gc.ca/eng/marinesafety/bulletins-2020-05-eng.htm</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200228-eng.pdf</url>
+		<url>https://www.tc.gc.ca/eng/mediaroom/interim-order-prevent-certain-persons-boarding-flights-canada-covid-19-no-5.html</url>
+		<url>https://www.csc-scc.gc.ca/001/006/001006-1003-en.shtml</url>
+		<url>https://www.international.gc.ca/world-monde/funding-financement/funding_tools-outils_de_financement.aspx?lang=eng</url>
+		<url>https://canada.ca/en/revenue-agency/campaigns/covid-19-update/covid-19-filing-payment-dates.html</url>
+		<url>https://www.grainscanada.gc.ca/en/COVID-19/</url>
+		<url>https://www.international.gc.ca/covid-19-loan-pret/form-formulaire.aspx?lang=eng</url>
+		<url>http://gazette.gc.ca/rp-pr/p2/2020/2020-04-01/html/sor-dors54-eng.html</url>
+		<url>https://www.canada.ca/en/department-national-defence/services/operations/military-operations/current-operations/laser.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3245.htm</url>
+		<url>https://www.destinationcanada.com/en/coronavirus-updates/industry-support</url>
+		<url>https://www.canada.ca/en/employment-social-development/corporate/notices.html</url>
+		<url>http://www.canada.ca/en/government/publicservice/covid-19/20200401-mobility-access-essential-infrastructure.html</url>
+		<url>https://www.fcc-fac.ca/en/covid-19/program-details.html</url>
+		<url>http://www.canada.ca/en/government/publicservice/covid-19/rights-responsibilities.html</url>
+		<url>http://www.ic.gc.ca/eic/site/mc-mc.nsf/eng/lm04942.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3254.htm</url>
+		<url>https://www.tc.gc.ca/eng/railsafety/ministerial-order-under-section-32-01-railway-safety-act-due-covid-19-mo-20-04.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3269.htm</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/covid-19-guidance-material-air-carriers-managing-travellers-check-in-procedure-transborder-us-airports.html</url>
+		<url>http://www.dfo-mpo.gc.ca/covid19/industry-industrie/index-eng.html</url>
+		<url>https://www.statcan.gc.ca/eng/covid19</url>
+		<url>https://www.tc.gc.ca/en/services/marine/documents/20-AA-35-HEALTH_REPORTING_SHIPS_17X11_EN_acc.pdf</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/FAQ-COVID-19-eng.docx</url>
+		<url>https://www.sac-isc.gc.ca/eng/1585189335380/1585189357198</url>
+		<url>http://www.canada.ca/en/government/publicservice/covid-19/mental-health-help.html</url>
+		<url>https://www.canada.ca/en/immigration-refugees-citizenship/services/new-immigrants.html</url>
+		<url>https://www.canada.ca/en/services/health.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3258.htm</url>
+		<url>http://www.canada.ca/en/government/publicservice/covid-19/employee-illness-leave.html</url>
+		<url>https://www.canada.ca/en/public-health/services/diseases.html</url>
+		<url>https://www.btb.termiumplus.gc.ca/publications/covid19-eng.html</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200321-eng.pdf</url>
+		<url>https://canada.ca/en/revenue-agency/campaigns/covid-19-update/covid-19-news.html</url>
+		<url>https://www.ic.gc.ca/eic/site/099.nsf/eng/00023.html</url>
+		<url>https://cihr-irsc.gc.ca/e/51868.html</url>
+		<url>https://www.ic.gc.ca/eic/site/099.nsf/eng/00022.html</url>
+		<url>https://www.canada.ca/en/public-health/services/flu-influenza/canadian-pandemic-influenza-preparedness-planning-guidance-health-sector.html</url>
+		<url>https://www.international.gc.ca/world-monde/index.aspx?lang=eng</url>
+		<url>https://www.canada.ca/en/services/finance.html</url>
+		<url>https://www.tc.gc.ca/eng/marinesafety/bulletins-2020-07-eng.htm</url>
+		<url>https://www.canada.ca/en/crown-indigenous-relations-northern-affairs.html</url>
+		<url>https://cyber.gc.ca/en/news/staying-cyber-healthy-during-covid-19-isolation</url>
+		<url>https://www.ic.gc.ca/eic/site/cipointernet-internetopic.nsf/eng/wr04763.html</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/aviation-measures.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3253.htm</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/PSOHP-Occupational-Health-Advisory-COVID-19-03-15-2020-eng.pdf</url>
+		<url>https://www.ic.gc.ca/eic/site/cipointernet-internetopic.nsf/eng/wr04762.html</url>
+		<url>https://www.tc.gc.ca/en/services/marine/documents/Keeping-you-safe-at-work_acc.pdf</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3246.htm</url>
+		<url>https://www.ic.gc.ca/eic/site/bsf-osb.nsf/eng/br04235.html</url>
+
+		<url>https://www.tc.gc.ca/eng/mediaroom/interim-order-prevent-certain-persons-boarding-flights-canada-covid-19-no-3.html</url>
+
+		<url>https://www.tc.gc.ca/eng/motorvehiclesafety/federal-safety-guidance-protect-drivers-limit-spread-covid-19-commercial-vehicle-operations.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3257.htm</url>
+		<url>https://www.sac-isc.gc.ca/eng/1581964230816/1581964277298</url>
+		<url>https://www.tc.gc.ca/media/documents/tdg-eng/0751-eng-Transportation_of_Dangerous_Directorate_Transport_Canada.pdf</url>
+		<url>https://www.tc.gc.ca/eng/marinesafety/bulletins-2020-10-eng.htm</url>
+		<url>http://www.canada.ca/en/government/publicservice/covid-19/organization-specific-information.html</url>
+		<url>https://www.rcmp-grc.gc.ca/en/covid-19</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3259.htm</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/CHRO-message-03-15-2020-eng.pdf</url>
+		<url>https://www.canada.ca/en/services/defence.html</url>
+		<url>https://www.canada.ca/en/services/science.html</url>
+		<url>http://www.ic.gc.ca/eic/site/cipointernet-internetopic.nsf/eng/wr04766.html</url>
+		<url>https://www.justice.gc.ca/eng/csj-sjc/covid.html</url>
+		<url>https://www.canada.ca/en/public-health/services/emerging-respiratory-pathogens/protocol-microbiological-investigations-severe-acute-respiratory-infections-sari.html</url>
+		<url>https://www.canada.ca/en/canadian-heritage.html</url>
+		<url>https://www.sac-isc.gc.ca/eng/1583781906998/1583781926813</url>
+		<url>https://www.csc-scc.gc.ca/001/006/001006-1004-en.shtml</url>
+		<url>https://www.sac-isc.gc.ca/eng/1584456952392/1584456999460</url>
+		<url>https://www.tc.gc.ca/media/documents/tdg-eng/0750-eng-Transportation_of_Dangerous_Directorate_Transport_Canada.pdf</url>
+		<url>http://www.canada.ca/en/government/publicservice/covid-19/protect-mental-health.html</url>
+		<url>https://www.tc.gc.ca/eng/tdg/temporary-certificates.html</url>
+		<url>https://www.tc.gc.ca/en/services/rail/temporary-exemption-railway-medical-rules-positions-critical-safe-railway-operations.html</url>
+		<url>https://www.rcaanc-cirnac.gc.ca/eng/1584656849722/1584716136299</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/CHRO-message-03-13-2020.pdf</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3252.htm</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200324-eng.pdf</url>
+		<url>https://www.ic.gc.ca/eic/site/cipointernet-internetopic.nsf/eng/wr00050.html</url>
+		<url>https://www.csc-scc.gc.ca/001/006/001006-1017-en.shtml</url>
+		<url>https://www.canada.ca/en/services/taxes.html</url>
+		<url>https://www.canada.ca/en/services/transport.html</url>
+		<url>https://www.canada.ca/en/services/policing.html</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/aviation-exemptions.html</url>
+		<url>https://www.canada.ca/en/public-health/services/flu-influenza/pandemic-plans.html</url>
+		<url>https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-citizenship.html</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/covid-19-letter-aviation-industry.html</url>
+		<url>https://www.canada.ca/en/indigenous-services-canada.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/Regserv/Affairs/exemptions/docs/en/3247.htm</url>
+		<url>https://www.tc.gc.ca/en/services/aviation/medical-fitness-aviation/covid-19-update-aviation-medical-certificates.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3256.htm</url>
+		<url>https://www.cfc-swc.gc.ca/fun-fin/shelters-refuges-en.html</url>
+		<url>https://www.ic.gc.ca/eic/site/cipointernet-internetopic.nsf/eng/wr04764.html</url>
+		<url>https://www.tc.gc.ca/en/services/rail/covid-19-guidance-material-passenger-railway-companies-managing-travellers-on-boarding.html</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/covid-19-guidance-canadian-aviation-industry.html</url>
+		<url>https://www.tc.gc.ca/eng/marinesafety/bulletins-2020-04-eng.htm</url>
+		<url>https://www.international.gc.ca/world-monde/country-pays/index.aspx?lang=eng</url>
+		<url>https://www.tc.gc.ca/eng/motorvehiclesafety/employment-confirmation-essential-transportation-worker.html</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/guidance-material-air-operators.html</url>
+		<url>https://www.canada.ca/en/services/culture.html</url>
+		<url>https://www.cmhc-schl.gc.ca/en/media-newsroom/coronavirus-update</url>
+		<url>https://www.ic.gc.ca/eic/site/bsf-osb.nsf/eng/br04232.html</url>
+		<url>https://canada.ca/en/revenue-agency/campaigns/covid-19-update/covid-19-benefits-credits-support-payments.html</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200225-eng.pdf</url>
+		<url>https://www.tc.gc.ca/eng/marinesafety/bulletins-2020-03-eng.htm</url>
+		<url>https://www.rcaanc-cirnac.gc.ca/eng/1461766373625/1556203056093</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3248.htm</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/covid-19-guidance-material-passenger-vessel-ferry-operators.html</url>
+		<url>https://www.canada.ca/en/services/environment.html</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200319-eng.pdf</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/covid-19-guidance-material-air-carriers-managing-travellers-check-in-procedure-international-airports.html</url>
+		<url>https://www.sac-isc.gc.ca/eng/1319805325971/1572459825339</url>
+		<url>https://www.tc.gc.ca/en/services/aviation/commercial-air-services/approved-check-pilot-advanced-qualification-program/approved-check-pilot-advanced-qualification-program-bulletins/bulletin-03-20.html</url>
+		<url>https://www.tc.gc.ca/en/services/aviation/commercial-air-services/flight-dispatcher-training-operation-manuals/approved-check-dispatcher-acd-bulletin-no-1-20-novel-coronavirus-covid-19-response-measures.html</url>
+		<url>https://www.sac-isc.gc.ca/eng/1584656849722/1584656919871</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc.html</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/backgrounder-covid-19-safety-requirements-commercial-passenger-vessels-ferries.html</url>
+		<url>https://www.tc.gc.ca/eng/tdg/covid-19-requirements-safe-transportation-infectious-substances-class-6-2.html</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200322-eng.pdf</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc/interim-order-respecting-passenger-vessel-restrictions-coronavirus-disease-2019.html</url>
+		<url>https://www.wd-deo.gc.ca/eng/20052.asp</url>
+		<url>https://www.sac-isc.gc.ca/eng/1578079214611/1578079236012</url>
+		<url>https://www.international.gc.ca/covid-19-loan-pret/</url>
+		<url>https://www.sac-isc.gc.ca/eng/1584819394157/1584819418553</url>
+		<url>https://www.csc-scc.gc.ca/001/006/001006-1014-en.shtml</url>
+		<url>https://www.ic.gc.ca/eic/site/icgc.nsf/eng/07677.html</url>
+		<url>https://www.canada.ca/en/services/benefits.html</url>
+		<url>https://www.tc.gc.ca/en/services/rail/temporary-exemption-cror-track-safety-rules-qualification-regs.html</url>
+		<url>https://www.canada.ca/en/services/business.html</url>
+		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3255.htm</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/CHRO-message-03-09-2020.pdf</url>
+		<url>https://www.tc.gc.ca/en/services/aviation/reference-centre/safety-alerts/covid-19-interim-guidance-operators-crew-commercial-aviation.html</url>
+		<url>https://dec.canada.ca/eng/Covid-19.html</url>
+		<url>https://www.tc.gc.ca/eng/mediaroom/interim-order-prevent-certain-persons-boarding-flights-in-canada-covid-19.html</url>
+		<url>https://www.tc.gc.ca/eng/mediaroom/interim-order-prevent-certain-persons-boarding-flights-in-canada-covid-19-no-2.html</url>
+		<url>https://www.canada.ca/content/dam/phac-aspc/documents/services/diseases/2019-novel-coronavirus-infection/health-professionals/2019-nCoV-case-report-form-en.pdf</url>
+		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-annex-b-eng.pdf</url>
+		<url>https://www.tc.gc.ca/eng/marinesafety/bulletins-2020-06-eng.htm</url>
+
+	</startURLs>
+	<userAgent>TreasuryBoard/Covid crawler</userAgent>
+
+	<workDir>$workdir</workDir>
+
+	<!-- We go unlimited depth to make sure we follow all the pagination. - 
+		We are filtering out every that does not come from search results. -->
+	<maxDepth>0</maxDepth>
+
+	<!-- Aggressiveness: no point being too aggressive here. -->
+	<numThreads>2</numThreads>
+	<delay default="500" ignoreRobotsCrawlDelay="false" scope="site" />
+
+	<!-- Because we are explicit in the pages we want, we ignore most site crawling 
+		directives. -->
+	<robotsMeta ignore="true" />
+	<robotsTxt ignore="true" />
+	<canonicalLinkDetector ignore="true" />
+	<sitemapResolverFactory ignore="true" />
+
+	<!-- If no longer found in search results, do not keep it. -->
+	<orphansStrategy>PROCESS</orphansStrategy>
+
+	<!-- Useful to uncomment for troubleshooting: -->
+	<!-- <maxDocuments>12</maxDocuments> <metadataChecksummer disabled="true" 
+		/> <documentChecksummer disabled="true" /> -->
+
+	<!-- Extract/follow links from search result only. -->
+	<linkExtractors>
+		<extractor
+			class="ca.canada.treasury.testbed.extractor.NullExtractor"
+			ignoreNofollow="true">
+			<extractBetween>
+				<start><![CDATA[<section class="results.*?">]]></start>
+				<end><![CDATA[</section>]]></end>
+			</extractBetween>
+			<extractBetween>
+				<start><![CDATA[<ul class="pagination.*?">]]></start>
+				<end><![CDATA[</ul>]]></end>
+			</extractBetween>
+		</extractor>
+
+	</linkExtractors>
+	<!-- We only index pages coming from search results, except other result 
+		- pages. -->
+	<documentFilters>
+		<filter
+			class="com.norconex.collector.core.filter.impl.RegexReferenceFilter"
+			onMatch="include">
+			.*
+		</filter>
+
+	</documentFilters>
+
+	<importer>
+
+		<preParseHandlers>
+
+			<!-- Store a flag if the page contains an alert about COVID-19 -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom
+					selector=".alert.alert-warning, .alert.alert-danger, .bg-warning"
+					extract="text" toField="alert_tmp" />
+			</tagger>
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ReplaceTagger">
+				<replace fromField="alert_tmp" toField="alert" regex="true"
+					wholeMatch="true">
+					<fromValue>^.*(covid-19|coronavirus|cerb|pcu|Canada Emergency
+						Response Benefit|Prestation canadienne d'urgence).*$</fromValue>
+					<toValue>true</toValue>
+				</replace>
+			</tagger>
+
+			<!-- Extract all H2 and bread crumb levels 2, 3, 4 if they exist: -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector=".breadcrumb li:eq(1) a" extract="text"
+					toField="bc2_name" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(1) a" extract="attr(href)"
+					toField="bc2_url" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(2) a" extract="text"
+					toField="bc3_name" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(2) a" extract="attr(href)"
+					toField="bc3_url" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(3) a" extract="text"
+					toField="bc4_name" overwrite="true" />
+				<dom selector=".breadcrumb li:eq(3) a" extract="attr(href)"
+					toField="bc4_url" overwrite="true" />
+			</tagger>
+
+			<!-- Remove portions of a page we do not care about (e.g., "noise"): -->
+			<transformer
+				class="com.norconex.importer.handler.transformer.impl.StripBetweenTransformer"
+				inclusive="true">
+				<restrictTo field="document.contentType">text/html</restrictTo>
+				<stripBetween>
+					<start><![CDATA[<ul id="wb-tphp">]]></start>
+					<end><![CDATA[</ul>]]></end>
+				</stripBetween>
+				<stripBetween>
+					<start><![CDATA[<header\b.*?>]]></start>
+					<end><![CDATA[</header>]]></end>
+				</stripBetween>
+				<stripBetween>
+					<start><![CDATA[<footer\b.*?>]]></start>
+					<end><![CDATA[</footer>]]></end>
+				</stripBetween>
+				<stripBetween>
+					<start><![CDATA[<nav\b.*?>]]></start>
+					<end><![CDATA[</nav>]]></end>
+				</stripBetween>
+			</transformer>
+
+			<!-- We extract H2 after we cleanded up some portions (headfoot). -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector="h2" extract="text" toField="h2" overwrite="false" />
+			</tagger>
+
+		</preParseHandlers>
+
+		<postParseHandlers>
+
+			<!-- - TODO: Maybe store flag if covid-19 or coronavirus is found in - 
+				body after alert is taken out (to know if found in alert only). -->
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.FieldReportTagger"
+				maxSamples="5" withHeaders="true" withOccurences="true"
+				truncateSamplesAt="512" file="${workdir}/discovered-fields.csv" />
+
+
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ReplaceTagger">
+				<replace fromField="document.reference" toField="domain"
+					regex="true">
+					<fromValue>https://(.*?)/.*$</fromValue>
+					<toValue>$1</toValue>
+				</replace>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ReplaceTagger">
+				<replace fromField="title" regex="true">
+					<fromValue>(.*?)\s*-?\s*canada.ca</fromValue>
+					<toValue>$1</toValue>
+				</replace>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.RenameTagger">
+				<rename fromField="document.contentFamily" toField="filetype"
+					overwrite="true" />
+				<rename fromField="dcterms.subject" toField="subject"
+					overwrite="true" />
+				<rename fromField="dcterms.audience" toField="audience"
+					overwrite="true" />
+				<rename fromField="description" toField="desc"
+					overwrite="true" />
+				<rename fromField="dcterms.type" toField="category"
+					overwrite="true" />
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.SplitTagger">
+				<split fromField="audience" regex="true">
+					<separator>\s*,\s*</separator>
+				</split>
+				<split fromField="keywords" regex="true">
+					<separator>\s*,\s*</separator>
+				</split>
+				<split fromField="category" regex="true">
+					<separator>\s*;\s*</separator>
+				</split>
+				<split fromField="subject" regex="true">
+					<separator>\s*;\s*</separator>
+				</split>
+			</tagger>
+
+			<!-- Consider a few "modified" dates, but keep the first one only: -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DateFormatTagger"
+				fromField="dcterms.modified" toField="lastmodified"
+				toFormat="yyyy-MM-dd'T00:00:00.000Z'">
+				<fromFormat>yyyy-MM-dd</fromFormat>
+			</tagger>
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DateFormatTagger"
+				fromField="Last-Modified" toField="lastmodified"
+				toFormat="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'">
+				<fromFormat>EEE, dd MMM yyyy HH:mm:ss zzz</fromFormat>
+				<fromFormat>EPOCH</fromFormat>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ForceSingleValueTagger">
+				<singleValue field="lastmodified" action="keepFirst" />
+				<singleValue field="alert" action="keepFirst" />
+			</tagger>
+			
+			<filter
+				class="com.norconex.importer.handler.filter.impl.DateMetadataFilter"
+				onMatch="include" field="lastmodified" format="yyyy-MM-dd'T00:00:00.000Z'">
+				 <condition operator="ge" date="TODAY-1Y" />
+      			<condition operator="lt" date="TODAY" />
+			</filter>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.CurrentDateTagger"
+				field="lastcrawled" format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" />
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.CharacterCaseTagger">
+				<characterCase fieldName="author" type="lower"
+					applyTo="field" />
+				<characterCase fieldName="keywords" type="lower"
+					applyTo="field" />
+				<characterCase fieldName="title" type="lower"
+					applyTo="field" />
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.ConstantTagger"
+				onConflict="replace">
+				<constant name="language">${lang}</constant>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
+				<fields>
+					domain,
+					language,
+					filetype,
+					lastmodified,
+					lastcrawled,
+					author,
+					subject,
+					audience,
+					category,
+					keywords,
+					title,
+					desc,
+					h2,
+					bc2_name,
+					bc2_url,
+					bc3_name,
+					bc3_url,
+					bc4_name,
+					bc4_url,
+					alert
+				</fields>
+			</tagger>
+
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="title" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="author" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="subject" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="audience" maxLength="5096" overwrite="true"
+				suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="category" maxLength="5096" overwrite="true"
+				suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="keywords" maxLength="5096" overwrite="true"
+				suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="desc" maxLength="5096" overwrite="true" suffix="[...]" />
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.TruncateTagger"
+				fromField="h2" maxLength="5096" overwrite="true" suffix="[...]" />
+
+			<transformer
+				class="com.norconex.importer.handler.transformer.impl.ReplaceTransformer">
+				<replace>
+					<fromValue>(\s\s\s)\s+</fromValue>
+					<toValue>$1</toValue>
+				</replace>
+				<replace>
+					<fromValue>^\s+</fromValue>
+					<toValue></toValue>
+				</replace>
+				<replace>
+					<fromValue>\s+$</fromValue>
+					<toValue></toValue>
+				</replace>
+			</transformer>
+
+		</postParseHandlers>
+
+	</importer>
+
+	<committer class="com.norconex.committer.solr.SolrCommitter">
+		<solrURL>${solrURL}</solrURL>
+		<queueDir>${workdir}/solrcommitter-queue_${lang}</queueDir>
+		<queueSize>20</queueSize>
+		<commitBatchSize>20</commitBatchSize>
+		<maxRetries>3</maxRetries>
+		<maxRetryWait>10 seconds</maxRetryWait>
+	</committer>
+	<!-- <committer class="com.norconex.committer.core.impl.JSONFileCommitter"> 
+		<directory>${workdir}/crawledfiles_${lang}</directory> <pretty>true</pretty> 
+		</committer> -->
+
+</crawler>
