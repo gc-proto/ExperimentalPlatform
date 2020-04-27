@@ -1,0 +1,64 @@
+version: "3"
+services:
+  testbed_solr:
+    image: "ryanhyma/testbed_solr:1.0.0"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8983:8983"
+    restart: always
+    container_name: testbed_solr
+    volumes:
+      - searchdata:/var/solr/server/solr
+#  testbed_mysql:
+#    image: "ryanhyma/testbed_mysql:1.0.0"
+#    build:
+#      context: ../testbed-indexer/src/test/data/sql-dump
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3306:3306"
+#    restart: always
+#    container_name: testbed_mysql
+#    volumes:
+#      - dbdata:/var/lib/mysql
+  testbed_indexer:
+    image: "ryanhyma/testbed_indexer:1.0.0"
+    build:
+      context: ../testbed-indexer/
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    restart: always
+    container_name: testbed_indexer
+    depends_on: 
+      - testbed_solr
+    volumes:
+      - indexdata:/opt/indexer-data
+  #testbed_rest:
+  #  image: "ryanhyma/testbed_rest:1.0.0"
+  #  build:
+  #    context: ../testbed-rest/
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - "9191:9191"
+  #  restart: always
+  #  container_name: testbed_rest
+  #  depends_on: 
+  #    - testbed_solr
+  testbed_web:
+    image: "ryanhyma/testbed_web:1.0.0"
+    build:
+      context: ../testbed-web/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    restart: always
+    container_name: testbed_web
+    depends_on: 
+      - testbed_solr
+volumes:
+  searchdata:
+  indexdata:
+        

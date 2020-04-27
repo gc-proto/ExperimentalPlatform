@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layouts/default}"
+    lang="en">
+
+<head>
+  <title>Compare Solr Suggesters</title>
+</head>
+<body>
+
+<div layout:fragment="page_about">
+  <ul class="mb-0">
+    <li>
+      <strong>Purpose:</strong> understand the many ways the 
+      <a rel="noopener noreferrer" target="_BLANK" 
+          href="https://lucene.apache.org/solr/guide/8_1/suggester.html">
+      Solr Suggester</a> component can match terms.
+    </li>  
+    <li>
+      Each Suggester implementation is shown as a would-be drop-downs and their
+      heading can be clicked for documentation.
+    </li>
+    <li>
+      This page uses the <a rel="noopener noreferrer" target="_BLANK" 
+      href="https://www.statcan.gc.ca/eng/subjects/standard/naics/2017/v3/index">NAICS</a>
+      data set obtained from StatsCan.
+    </li>
+    <li>
+      There are too many tuning options to show them all here.
+    </li>
+    <li>
+      Not all Suggesters have built-in highlighting support, some will show
+      duplicates if there are duplicates in the data field being used, 
+      and some are case-sensitive. Everything was converted to lower case 
+      for testing.
+    </li>
+    <li>
+      The "FreeText" Suggester is more about term completion and uses the 
+      last term when multiple terms are provided.
+    </li>
+  </ul>
+</div>
+
+<div layout:fragment="page_content" id="page_content">
+
+  <h2>Compare Solr Suggesters</h2>
+
+  <form id="searchForm">
+    <div class="d-flex">
+      <div class="input-group flex-grow-1">
+        <input id="terms"
+            type="text" class="form-control" 
+            autocomplete="off" 
+            placeholder="Type 2 or more characters..." 
+            aria-label="Search recalls" 
+            aria-describedby="btnGroupAddon">
+        <div class="input-group-append">
+          <button class="btn btn-primary disabled" type="submit" 
+              disabled="disabled" aria-disabled="true" title="Cannot search on this page.">
+            <span class="fas fa-search" aria-hidden="true"></span>
+            Search
+          </button>
+        </div>          
+      </div>
+    </div>
+
+  </form>
+  
+  <div id="lookups" class="row">
+    <div th:each="lookup: ${lookupImpls}" 
+        th:id="${lookup}"
+        class="lookup col-sm-6 col-md-4 col-lg-3 mt-3 collapse show-by-default">
+        
+      <div class="card">
+        <div class="card-header py-1 px-3">
+          <a target="_blank" href="#"
+              th:href="@{'https://lucene.apache.org/solr/guide/8_1/suggester.html#' + ${lookup.toLowerCase()}}">
+            <th:block th:text="${#strings.substringBefore(lookup, 'LookupFactory')}">Lookup Factory</th:block>
+          </a>
+          <button type="button" class="close" aria-label="Close"
+              data-toggle="collapse" aria-expanded="false" 
+              th:data-target="'#' + ${lookup}"
+              th:attr="aria-controls=${lookup}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <ul class="suggestions list-group list-group-flush">
+          <!-- list items dynamically added -->
+        </ul>
+      </div> 
+
+    </div>
+  </div> 
+
+  <div id="lookupRestorables" class="row">
+    <div id="lookupRestorablesHeading" class="col-12 d-none">
+      <h3 class="mt-4">Restore</h3>
+    </div>
+    <div th:each="lookup: ${lookupImpls}" 
+        th:id="'restore-' + ${lookup}"
+        class="col-sm-6 col-md-4 col-lg-3 d-none">
+      <a th:href="'#' + ${lookup}" data-toggle="collapse" role="button" 
+          aria-expanded="false" 
+          class="btn btn-sm btn-outline-secondary w-100 mb-2 px-3 text-left"
+          aria-controls="${lookup}">
+        <th:block th:text="${lookup}">LookupFactory</th:block>
+        <strong class="float-right">+</strong>
+      </a>
+    </div>
+  </div>
+
+  
+  
+<!--/*
+  <div id="error" class="alert alert-danger mrgn-tp-md hidden">
+    <b>Error!</b><br>
+    <samp id="error-msg" class="text-danger"></samp><br>
+    <small class="text-muted">(Check for JavaScript errors.)</small>
+  </div>
+*/-->  
+
+  
+</div>
+
+<script type="text/javascript" layout:fragment="scripts">
+function refreshRestorableLookups() {
+    $('.lookup').each(function(index) {
+        var id = $(this).attr('id');
+        $('#restore-' + id).toggleClass('d-none', $(this).hasClass('show'));
+    });
+    $('#lookupRestorablesHeading').toggleClass(
+            'd-none', $('.lookup').not('.show').length == 0);
+}
+
+$(document).ready(function() {
+    $('.lookup').on('shown.bs.collapse', function () {
+        refreshRestorableLookups();
+    });
+    $('.lookup').on('hidden.bs.collapse', function () {
+        refreshRestorableLookups();
+    });
+    
+    // Auto-complete
+    $('#terms').autocomplete({
+      //source: 'suggesters/rest',
+      source: function(request, response) {
+          $.ajax({
+              url: 'suggestercomparator/rest',
+              data: {
+                  'term':request.term
+              },
+              dataType: "json",
+              success: function (data) {
+                  $.each(data, function(lkp, sugs) {
+                      $("#" + lkp + ' ul.suggestions').empty();
+                      $.each(sugs, function(index, sug) {
+                          $("#" + lkp + ' ul.suggestions').append(
+                                '<li class="list-group-item '
+                              + 'list-group-item-action py-1 px-3 small">'
+                              // Multi terms separated by \u001e by some 
+                              // suggesters. Replaced here with spaces.
+                              + sug.replace(/\u001e/g, ' ')  + '</li>');
+                      });
+                  });
+                  // Purposely ommit calling response() since we display
+                  // the suggestions in other locations.
+              },
+/*               error: function (jqXHR, text, errorThrown) {
+                  $("#error-msg").html(
+                      "<b>jqXHR:</b> " + JSON.stringify(jqXHR) + "<br>"
+                    + "<b>text:</b> " + JSON.stringify(text) + "<br>"        
+                    + "<b>errorThrown:</b> " + JSON.stringify(errorThrown)        
+                  );
+                  $('#error').show();
+              }
+ */    
+          });            
+      },
+      minLength: 2
+    });
+    refreshRestorableLookups();
+    $("#terms").keyup(function(e) {
+        if ($("#terms").val().length < 2) {
+            $('ul.suggestions').empty();
+        }
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+
+- Do a fragment with icons, with mouse-over labels
+
+- ideas:
+  <ul>
+    <li>Ability to chose fields to display.</li>
+    <li>Group related recalls in search results.</li>
+    <li>Parse binary files (e.g. PDF).</li>
+    <li>Also show recall dates in duration (e.g., 3 years ago).</li>
+  </ul>
+
+- Consider moving model/service to rest api to prevent duplication
+  if it turns out they are doing pretty much the same.
+  For now they are separate on purpose since the testbed is not compatible
+  for the most part and its API not stable.
+
+- add pill with X upon facet selection.
+- Do proper spell check markup + URL escaping.  E.g.: > chese '<  < &; &  

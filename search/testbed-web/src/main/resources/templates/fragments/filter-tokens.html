@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    lang="en">
+<body>
+<th:block 
+    th:fragment="filters(filterName, filterLabel, filterValues)" 
+    th:assert="${filterName}, ${filterLabel}, ${filterValues}">
+
+  <th:block th:each="filterValue: ${filterValues}">
+    <div class="filter-token border border-dark rounded m-1 d-inline-block">
+      <div class="filter-token-label bg-light d-inline-block border-right border-dark rounded-left px-2">
+        <small th:text="${filterLabel}">Label</small>
+      </div>
+      <div class="filter-token-value d-inline-block px-1">
+        <th:block th:if="${#strings.contains(filterValue, '|')}" th:text="${#strings.replace(#strings.substringAfter(filterValue, '|'), '|', ': ')}">value</th:block>
+        <th:block th:unless="${#strings.contains(filterValue, '|')}" th:text="${#messages.msgOrNull('filter.' + filterName + '.' + filterValue)?:filterValue}">value</th:block>
+      </div>
+      <button type="button" class="close" aria-label="Remove"
+          th:attr="data-filtername=${filterName}, data-filtervalue=${filterValue}">
+        <span aria-hidden="true" class="small px-1">&times;</span>
+      </button>
+    </div>
+  </th:block> 
+
+</th:block>
+</body>
+</html>

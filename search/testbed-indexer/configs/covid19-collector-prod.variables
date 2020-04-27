@@ -1,0 +1,5 @@
+# Change the values here to match your environment.
+
+workdir=/opt/indexer-data
+solrURL=http://testbed-solr:8983/solr/covid19
+

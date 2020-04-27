@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    lang="en">
+<body>
+<th:block th:fragment="sidebar-menu-items">
+  <ul class="list-unstyled"
+      th:id="${#strings.replace(parentPath,'/','_')}"
+      th:classappend="(${parentPath} ? 'collapse' : '') + ' ' + (${isParentActive} ? 'show' : '')">
+
+    <li th:each="menuItem : ${menuItems}"
+        th:with="
+            fullPath=${(parentPath?:'') + menuItem.path}, 
+            browserPath=${#request.servletPath}, 
+            isActive=${#strings.startsWith(browserPath, fullPath)}"
+        th:classappend="${isActive}?'active'">
+
+      <a th:if="${#lists.isEmpty(menuItem.submenus)}" 
+          href="#" th:href="@{${fullPath}}">
+        <span th:if="${menuItem.icon}" th:class="${menuItem.icon}"></span>
+        <th:block th:text="${menuItem.label}">Label</th:block>
+      </a>
+
+      <a th:unless="${#lists.isEmpty(menuItem.submenus)}" 
+          href="#" th:href="'#' + ${#strings.replace(fullPath,'/','_')}"
+          data-toggle="collapse" 
+          aria-expanded="false" th:aria-expanded="${isActive}"
+          class="dropdown-toggle">
+        <span th:if="${menuItem.icon}" th:class="${menuItem.icon}"></span>
+        <th:block th:text="${menuItem.label}">Label</th:block>
+      </a>
+
+      <th:block th:include="fragments/sidebar-menu-items :: sidebar-menu-items" 
+          th:with="menuItems=${menuItem.submenus}, parentPath=${fullPath}, isParentActive=${isActive}"></th:block>
+
+    </li>
+  </ul>
+
+</th:block>
+</body>
+</html>

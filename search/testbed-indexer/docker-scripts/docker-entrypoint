@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# start java run for indexer classes and source data files
+
+set -e
+
+if [[ "$VERBOSE" == "yes" ]]; then
+    set -x
+fi
+
+if [ "${1:0:1}" == '-' ]; then
+    set -- indexer-run "$@"
+fi
+
+exec "$@"

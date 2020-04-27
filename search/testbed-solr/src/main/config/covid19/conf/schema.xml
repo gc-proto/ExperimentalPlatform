@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ For more information, on how to customize this file, please see
+ http://lucene.apache.org/solr/guide/documents-fields-and-schema-design.html
+ OR:
+ https://github.com/apache/lucene-solr/blob/branch_8_4/solr/server/solr/
+     configsets/_default/conf/managed-schema
+-->
+<schema name="default-config" version="1.6">
+
+    <field name="id"           type="string"  indexed="true"  stored="true" required="true" multiValued="false" />
+    <field name="_version_"    type="plong"   indexed="false" stored="false"/>
+
+    <field name="domain"       type="string"  multiValued="false" indexed="true"  stored="true"/>
+    <field name="language"     type="string"  multiValued="true" indexed="true"  stored="true"/>
+    <field name="filetype"     type="string"  multiValued="false" indexed="true"  stored="true"/>
+    <field name="lastmodified" type="pdate"   multiValued="false" indexed="true"  stored="true"/>
+    <field name="lastcrawled"  type="pdate"   multiValued="false" indexed="true"  stored="true"/>
+    <field name="author"       type="string"  multiValued="true" indexed="true"  stored="true"/>
+    <field name="subject"      type="string"  multiValued="true"  indexed="true"  stored="true"/>
+    <field name="audience"     type="string"  multiValued="true"  indexed="true"  stored="true"/>
+    <field name="category"     type="string"  multiValued="true"  indexed="true"  stored="true"/>
+    <field name="keywords"     type="string"  multiValued="true"  indexed="true"  stored="true"/>
+
+    <!-- Fulltext, language neutral: -->
+    <field name="title"     type="text_general" multiValued="true"  indexed="true"  stored="true"/>
+    <field name="desc"      type="text_general" multiValued="true"  indexed="true"  stored="true"/>
+    <field name="content"   type="text_general" multiValued="false" indexed="true"  stored="true"/>
+
+    <!-- HTML headings: -->
+    <field name="h2"        type="string"  multiValued="true"  indexed="true"  stored="true"/>
+
+    <!-- Breadcrumb names for different levels, and their URLs: -->
+    <field name="bc2_name"  type="string"  multiValued="true"  indexed="true"  stored="true"/>  
+    <field name="bc2_url"   type="string"  multiValued="true"  indexed="false" stored="true"/>
+    <field name="bc3_name"  type="string"  multiValued="true"  indexed="true"  stored="true"/>
+    <field name="bc3_url"   type="string"  multiValued="true"  indexed="false" stored="true"/>
+    <field name="bc4_name"  type="string"  multiValued="true"  indexed="true"  stored="true"/>
+    <field name="bc4_url"   type="string"  multiValued="true"  indexed="false" stored="true"/>
+
+    <!-- Does it contain a covid-19 alert? -->
+    <field name="alert"     type="boolean" multiValued="false"  indexed="true"  stored="true" default="false"/>
+
+    <uniqueKey>id</uniqueKey>
+
+    <!-- Basic field types: -->
+    <fieldType name="string"   class="solr.StrField" sortMissingLast="true" docValues="true" />
+    <fieldType name="strings"  class="solr.StrField" sortMissingLast="true" multiValued="true" docValues="true" />
+    <fieldType name="boolean"  class="solr.BoolField" sortMissingLast="true"/>
+    <fieldType name="booleans" class="solr.BoolField" sortMissingLast="true" multiValued="true"/>
+    <fieldType name="pint"     class="solr.IntPointField" docValues="true"/>
+    <fieldType name="pints"    class="solr.IntPointField" docValues="true" multiValued="true"/>
+    <fieldType name="plong"    class="solr.LongPointField" docValues="true"/>
+    <fieldType name="plongs"   class="solr.LongPointField" docValues="true" multiValued="true"/>
+    <fieldType name="pfloat"   class="solr.FloatPointField" docValues="true"/>
+    <fieldType name="pfloats"  class="solr.FloatPointField" docValues="true" multiValued="true"/>
+    <fieldType name="pdouble"  class="solr.DoublePointField" docValues="true"/>
+    <fieldType name="pdoubles" class="solr.DoublePointField" docValues="true" multiValued="true"/>
+    <fieldType name="random"   class="solr.RandomSortField" indexed="true"/>
+    <fieldType name="pdate"    class="solr.DatePointField" docValues="true"/>
+    <fieldType name="pdates"   class="solr.DatePointField" docValues="true" multiValued="true"/>
+    <fieldType name="binary"   class="solr.BinaryField"/>
+
+    <fieldType name="rdate"    class="solr.DateRangeField"/>
+    <fieldType name="rdates"   class="solr.DateRangeField" multiValued="true"/>
+
+    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory"/>
+        <filter class="solr.WordDelimiterGraphFilterFactory"/>
+        <filter class="solr.FlattenGraphFilterFactory"/> <!-- required on index analyzers after graph filters -->        
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory"/>
+        <filter class="solr.WordDelimiterGraphFilterFactory"/>
+        <filter class="solr.SynonymGraphFilterFactory" synonyms="lang/synonyms.txt" ignoreCase="true" expand="true"/>
+      </analyzer>
+    </fieldType>
+
+
+    <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory"/>
+        <filter class="solr.WordDelimiterGraphFilterFactory"/>
+        <filter class="solr.FlattenGraphFilterFactory"/> <!-- required on index analyzers after graph filters -->        
+        <filter class="solr.PorterStemFilterFactory"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory"/>
+        <filter class="solr.WordDelimiterGraphFilterFactory"/>
+        <filter class="solr.SynonymGraphFilterFactory" synonyms="lang/synonyms_en.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.PorterStemFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <fieldType name="text_fr" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory"/>
+        <filter class="solr.ElisionFilterFactory"/>
+        <filter class="solr.WordDelimiterGraphFilterFactory"/>
+        <filter class="solr.FlattenGraphFilterFactory"/> <!-- required on index analyzers after graph filters -->        
+        <filter class="solr.FrenchLightStemFilterFactory"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory"/>
+        <filter class="solr.ElisionFilterFactory"/>
+        <filter class="solr.WordDelimiterGraphFilterFactory"/>
+        <filter class="solr.SynonymGraphFilterFactory" synonyms="lang/synonyms_fr.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.FrenchLightStemFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
+</schema>

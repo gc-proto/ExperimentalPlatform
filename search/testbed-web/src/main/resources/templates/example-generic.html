@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layouts/default}"
+    lang="en">
+
+<head>
+  <title>Generic Search Features</title>
+</head>
+<body>
+
+<div layout:fragment="page_about">
+  <ul class="mb-0">
+    <li>
+      <strong>Purpose:</strong> show an assortment of generic search features
+      in one place.
+    </li>
+    <li>
+      <strong>Sorting</strong> is done on relevance by default, with a 
+      fall back on date when recalls have the same score (e.g., when 
+      no terms are specified).
+    </li>
+    <li>
+      When sorting by <strong>relevance</strong>, matches on title are valued 
+      more, then the description, followed by everything else.
+    </li>
+    <li>
+      <strong>Highlighting</strong> is performed on title and description.
+    </li>
+    <li>
+      <strong>Vehicles</strong> are from 
+      <a href="https://open.canada.ca/data/en/dataset/1ec92326-47ef-4110-b7ca-959fab03f96d" 
+            rel="noopener noreferrer" target="_BLANK">Transport Canada Open Data</a>,
+      while <strong>food</strong>, <strong>health products</strong>, 
+      and <strong>consumer products</strong> are from Health Canada
+      recall database snapshot.
+    </li>
+    <li>
+      Not all <strong>facets</strong> are shown by default.  Some will
+      show under the right conditions only (like choosing a recall type first).
+      Year-based facets are made of custom dynamic numeric ranges.
+    </li>
+    <li>
+      Showing the <strong>last two years</strong> for food and health 
+      recalls by default.
+    </li>
+    <li id="try">
+      <strong>Spell-check</strong> (Did You mean) feature is available. Try:
+      <a href="#">reduccion</a> 
+      <a href="#">pottato</a> 
+      <a href="#">lymphohistiocitosys</a> 
+    </li>
+  </ul>
+</div>
+
+<div layout:fragment="page_content" id="page_content">
+
+  <h2>Generic Search Features</h2>
+
+  <form id="searchForm"  
+      action="#" th:action="@{''}" th:object="${searchRequest}" method="get">
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="input-group">
+          <input id="terms" th:field="*{terms}"
+              type="text" class="form-control" 
+              autocomplete="off" 
+              placeholder="Search for recalls..." 
+              aria-label="Search recalls" 
+              aria-describedby="btnGroupAddon">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+              <span class="fas fa-search" aria-hidden="true"></span>
+              Search
+            </button>
+          </div>          
+        </div>
+      </div>
+      <div class="col-12 text-right">
+        <div class="form-check mt-1">
+          <input class="form-check-input" type="checkbox" value="" id="includeArchived" th:field="*{includeArchived}">
+          <label class="form-check-label smaller" for="includeArchived">
+            Include older food and health recalls
+          </label>
+        </div>
+      </div>      
+    </div>
+
+    <!-- SPELLCHECK -->
+
+    <th:block th:with="spell=${searchResponse.spellCheck}">
+      <div class="form-row mt-0" th:if="!${spell.empty}">
+        <div class="col-12 text-secondary">
+          <span class="fas fa-exclamation-circle"></span> 
+          Did you mean "<a href="#" 
+              th:href="@{'?terms=' + ${spell.query}}" 
+              th:utext="${spell.markup}"></a>"?
+        </div> 
+      </div>
+    </th:block>
+    
+    <!-- ACTIVE FILTERS: -->
+
+    <div class="form-row mt-3 d-none" id="searchActiveFilters">
+      <div class="col-12 text-dark">
+        <strong>Active filters:</strong> 
+      </div>
+      <div class="col-12 active-filter-list">
+        <th:block th:include="fragments/filter-tokens :: filters('recall_types', 'Recall Type', ${searchRequest.recallTypes})"></th:block>
+        <th:block th:unless="${searchRequest.recallTypes.empty}">
+          <th:block th:include="fragments/filter-tokens :: filters('recall_cat_hier', 'Category', ${searchRequest.categories})"></th:block>
+          <th:block th:include="fragments/filter-tokens :: filters('recall_alert_type', 'Alert Type', ${searchRequest.alertTypes})"></th:block>
+          <th:block th:unless="${searchRequest.recallTypes.contains('vehicles')}">
+            <th:block th:include="fragments/filter-tokens :: filters('recall_audiences', 'Audience', ${searchRequest.audiences})"></th:block>
+          </th:block>
+        </th:block>
+        <th:block th:include="fragments/filter-tokens :: filters('recall_year', 'Recall Year', ${searchRequest.recallYearRanges})"></th:block>
+        <th:block th:if="${searchRequest.recallTypes.contains('vehicles')}">
+          <th:block th:include="fragments/filter-tokens :: filters('vhcl_make', 'Make', ${searchRequest.vehicleMakes})"></th:block>
+          <th:block th:include="fragments/filter-tokens :: filters('vhcl_years', 'Model Year', ${searchRequest.vehicleYearRanges})"></th:block>
+        </th:block>
+      </div>
+    </div>
+    
+    <!-- SEARCH RESPONSE -->
+
+    <div class="mt-3" id="searchResponse">
+
+      <!-- Result headers -->
+      <div th:unless="${searchResponse.empty}" class="row">
+        <div class="col-12 d-flex justify-content-between align-items-end">
+
+          <div class="h5 m-0">
+            <th:block th:if="${pagination.pageCount > 1}">
+              <strong th:text="${ui.formatNumber(pagination.firstDocIndex)}">1</strong>-<strong th:text="${ui.formatNumber(pagination.lastDocIndex)}">10</strong> of
+            </th:block>
+            <strong th:text="${ui.formatNumber(searchResponse.results.numFound)}">99</strong>
+            <th:block th:if="${searchResponse.results.numFound == 1}">recall.</th:block>    
+            <th:block th:if="${searchResponse.results.numFound > 1}">recalls.</th:block>    
+          </div>
+
+          <div class="form-inline d-inline-block">
+            <span class="small"><span class="fas fa-sort-amount-down"></span> Sort by:</span>
+            <select id="sort" th:field="*{sort}" class="form-control form-control-sm">
+                <option th:value="'score desc, recall_date desc'">Relevance, date</option>
+                <option th:value="'recall_date desc'">Date</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12"><hr class="mt-1 mb-3 border-top border-secondary"></div>
+      </div>
+
+      <div class="row">
+
+        <!--/* FACETS */-->
+
+        <div id="resultsFacets" class="col-sm-12 col-md-4 col-xl-3">
+          <div th:include="fragments/facet :: facet('recallTypes', ${searchResponse.getFacet('recall_types')}, ${searchRequest.recallTypes}, 'single')"></div>
+          <th:block th:unless="${searchRequest.recallTypes.empty}">
+            <div th:include="fragments/facet :: facet('categories', ${searchResponse.getFacet('recall_cat_hier')}, ${searchRequest.categories}, 'single')"></div>
+            <div th:include="fragments/facet :: facet('alertTypes', ${searchResponse.getFacet('recall_alert_type')}, ${searchRequest.alertTypes}, 'single')"></div>
+            <th:block th:unless="${searchRequest.recallTypes.contains('vehicles')}">
+              <div th:include="fragments/facet :: facet('audiences', ${searchResponse.getFacet('recall_audiences')}, ${searchRequest.audiences}, 'multiple')"></div>
+            </th:block>
+          </th:block>
+          <div th:include="fragments/facet :: facet('recallYearRanges', ${searchResponse.getFacet('recall_year')}, ${searchRequest.recallYearRanges}, 'multiple')"></div>        
+          <th:block th:if="${searchRequest.recallTypes.contains('vehicles')}">
+            <div th:include="fragments/facet :: facet('vehicleMakes', ${searchResponse.getFacet('vhcl_make')}, ${searchRequest.vehicleMakes}, 'multiple')"></div>
+            <div th:include="fragments/facet :: facet('vehicleYearRanges', ${searchResponse.getFacet('vhcl_years')}, ${searchRequest.vehicleYearRanges}, 'multiple')"></div>        
+          </th:block>          
+
+<!--/*
+          <div th:include="fragments/facet :: facet('categories', ${searchResponse.getFacet('recall_categories')}, ${searchRequest.categories}, 'multiple')"></div>        
+          <div th:include="fragments/facet :: facet('recallDepartments', ${searchResponse.getFacet('recall_dept')}, ${searchRequest.recallDepartments})"></div>        
+*/-->
+
+        </div>
+
+        <!--/* DOCUMENTS */-->
+
+        <div id="searchResults" class="col-sm-12 col-md-8 col-xl-9">
+  
+          <!--/* NO RESULTS */-->
+
+          <div id="noResults" th:if="${searchResponse.empty}" class="col-12">
+            <h4 class="mt-3">
+              <span class="fas fa-info-circle"></span> 
+              No recalls were found matching your criteria.
+            </h4>
+            <div class="ml-3 mb-2 text-muted"><small>Try with different search terms or filters.</small></div>
+            <div class="text-center bg-light border mb-5" style="overflow: hidden;">
+              <img alt="No results" src="#" th:src="@{/images/no-results.gif}"
+                  style="max-width: 75%; min-width: 300px; margin-top: -50px;">
+            </div>
+          </div>
+  
+          <!--/* RESULTS */-->
+
+          <div th:unless="${searchResponse.empty}">
+            <th:block th:each="doc,it: ${searchResponse.results}">
+
+              <div class="mb-3">
+                <h5 class="doc-title py-1 px-0 mb-0 border-bottom xbg-light">
+
+                  <div class="d-flex align-items-center">
+                    <div class="mr-3 mb-1">
+                      <th:block th:each="type: ${doc.types}">
+                        <span class="fas fa-lg text-dark" th:classappend="'fa-' + #{'fa.recallTypes.' + ${type}}" aria-hidden="true"></span>
+                      </th:block>
+                    </div>
+
+                    <!--/* Title */-->
+
+                    <a class="flex-grow-1" href="#" th:href="@{${doc.url}}">
+                      <th:block th:if="${doc.title}" th:utext="${doc.title}">Has a title</th:block>
+                      <th:block th:unless="${doc.title}">
+                        <th:block th:text="#{'title.recallTypes.' + ${#strings.listJoin(doc.types, '/')}">Type</th:block> 
+                        recall #<th:block th:text="${doc.recallNo}">666</th:block>
+                      </th:block>
+                    </a>
+
+                    <!--/* Button: Extra */-->
+
+                    <button type="button" class="doc-extra btn btn-xs btn-outline-info"
+                        data-toggle="modal" data-target="#extraModal"
+                        th:attr="data-index=${it.index}">
+                      <span class="fas fa-info-circle" aria-hidden="true"></span>
+                    </button>
+                  </div>
+                </h5>
+                <div class="py-1">
+                  <div class="doc-details">
+
+                    <!--/* Doc top fields */-->
+
+                    <div class="pb-1 d-flex small">
+                      <div class="flex-grow-1">
+                      
+                        <span th:unless="${#lists.isEmpty(doc.descriptionFields)}" 
+                            class="db-desc-fields text-info">
+                          <th:block th:if="${doc.summary}">
+                            Static summary from:
+                            info_summary_product_name,
+                            info_summary_issue, 
+                            info_summary_what_to_do
+                          </th:block>
+                          <th:block th:unless="${doc.summary}">
+                            Dynamic summary from: 
+                            <th:block th:text="${#strings.listJoin(doc.descriptionFields, ', ')}">
+                            </th:block>
+                          </th:block>
+                        </span>
+                      </div>
+                      <div>
+                        <span title="Recall date">
+                          <span class="far fa-calendar-alt"></span>
+                          <th:block th:text="${ui.formatDate(doc.date)}">August 16, 2019</th:block>
+                        </span>
+                      </div>
+                    </div>
+
+                    <!--/* Summary */-->
+
+                    <div class="doc-summary text-justify text-dark pb-2">
+                      <th:block th:if="${doc.summary}" th:utext="${doc.summary}">
+                        Dynamic Summary
+                      </th:block>
+                      <th:block th:unless="${doc.summary}" th:utext="${doc.description?:'<i>No description</i>.'}">
+                        Dynamic Summary
+                      </th:block>
+                    </div>
+
+                    <!--/* Doc bottom fields */-->
+                    
+                    <dl class="row" th:with="dtClass='col-md-12 col-lg-4 col-xl-3', ddClass='col-md-12 col-lg-8 col-xl-3'">
+                      <th:block th:include="fragments/result-recall-details :: details(${doc}, ${dtClass}, ${ddClass})"></th:block>
+                    </dl>
+
+                    <!--/* All other fields */-->
+
+                    <div th:id="${'misc-content-' + it.index}" 
+                        class="text-justify pb-1 d-none">
+                      <th:block th:each="fld: ${doc.catchAllFields}">
+                        <h5 th:id="'db-field-' + ${fld}" class="db-field-name" th:text="${#strings.substringBefore(fld, '=')}">Field Name</h5>
+                        <p th:id="'db-value-' + ${fld}" class="db-field-value" th:text="${#strings.substringAfter(fld, '=')}">Field Value</p>
+                      </th:block>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </th:block>
+          </div>
+
+          <!--/* PAGINATION */-->
+          <nav class="mt-5" aria-label="Pagination" th:if="${pagination.pageCount > 1}">
+            <ul class="pagination justify-content-center">
+              <li th:unless="${pagination.currentPageFirst}" class="page-item" th:classappend="${pagination.currentPageFirst} ? 'disabled'">
+                <a class="page-link" href="#" th:attr="data-pageindex=${pagination.previousPage}" title="Previous page">
+                  <span class="fas fa-angle-left"></span>
+                </a>
+              </li>
+              <th:block th:each="pageNo : ${pagination.pageNumbers}">
+                <li class="page-item" th:classappend="${pagination.currentPage == pageNo} ? 'active'">
+                  <a class="page-link" href="#" th:text="${pageNo}" th:title="|Go to page ${pageNo}|" th:attr="data-pageindex=${pageNo}">1</a>
+                </li>
+              </th:block>
+              <li th:unless="${pagination.currentPageLast}" class="page-item" th:classappend="${pagination.currentPageLast} ? 'disabled'">
+                <a class="page-link" href="#" th:attr="data-pageindex=${pagination.nextPage}" title="Next page">
+                  <span class="fas fa-angle-right"></span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+        </div>  
+
+      </div>
+
+    </div>  
+  </form>
+
+  <!-- Extra Dialog -->
+  <div class="modal fade" id="extraModal" tabindex="-1" role="dialog"
+      aria-labelledby="extraModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-info">
+            <span class="fas fa-info-circle" aria-hidden="true"></span>
+            Available fields 
+            <small class="text-muted">(all searchable as fulltext)</small>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body small">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script type="text/javascript" layout:fragment="scripts">
+$(document).ready(function() {
+    $('.page-link').click(function() {
+        return addInputAndSubmit(
+                'searchForm', 'pageIndex', $(this).data('pageindex'));
+    });
+
+    $('#sortOptions input').change(function() {
+        $('#searchForm').submit();
+        return false;
+    });
+
+    $(".facet-values").niceScroll({
+        zindex: 2,
+        enableobserver: true,
+        disablemutationobserver: false
+    });
+    $(".facet-values").mouseover(function() {
+        $(this).getNiceScroll().resize();
+    });
+    
+    $(".facet-value").click(function() {
+        if ($(this).hasClass('active')) {
+            return removeInputAndSubmit('searchForm', 
+                    $(this).data('facetfield'), $(this).data('facetvalue'));
+        } if ($(this).parent('.facet-values').data('selecttype') === 'single') {
+            return setInputAndSubmit('searchForm', 
+                    $(this).data('facetfield'), $(this).data('facetvalue'));
+        } else  {
+            return addInputAndSubmit('searchForm', 
+                    $(this).data('facetfield'), $(this).data('facetvalue'));
+        }
+    });      
+
+    $('#extraModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var contentEl = '#misc-content-' + button.data('index'); 
+        var modal = $(this);
+        modal.find('.modal-body').empty();
+        modal.find('.modal-body').append($(contentEl).html());
+    });
+    
+    aboutTryLink('#try a', function(link) {
+        $('#terms').val($(link).text());
+        $('#searchForm').submit(); 
+    });
+    
+    if ($('#searchActiveFilters .active-filter-list').children().length > 0) {
+        $('#searchActiveFilters').removeClass('d-none');
+    }
+    
+    $('.filter-token button.close').click(function() {
+        removeInputAndSubmit('searchForm', 
+                $(this).data('filtername'), $(this).data('filtervalue'));
+        return false;
+    });
+
+    $('#sort').change(function() {
+        $('#searchForm').submit(); 
+    });
+    $('#includeArchived').change(function() {
+        $('#searchForm').submit(); 
+    });
+    
+});
+</script>
+
+</body>
+</html>

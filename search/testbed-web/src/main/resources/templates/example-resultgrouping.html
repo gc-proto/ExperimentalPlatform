@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layouts/default}"
+    lang="en">
+
+<head>
+  <title>Results Grouping</title>
+</head>
+<body>
+
+<div layout:fragment="page_about">
+  <ul class="mb-0">
+    <li>
+      <strong>Purpose:</strong> show how results can be grouped using Solr 
+      <a rel="noopener noreferrer" target="_BLANK" 
+          href="https://lucene.apache.org/solr/guide/8_3/result-grouping.html">
+      Result Grouping</a> feature. 
+    </li>
+    <li>
+      Recalls are grouped by <strong>brand name</strong>. 
+    </li>
+    <li>
+      Unlike result collapsing, here all matching recalls are returned 
+      in the main search result, grouped by the brand value. In this scenario,
+      it would not make much sense to only show the first recall. 
+    </li>
+    <li>
+      Search is purposely <strong>very basic</strong> to focus on grouping only:
+      <ul class="small">
+        <li>
+          No highlight, no field boosting, no spell check, no pagination, etc. 
+        </li>
+        <li>
+          Showing only 20 groups of max 10 entries each, minus duplicate titles. 
+        </li>
+        <li>
+          Results are sorted by date. 
+        </li>
+      </ul>
+    </li>
+    <li id="try">
+      A few <b>examples:</b>
+        <a href="#">potato</a>
+        <a href="#">beef</a>
+        <a href="#">e. coli</a>
+        <a href="#">headache</a>
+        <a href="#">plush</a>
+        <a href="#">break</a>
+        <a href="#">"air bag"</a>
+    </li>    
+  </ul>
+</div>
+
+
+<div layout:fragment="page_content" id="page_content">
+
+  <h2>Result Grouping <small class="text-muted">(by brands)</small></h2>
+
+  <form id="searchForm"  
+      action="#" th:action="@{''}" method="get" class="mb-4">
+    <div class="form-row">
+      <div class="col-12">
+        <div class="input-group">
+          <input id="terms" th:name="terms"
+              type="text" class="form-control"
+              th:value="${param.terms}" 
+              autocomplete="off" 
+              placeholder="Search for recalls..." 
+              aria-label="Search recalls" 
+              aria-describedby="btnGroupAddon">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+              <span class="fas fa-search" aria-hidden="true"></span>
+              Search
+            </button>
+          </div>          
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+  <div class="row align-items-end">
+    <div class="col-12 h5 m-0">
+      <strong th:text="${ui.formatNumber(matches)}">1</strong> recalls found over
+      <strong th:text="${ui.formatNumber(ngroups)}">1</strong> company/brand groups.
+      <!--  <small class="text-muted">(showing a subset)</small>   -->
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12"><hr class="mt-1 mb-3 border-top border-secondary"></div>
+  </div>
+
+
+  <div class="row" th:each="group : ${searchResults}">
+    <div class="col-12">
+      <strong>
+        <th:block th:unless="${group.name}"><em class="text-muted">No associated brand/company name in source material</em></th:block>
+        <th:block th:if="${group.name}" th:text="${group.name}">company/brand</th:block>
+      </strong>
+      <div class="border-top border-1 smaller">
+        <ul class="fa-ul">
+          <th:block th:each="recall, it : ${group.recalls}">
+            <li>
+              <span class="fa-li text-nowrap">
+                <th:block th:each="type: ${recall.types}">
+                  <span class="fas fa-lg text-dark" th:classappend="'fa-' + #{'fa.recallTypes.' + ${type}}" aria-hidden="true"></span>
+                </th:block>
+              </span>
+              <a href="#" th:href="@{${recall.url}}" th:utext="${recall.title}" class="pl-2">
+                title
+              </a>
+            </li>
+            <li th:if="${it.last} and ${group.numRemaining > 0}">
+              <strong><em class="text-muted" th:text="${ui.formatNumber(group.numRemaining) + ' more...'}">how many more</em></strong>
+            </li>
+          </th:block>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script type="text/javascript" layout:fragment="scripts">
+$(document).ready(function() {
+    aboutTryLink('#try a', function(link) {
+        $('#terms').val($(link).text());
+        $('#searchForm').submit(); 
+    });
+});
+</script>
+
+</body>
+</html>

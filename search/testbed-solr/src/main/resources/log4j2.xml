@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Configuration>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss} : %-5p %c{1} - %m%n" />
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="all">
+        <AppenderRef ref="Console" />
+    </Root>
+
+    <Logger name="ca.canada.treasury.testbed.solr" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+<!-- 
+    <Logger name="org.apache.lucene.search.suggest.analyzing.FreeTextSuggester" level="FATAL" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+ -->
+  
+    <Logger name="com" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="org" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+
+  </Loggers>
+</Configuration>

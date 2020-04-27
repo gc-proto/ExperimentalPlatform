@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    lang="en">
+<body>
+<th:block 
+    th:fragment="details(doc, dtClass, ddClass)" 
+    th:assert="${doc}, ${dtClass}, ${ddClass}">
+
+<!--/*-->
+<dl>
+<!--*/-->
+
+  
+  <th:block th:if="${#lists.contains(doc.types, 'vehicles')}">
+
+    <dt th:class="${dtClass}">Model</dt>
+    <dd th:class="${ddClass}">
+      <th:block th:utext="${doc.model}">Model</th:block>
+      <th:block th:text="${#strings.arrayJoin(doc.years, ', ')}">1984</th:block>
+    </dd>
+
+    <dt th:class="${dtClass}">Notification type</dt>
+    <dd th:class="${ddClass}" th:utext="${doc.notificationType}">Notification type</dd>
+
+  </th:block>
+
+  
+<!--/*-->
+</dl>
+<!--*/-->
+
+</th:block>
+</body>
+</html>

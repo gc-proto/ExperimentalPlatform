@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layouts/default}"
+    lang="en">
+
+<head>
+  <title>Home</title>
+</head>
+<body>
+
+<div layout:fragment="page_about">
+
+  <div class="d-flex">
+    <div class="flex-fill align-self-end">
+      <h4>This application is...</h4>
+    </div>
+    <div class="d-inline-flex border border-dashed border-2 border-info rounded rounded-lg p-2">
+      <div class="flex-fill align-self-center text-info">
+         Click the "About" button to show/hide this contextual info box on any page.
+      </div>
+      <div class="flex-shrink-1 pl-2 text-info">
+         <span class="fas fa-level-up-alt fa-2x"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-deck my-0">
+    <div class="card border-0 text-success">
+      <div class="card-body py-0">
+        <p class="card-text">
+          <ul class="fa-ul">
+            <li><span class="fa-li"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                To showcase and test search features.</li>
+            <li><span class="fa-li"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                To compare different search options.</li>
+            <li><span class="fa-li"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                To help developers and designers.</li>
+            <li><span class="fa-li"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                To perform POCs for more complex use cases.</li>
+            <li><span class="fa-li"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                To teach and learn.</li>
+            <li><span class="fa-li"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                To encourage creativity.</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+    <div class="card border-0 text-danger">
+      <div class="card-body py-0">
+        <p class="card-text">
+          <ul class="fa-ul">
+            <li><span class="fa-li"><i class="fas fa-ban" aria-hidden="true"></i></span>
+                Not for production use.</li>
+            <li><span class="fa-li"><i class="fas fa-ban" aria-hidden="true"></i></span>
+                Not built for performance/stability/quality.</li>
+            <li><span class="fa-li"><i class="fas fa-ban" aria-hidden="true"></i></span>
+                Not tested for accessibility.</li>
+            <li><span class="fa-li"><i class="fas fa-ban" aria-hidden="true"></i></span>
+                Not WET/CLF compliant.</li>
+            <li><span class="fa-li"><i class="fas fa-ban" aria-hidden="true"></i></span>
+                Not a set of implementation standards.</li>
+            <li><span class="fa-li"><i class="fas fa-ban" aria-hidden="true"></i></span>
+                Not telling you how to do things.</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <div class="inline-block d-inline-flex border border-dashed border-2 border-info rounded rounded-lg p-2">
+      <div class="flex-shrink-1 pr-2 text-info">
+        <span class="fas fa-long-arrow-alt-left fa-2x"></span>
+      </div>
+      <div class="flex-fill align-self-center text-info">
+        Use the side bar menu to navigate through various examples.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div layout:fragment="page_content" id="page_content">
+
+  <h2><span class="far fa-newspaper"></span> Latest Changes</h2>
+
+  <table class="table table-borderless table-sm">
+    <caption class="d-none">Latest changes</caption>
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Page</th>
+        <th scope="col">Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <th:block th:each="entry : ${@changelog}">
+        <th:block th:each="page : ${entry.pages}" th:with="label=${@pathLabels.get(page.path)}">
+          <tr th:class="${pageStat.first} ? 'border-top' : ''">
+            <td th:if="${pageStat.first}"
+                th:rowspan="${pageStat.size}" 
+                th:text="${entry.date}"
+                class="font-weight-bold text-nowrap">date</td>
+            <td class="text-nowrap">
+              <a th:if="${label}" href="#" th:href="@{${page.path}}" th:text="${label}">Page</a>
+              <th:block th:unless="${label}">N/A</th:block> 
+            </td>
+            <td class="font-weight-light">
+              <ul class="mb-2">
+                <li th:each="change : ${page.changes}">
+                  <span th:text="${change}">change</span>
+                </li>
+              </ul>
+            </td> 
+          </tr>
+        </th:block>
+      </th:block>
+    </tbody>
+  </table>
+  
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: testbed-indexer
+spec:
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: testbed-indexer
+            image: ryanhyma/testbed_indexer:1.0.0
+            imagePullPolicy: Always
+          restartPolicy: OnFailure

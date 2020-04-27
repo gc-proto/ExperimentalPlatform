@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<!-- Configuration documentation: https://norconex.com/collectors/collector-http/configuration -->
+
+<httpcollector id="Covid-19 Collector">
+
+	# Please define the following variables in a ".variables" file.
+	# or uncomment them here.
+	##set($workdir = "path to generated files")
+	##set($solrURL = "URL to solr collection")
+
+	<progressDir>$workdir</progressDir>
+	<logsDir>$workdir</logsDir>
+
+	<crawlers>
+		#set($lang = "en")
+		#parse("fragments/covid19-crawler_manual_en.xml")
+
+		#set($lang = "fr")
+		#parse("fragments/covid19-crawler_manual_fr.xml")
+
+		#set($lang = "en")
+		#parse("fragments/covid19-crawler.xml")
+
+		#set($lang = "fr")
+		#parse("fragments/covid19-crawler.xml")
+
+	</crawlers>
+
+</httpcollector>

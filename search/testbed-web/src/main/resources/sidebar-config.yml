@@ -1,0 +1,35 @@
+menu:
+- label: Home
+  path: /home
+  icon: fas fa-fw fa-home
+- label: COVID-19
+  path: /covid19
+  icon: fas fa-fw fa-virus
+  submenus: 
+  - label: Content Monitor
+    path: /monitor
+- label: Experiments
+  path: /example
+  icon: fas fa-fw fa-vial
+  submenus: 
+  - label: Generic Search
+    path: /generic
+  - label: Smart Suggest
+    path: /smartsuggest
+  - label: Results Collapsing
+    path: /resultcollapsing
+  - label: Results Grouping
+    path: /resultgrouping
+  - label: Results Clustering
+    path: /resultclustering
+  - label: Barcode scanner
+    path: /barcodescanner
+- label: Tools
+  path: /tool
+  icon: fas fa-fw fa-tasks
+  submenus: 
+  - label: Suggester Comparator
+    path: /suggestercomparator
+  - label: Relevancy Tuner
+    path: /relevancytuner
+    

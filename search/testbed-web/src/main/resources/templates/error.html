@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+  <title>Nooooooooo!</title>
+    <link rel="stylesheet" 
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous"> 
+    <link rel="stylesheet" href="/css/testbed.css" th:href="@{/css/testbed.css}">
+    <link rel="shortcut icon" href="images/favicon.ico" th:href="@{/images/favicon.ico}" type="image/x-icon">
+    <link rel=icon href="images/favicon.ico" th:href="@{/images/favicon.ico}" type="image/x-icon">
+
+    <style>
+      body {
+        background-color: white;
+      }
+    </style>
+</head>
+<body>
+
+  <div style="display: flex;
+              align-items: center;
+              justify-content: center;">
+    <img th:src="@{/images/bug-grasshopper.gif}" class="mt-5" width="128" alt="A bug!">
+    <h1 class="ml-3">Gotcha!</h1>
+  </div>
+  
+  <div class="p-5">
+    <table class="table table-striped text-wrap table-bordered w-100">
+      <caption class="d-none">Error details</caption>
+      <tbody>
+        <tr>
+            <th scope="row">Date</th>
+            <td th:text="${timestamp}"/>
+        </tr>
+        <tr>
+            <th scope="row">Path</th>
+            <td th:text="${path}"/>
+        </tr>
+        <tr>
+            <th scope="row">Error</th>
+            <td th:text="${error}"/>
+        </tr>
+        <tr>
+            <th scope="row">Status</th>
+            <td th:text="${status}"/>
+        </tr>
+        <tr>
+            <th scope="row">Message</th>
+            <td th:text="${message}"/>
+        </tr>
+        <tr>
+            <th scope="row">Exception</th>
+            <td th:text="${exception}"/>
+        </tr>
+        <tr>
+            <th scope="row">Trace</th>
+            <td><pre style="white-space: pre-wrap; word-break: break-word; word-wrap: break-word;" th:text="${trace}"/></td>
+        </tr>
+      <tbody>
+    </table>
+  </div>
+
+</body>
+</html>

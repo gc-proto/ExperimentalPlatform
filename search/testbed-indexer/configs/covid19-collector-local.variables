@@ -1,0 +1,5 @@
+# Change the values here to match your environment.
+
+workdir = ./workdir/covid19
+solrURL = http://localhost:8983/solr/covid19
+

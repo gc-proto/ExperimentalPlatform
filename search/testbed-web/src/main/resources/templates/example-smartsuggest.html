@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layouts/default}"
+    lang="en">
+
+<head>
+  <title>Smart Suggester</title>
+</head>
+<body>
+
+<div layout:fragment="page_about">
+
+  <!--/* === ABOUT ======================================================= */-->
+
+  <ul class="mb-0">
+    <li>
+      <strong>Purpose:</strong> show how different data sources and search 
+      methods can be mixed to give smarter suggestions.
+    </li>  
+    <li>Stopwords are used for Ungrouped/Grouped.</li>
+    <li>Suggests a varying number of maximum items per category.</li>
+    <li id="try">
+      Ungrouped/Grouped search methods:
+      <ul>
+        <li>
+          <strong>Vehicle make</strong> and <strong>system type</strong>: 
+          BlendedInfix suggester.
+        </li>
+        <li>
+          <strong>Vehicle year</strong> and <strong>recall year</strong>: 
+          Pattern detection. 
+        </li>
+        <li>
+          Recall <strong>title</strong>: 
+          fulltext search, with wildcard after more than 3 chars.
+        </li>
+      </ul>
+    <li id="try">
+      Post-Search search methods:
+      <ul>
+        <li>
+          Mainly relying on top category <strong>facet</strong>.
+        </li>
+      </ul>
+    </li>    
+    
+  </ul>
+</div>
+
+<div layout:fragment="page_content" id="page_content">
+
+  <h2>Smart Suggest</h2>
+
+  <div class="card mb-5">
+    <div class="card-header">
+
+      <ul class="nav nav-tabs nav-fill nav-justified card-header-tabs h4" id="sugTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="ungrouped-tab" data-toggle="tab" href="#ungrouped" role="tab" aria-controls="ungrouped" aria-selected="true">Ungrouped</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="grouped-tab" data-toggle="tab" href="#grouped" role="tab" aria-controls="grouped" aria-selected="false">Grouped</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="postsearch-tab" data-toggle="tab" href="#postsearch" role="tab" aria-controls="postsearch" aria-selected="false">Post-Search</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content card-body" id="sugTabContent">
+  
+      <!--/* === 1. SUG: MIXED ============================================= */-->
+      
+      <div class="tab-pane fade show active" id="ungrouped" role="tabpanel" aria-labelledby="ungrouped-tab">
+  
+        <section id="sug-mixed" class="mb-4">
+      
+          <p class="text-info p-0 m-0 smaller">
+            <span class="fas fa-info-circle"></span>
+            Categories shown without headings. Using icons to distinguish. 
+            Query parts stored outside the search box. Try:
+            <ul id="try-sug-mixed" class="small text-info">
+              <li>
+                Vehicle make and system type:
+                <a href="#">niss</a> 
+                <a href="#">wheel</a> 
+                <a href="#">cava</a> 
+                <a href="#">mal</a> 
+                <a href="#">for</a> 
+              </li>
+              <li>
+                Vehicle year and recall year</strong>: 
+                <a href="#">1984</a> 
+                <a href="#">2010</a> 
+              </li>
+              <li>
+                Recall title: 
+                <a href="#">salm</a>
+                <a href="#">pizz</a> 
+                <a href="#">robot</a> 
+                <a href="#">fork</a>
+              </li>
+            </ul>
+          </p>
+      
+          <div class="row">
+            <div class="col-12">
+              <span class="text-uppercase small text-muted">Query:</span>
+              <span id="sug-mixed-selected"></span>
+            </div>
+          </div> 
+      
+          <form id="sug-mixed-form">
+            <div class="form-row mt-2">
+              <div class="col-12">
+                <div class="text-center text-muted small mb-2">
+                  <kbd>Enter</kbd> to pick a suggestion.
+                  <kbd>&#8593;</kbd> <kbd>&#8595;</kbd> to navigate suggestions.
+                </div>
+                <div class="input-group">
+                  <input id="sug-mixed-terms"
+                      type="text" class="form-control" 
+                      autocomplete="off" 
+                      placeholder="Type 2 or more characters..." 
+                      aria-label="Search recalls" 
+                      aria-describedby="btnGroupAddon"
+                      autofocus="autofocus">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">
+                      <span class="fas fa-search" aria-hidden="true"></span>
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>  
+          </form>
+        
+          <div id="tmpl-sug-mixed-token" class="d-none border rounded m-1">
+            <div class="tmpl-type d-inline-block border-right rounded-left px-2">
+              <span class="tmpl-icon"></span>
+              <span class="tmpl-label"></span>
+            </div>
+            <div class="tmpl-sug-mixed-terms d-inline-block px-1">terms</div>
+            <button type="button" class="close" aria-label="Remove"
+                 onclick="$(this).parent().remove(); updateMixedTermResults();">
+              <span aria-hidden="true" class="small px-1">&times;</span>
+            </button>
+          </div>
+        
+        </section>
+    
+      </div>
+  
+      <!--/* === 2. SUG: TYPEAHEAD LIB ===================================== */-->
+      
+      <div class="tab-pane fade" id="grouped" role="tabpanel" aria-labelledby="grouped-tab">
+        <section id="sug-typeahead" class="mb-4">
+          <p class="text-info p-0 m-0 smaller">
+            <span class="fas fa-info-circle"></span>
+            Grouped by recall types, which can be filtered as well and provide
+            extra info. Query parts stored inside the search box. Try:
+            <ul id="try-sug-typeahead" class="small text-info">
+              <li>
+                Vehicle make and system type:
+                <a href="#">niss</a> 
+                <a href="#">wheel</a> 
+                <a href="#">cava</a> 
+                <a href="#">mal</a> 
+                <a href="#">for</a> 
+              </li>
+              <li>
+                Vehicle year and recall year</strong>: 
+                <a href="#">1984</a> 
+                <a href="#">2010</a> 
+              </li>
+              <li>
+                Recall title: 
+                <a href="#">salm</a>
+                <a href="#">pizz</a> 
+                <a href="#">robot</a> 
+                <a href="#">fork</a>
+              </li>
+            </ul>
+          </p>
+          <form id="sug-typeahead-form">
+              <div class="text-center text-muted small mb-2">
+                <kbd>&#8594;</kbd> to accept a "<span class="text-dark">type</span>ahead" suggestion.
+                <kbd>Enter</kbd> to pick a suggestion or search.
+                <kbd>&#8593;</kbd> <kbd>&#8595;</kbd> to navigate suggestions.
+              </div>
+              <div class="typeahead__container">
+                  <div class="typeahead__field">
+                      <div class="typeahead__query">
+                          <input id="sug-typeahead-terms"
+                                 class="js-typeahead"
+                                 name="sug-typeahead-terms"
+                                 placeholder="Type 2 or more characters..." 
+                                 autocomplete="off">
+                      </div>
+                      <div class="typeahead__button">
+                          <button type="submit">
+                              <span class="typeahead__search-icon"></span>
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </form>
+        </section>    
+      </div>
+  
+      <!--/* === 3. SUG: POST-SEARCH ======================================= */-->
+      
+      <div class="tab-pane fade" id="postsearch" role="tabpanel" aria-labelledby="postsearch-tab">
+        <section id="sug-postsearch" class="mb-4">
+          <p class="text-info p-0 m-0 smaller">
+            <span class="fas fa-info-circle"></span>
+            Only offer simple term completion and leave more meaningful suggestions
+            as proposed options once the search is done. We would enhance the logic,
+            like to only suggest if there are more than X results and/or the
+            occurence is high enough.  Try:
+          </p>
+          <p id="try-sug-postsearch" class="small text-info">
+            <a href="#">honda</a>
+            <a href="#">catheter</a> 
+            <a href="#">pizza</a>
+            <a href="#">ford</a>
+            <a href="#">epipen</a>
+            <a href="#">pants</a>
+            <a href="#">plush</a>
+            <a href="#">blade</a>
+            <a href="#">bacteria</a>
+            <a href="#">virus</a>
+            <a href="#">e. coli</a>
+            <a href="#">beauty product</a>
+          </p>
+          <form id="sug-postsearch-form">
+              <div class="text-center text-muted small mb-2">
+                <kbd>&#8594;</kbd> to accept a "<span class="text-dark">type</span>ahead" suggestion.
+                <kbd>Enter</kbd> to pick a suggestion or search.
+                <kbd>&#8593;</kbd> <kbd>&#8595;</kbd> to navigate suggestions.
+              </div>
+              <div class="typeahead__container">
+                  <div class="typeahead__field">
+                      <div class="typeahead__query">
+                          <input id="sug-postsearch-terms"
+                                 class="js-typeahead"
+                                 name="sug-postsearch-terms"
+                                 placeholder="Type 2 or more characters..." 
+                                 autocomplete="off">
+                      </div>
+                      <div class="typeahead__button">
+                          <button type="submit">
+                              <span class="typeahead__search-icon"></span>
+                          </button>
+                      </div>
+                  </div>
+              </div>
+              <div id="sug-postsearch-filters" class="d-none"></div>
+              <div id="sug-postsearch-suggestions" class="d-none mt-2 smaller">
+                Too many results? Try narrowing on: 
+                <span id="sug-postsearch-suggestions-list">
+                </span>
+              </div>
+          </form>
+        </section>    
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!--/* === FAKE RESULTS ================================================ */-->
+
+  <section id="fake-results" class="mb-4 Xtext-muted alert alert-info">
+    <span class="fas fa-info-circle"></span>
+    Matching recalls would be updated after each search or user 
+    dropdown selection.
+  </section>
+
+</div>
+<script type="text/javascript" layout:fragment="scripts">
+//=== COMMON ===================================================================
+
+var typeMeta = {
+    'vehicles'       : { icon: 'car', label: 'Vehicle',  color: 'success' },
+    'food'           : { icon: 'utensils', label: 'Food', color: 'warning' },
+    'consumer'       : { icon: 'barcode', label: 'Consumer Product', color: 'primary' },
+    'health'         : { icon: 'medkit', label: 'Health Product', color: 'info' },
+    'any'            : { icon: 'search', label: 'Any type of recalls', color: 'dark' },        
+};
+
+function typeIcon(type) {
+    return '<span class="fas fa-fw fa-' + typeMeta[type].icon + '"></span>';
+}
+
+function updateResults(fieldQueries) {
+    console.log('TODO: refresh results with ' + fieldQueries);
+}
+
+// === 1. SUG: MIXED ===========================================================
+function updateMixedTermResults() {
+    var fqs = [];
+    $("#sug-mixed-selected .tmpl-sug-mixed-terms").each(function() {
+        fqs.push($(this).data('fq'));
+        updateResults(fqs);
+    });
+}
+    
+function mixedTermSelected(item) {
+    // First check if already in list
+    var isDuplicate = false;
+    $('#sug-mixed-selected div').each(function(i, div) {
+        if ($(div).data('type') === item.type
+                && $(div).find('.tmpl-sug-mixed-terms').text() === item.suggestQuery) {
+            $(div).effect("shake");
+            isDuplicate = true;
+            return;
+        }
+    });
+    if (isDuplicate) {
+        return;
+    }
+    
+    var color = typeMeta[item.type].color;
+    $token = $("#tmpl-sug-mixed-token").clone();
+    $token.removeClass('d-none');
+    $token.addClass('sug-token d-inline-block border-' + color);
+    $token.removeAttr('id');
+    $token.data('type', item.type);
+    
+    if ('default' === item.type) {
+        $token.find('.tmpl-type').remove();
+    } else {
+        $token.find('.tmpl-type').addClass('alert-' + color + ' border-' + color);
+        $token.find('.tmpl-icon').addClass('fas fa-fw fa-' + typeMeta[item.type].icon);
+        $token.find('.tmpl-label').text(typeMeta[item.type].label);
+    }
+    $token.find('.tmpl-sug-mixed-terms').text(item.suggestQuery);
+    $token.find('.tmpl-sug-mixed-terms').data('fq', item.type + ':' + item.suggestQuery);
+    $token.fadeIn("slow");
+    $("#sug-mixed-selected").append($token);
+    $('#sug-mixed-terms').val('');
+    
+    updateMixedTermResults();
+}
+aboutTryLink('#try-sug-mixed a', function(link) {
+    $('#sug-mixed-terms').val($(link).text());
+    $('#sug-mixed-terms').keydown();
+    return false; 
+});
+aboutTryLink('#try-sug-typeahead a', function(link) {
+    $('#sug-typeahead-terms').val($(link).text());
+    $('#sug-typeahead-terms').trigger('input.typeahead');
+    return false; 
+});
+aboutTryLink('#try-sug-postsearch a', function(link) {
+    $('#sug-postsearch-terms').val($(link).text());
+//    $('#sug-postsearch-terms').trigger('input.typeahead');
+    $('#sug-postsearch-form').submit();
+    return false; 
+});
+
+$(document).ready(function() {
+    $('#sug-mixed-terms').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: 'smartsuggest/rest',
+                data: {
+                    'term':request.term,
+                    'maxPerType': 5
+                },
+                type: "GET",
+                dataType: "json",
+                 success: function (data) {
+                     response(data);
+                 }
+             });            
+        },
+        minLength: 2,
+        select: function(event, ui) {
+            mixedTermSelected(ui.item);
+            event.preventDefault();
+            return false;
+        }
+    }).autocomplete('instance')._renderItem = function(ul, item) {
+        var icon   = '<span class="fas fa-fw fa-' + typeMeta[item.type].icon + '"></span>';
+        var lbl = typeMeta[item.type].label;
+        var color = typeMeta[item.type].color;
+        return $('<li>')
+            .append('<div><span class="text-' + color + '">' + icon + ' </span> '
+                    + item.suggestLabel + ' <small class="text-' + color + '">'
+                    + '<span class="fas fa-chevron-left"></span> '
+                    + lbl + '</small></div>')
+            .appendTo(ul);
+    }
+    
+    $('#sug-mixed-form').submit(function (e) {
+        e.preventDefault();
+        mixedTermSelected({ 
+            type: 'default',
+            value: $('#sug-mixed-terms').val()
+        });
+        $('#sug-mixed-terms').autocomplete('close');
+        return false;
+    });
+});
+    
+// === 2. SUG: TYPEAHEAD LIB ===================================================
+
+function updateTypeAheadResults() {
+    var fqs = [];
+    $("#sug-typeahead-form .typeahead__label").each(function() {
+        var type = $(this).find('.sug-type').data('type');
+        var subType = $(this).find('.sug-subType').data('subtype');
+        var txt = $(this).find('.sug-type').next().text();
+        fqs.push(type + '-' + subType + ':' + txt);
+        updateResults(fqs);
+    });
+}
+
+$(document).ready(function() {
+    
+    typeof $.typeahead === 'function' && $.typeahead({
+        input: "#sug-typeahead-terms",
+        dynamic: true,
+        accent: true,
+        minLength: 2,
+        maxItem: 0,
+        highlight: false,
+        filter: false,
+        //order: "asc",
+        hint: true,
+        cache: false,
+        blurOnTab: false,
+        group: {
+            key: "type",
+            //template: "{{type}} recalls"
+            template: function (item) {
+                return '<span>' + typeIcon(item.type) + ' '
+                      + typeMeta[item.type].label + ' recalls</span>'
+                      + '<span class="small float-right">(we can show something here)</span>';
+            }            
+            
+        },
+//        groupOrder: ["All recall types"],
+        maxItemPerGroup: 5,
+        backdrop: {
+            "background-color": "#fff"
+        },
+        
+        template: function (query, item) {
+            var html = '{{suggestLabel}}';            
+            if (item.subType !== 'fulltext') {
+                html += ' <small class="text-' + typeMeta[item.type].color + '">'
+                     + ' <span class="small fas fa-chevron-left"></span>  '
+                     + item.subType.replace(/_/g, ' ')
+                     + '</small> ';
+            }
+            return html;
+        },
+        dropdownFilter: [{
+            key: 'type',
+            value: 'vehicles',
+//            template: '<strong>{{type}}</strong> recalls'
+            template: 'Vehicles'
+        }, {
+            key: 'type',
+            value: 'consumer',
+            template: 'Consumer products'
+        }, {
+            key: 'type',
+            value: 'food',
+            template: 'Food'
+        }, {
+            key: 'type',
+            value: 'health',
+            template: 'Health products',
+            all: 'All recalls'
+        }],   
+        multiselect: {        
+            matchOn: ["suggestQuery", "type", "subType"],
+            cancelOnBackspace: true
+        },
+        emptyTemplate: 'No suggestion for "{{query}}"',
+        
+        display: ['suggestQuery'],
+        
+        source: {
+            "recalls": {
+                ajax: {
+                    url: 'smartsuggest/rest',
+                    data: {
+                        'term':'{{query}}',
+                        'maxPerType': 5
+                    },
+                    dataType: "json",
+                    type: "GET"
+                },
+            }
+        },
+        callback: {
+            onNavigateBefore: function (node, query, event) {
+                if (~[38,40].indexOf(event.keyCode)) {
+                    event.preventInputChange = true;
+                }
+                // show suggestions on key down if there is text partially typed
+            },
+            //onSubmit: function (node, form, item, event) {
+            onClickAfter: function (node, a, item, event) {
+                var color = typeMeta[item.type].color;
+                // only show subtype for vehicles
+                var subTypeLabel = '';
+                if (item.subType !== 'fulltext') {
+                    subTypeLabel = item.subType.replace(/_/g, ' ') + ':';
+                }
+                $token = $('#sug-typeahead-form .typeahead__label').last();
+                //$token.find('>span').first().prepend(item.type + ' - ');
+                $token.addClass('bg-' + color + '-light');
+                //$token.addClass('text-' + color);
+                $token.addClass('border border-' + color + '-light');
+                $token.prepend(
+                        '<span class="sug-type text-' + color + '" data-type="' + item.type + '">'
+                        + '<span class="sug-type-icon fas fa-fw fa-' + typeMeta[item.type].icon + '"></span>&nbsp;'
+                        + '<span class="sug-subType small strong" data-subtype="' + item.subType + '">'
+                          + subTypeLabel
+                        + '</span>'
+                      + '</span>');
+                this.adjustInputSize();
+                
+                updateTypeAheadResults();
+            },
+            onCancel: function (node, item, event) {
+                updateTypeAheadResults();
+            },
+            onSubmit: function (node, form, item, event) {
+                return false;
+            }
+        }
+//        debug: true
+    });    
+    
+});
+
+// === 3. SUG: POST-SEARCH =====================================================
+    
+function updatePostSearchSuggestions() {
+    var terms = $('#sug-postsearch-terms').val();
+    $.ajax({
+        //TODO call a dedicated service that returns a cleaner list.
+        url: 'smartsuggest/restrefinements',
+        data: {
+            'term': terms,
+            'max': 3
+        },
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            if (data.length == 0) {
+                $('#sug-postsearch-suggestions').addClass('d-none');
+                return;
+            }
+            $('#sug-postsearch-suggestions').removeClass('d-none');
+            $suggsDiv = $('#sug-postsearch-suggestions-list');
+            $suggsDiv.empty();
+            var html = '';
+            $.each(data, function(i, sugg) {
+                if (html.length > 0) {
+                    //html += ', ';
+                    html += ' ';
+                }
+                var icon = '<span class="ml-1 sug-type-icon fas fa-fw fa-' 
+                    + typeMeta[sugg.type].icon + '" style="margin-right: 1px;"></span>';
+                var fld = sugg.subType;
+                if (fld !== 'make') {
+                    fld = 'category';                    
+                }
+                html += '<a href="#" onclick="alert(\'Not implemented\'); return false;">'
+                       + icon + /*fld + ': ' +*/ sugg.suggestLabel + '</a>';
+            });
+            $suggsDiv.html(html);
+        }
+    });        
+}
+    
+$(document).ready(function() {
+    typeof $.typeahead === 'function' && $.typeahead({
+        input: "#sug-postsearch-terms",
+        dynamic: true,
+        accent: true,
+        minLength: 2,
+        maxItem: 0,
+        highlight: true,
+        filter: false,
+        //order: "asc",
+        hint: true,
+        cache: false,
+        blurOnTab: false,
+        maxItemPerGroup: 5,
+        backdrop: {
+            "background-color": "#fff"
+        },
+        emptyTemplate: 'No suggestion for "{{query}}"',
+        source: {
+            "suggestions": {
+                ajax: {
+                    url: 'smartsuggest/restcompletions',
+                    data: {
+                        'term':'{{query}}',
+                        'max': 7
+                    },
+                    dataType: "json",
+                    type: "GET"
+                },
+            }
+        },
+        callback: {
+            onSubmit: function (node, form, item, event) {
+                updatePostSearchSuggestions();
+                return false;
+            }
+        }
+//      ,  debug: true
+    });    
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = e.target.attributes.href.value;
+        $(target +' input').focus();
+    })
+});
+
+</script>
+
+</body>
+</html>
