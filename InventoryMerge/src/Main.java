@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -481,7 +482,7 @@ public class Main {
 			}
 		});
 
-		for (String theme : new HashSet<String>(themes)) {
+		for (String theme : new LinkedHashSet<String>(themes)) {
 			themeList += "<option value='" + theme + "'>" + theme + "</option>";
 		}
 		template = template.replace("<!-- THEMES -->", themeList);
@@ -504,7 +505,7 @@ public class Main {
 			}
 		});
 
-		for (String dept : new HashSet<String>(depts)) {
+		for (String dept : new LinkedHashSet<String>(depts)) {
 			deptList += "<option value='" + dept + "'>" + dept + "</option>";
 		}
 		template = template.replace("<!-- DEPARTMENTS -->", deptList);
