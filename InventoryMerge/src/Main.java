@@ -45,8 +45,6 @@ public class Main {
 			"Breadcrumb LVL4 URL", "Last Modified", "Last Crawled", "Author", "dcterms.subject", "dcterms.audience",
 			"dcterms.type", "desc" };
 
-	
-
 	public String[] OUTPUT_HEADERS_FR = {};
 
 	public class OutputData {
@@ -91,10 +89,10 @@ public class Main {
 
 		}
 	}
-	
+
 	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Language", "Modified Date",
-			"Last Published date", "URL", "Subtitle (H2)", "Keywords","Content Type(s)", "AEM Content Type",
-			 "Audience", "New Page","Page Performance", "Comments" };
+			"Last Published date", "URL", "Subtitle (H2)", "Keywords", "Content Type(s)", "AEM Content Type",
+			"Audience", "New Page", "Page Performance", "Comments" };
 
 	public HashMap<String, OutputData> covidMap = new HashMap<String, OutputData>();
 	public HashMap<String, OutputData> aemMap = new HashMap<String, OutputData>();
@@ -103,16 +101,16 @@ public class Main {
 	public Map<String, String> themeEn = new HashMap<String, String>();
 	public Map<String, String> themeFr = new HashMap<String, String>();
 
-	public HashSet<String> usedThemesEn = new HashSet<String>();
-	public HashSet<String> usedThemesFr = new HashSet<String>();
+	// public HashSet<String> usedThemesEn = new HashSet<String>();
+	// public HashSet<String> usedThemesFr = new HashSet<String>();
 
 	public Map<String, String> urlDepartmentsEn = new HashMap<String, String>();
 	public Map<String, String> urlDepartmentsFr = new HashMap<String, String>();
 	public Map<String, String> aemDepartmentsEn = new HashMap<String, String>();
 	public Map<String, String> aemDepartmentsFr = new HashMap<String, String>();
 
-	public HashSet<String> UsedDepartmentsEn = new HashSet<String>();
-	public HashSet<String> UsedDepartmentsFr = new HashSet<String>();
+	// public HashSet<String> UsedDepartmentsEn = new HashSet<String>();
+	// public HashSet<String> UsedDepartmentsFr = new HashSet<String>();
 
 	public Set<String> completURLList;
 
@@ -376,8 +374,8 @@ public class Main {
 			this.aemDepartmentsFr.put(aemType, fr);
 		}
 
-		this.UsedDepartmentsEn.add("N/A");
-		this.UsedDepartmentsFr.add("N/A");
+		// this.UsedDepartmentsEn.add("N/A");
+		// this.UsedDepartmentsFr.add("N/A");
 
 	}
 
@@ -468,9 +466,9 @@ public class Main {
 		// Insert themes
 		String themeList = "";
 
-		List<String> themes = new ArrayList<String>(this.usedThemesEn);
+		List<String> themes = new ArrayList<String>(this.themeEn.values());
 		if (outputLang.contains("fr")) {
-			themes = new ArrayList<String>(this.usedThemesFr);
+			themes = new ArrayList<String>(this.themeFr.values());
 		}
 		themes.add("N/A");
 
@@ -483,16 +481,18 @@ public class Main {
 			}
 		});
 
-		for (String theme : themes) {
+		for (String theme : new HashSet<String>(themes)) {
 			themeList += "<option value='" + theme + "'>" + theme + "</option>";
 		}
 		template = template.replace("<!-- THEMES -->", themeList);
 
 		// Insert departments
 		String deptList = "";
-		List<String> depts = new ArrayList<String>(this.UsedDepartmentsEn);
+		List<String> depts = new ArrayList<String>(this.aemDepartmentsEn.values());
+		depts.addAll(this.urlDepartmentsEn.values());
 		if (outputLang.contains("fr")) {
-			depts = new ArrayList<String>(this.UsedDepartmentsFr);
+			depts = new ArrayList<String>(this.aemDepartmentsFr.values());
+			depts.addAll(this.urlDepartmentsFr.values());
 		}
 
 		Collections.sort(depts, new Comparator<String>() {
@@ -504,7 +504,7 @@ public class Main {
 			}
 		});
 
-		for (String dept : depts) {
+		for (String dept : new HashSet<String>(depts)) {
 			deptList += "<option value='" + dept + "'>" + dept + "</option>";
 		}
 		template = template.replace("<!-- DEPARTMENTS -->", deptList);
@@ -722,14 +722,14 @@ public class Main {
 
 	public String determineTheme(String url, String lang) {
 		Map<String, String> themes = this.themeEn;
-		HashSet<String> usedTheme = this.usedThemesEn;
+		// HashSet<String> usedTheme = this.usedThemesEn;
 		if (lang.toLowerCase().contains("fr")) {
 			themes = this.themeFr;
-			usedTheme = this.usedThemesFr;
+			// usedTheme = this.usedThemesFr;
 		}
 		for (String key : themes.keySet()) {
 			if (url.contains(key)) {
-				usedTheme.add(themes.get(key));
+				// usedTheme.add(themes.get(key));
 				return themes.get(key);
 			}
 		}
@@ -738,15 +738,15 @@ public class Main {
 
 	public String determineDept(String url, String lang, CSVRecord record) {
 		Map<String, String> depts = this.urlDepartmentsEn;
-		HashSet<String> usedDepts = this.UsedDepartmentsEn;
+		// HashSet<String> usedDepts = this.UsedDepartmentsEn;
 		if (lang.toLowerCase().contains("fr")) {
 			depts = this.urlDepartmentsFr;
-			usedDepts = this.UsedDepartmentsFr;
+			// usedDepts = this.UsedDepartmentsFr;
 		}
 		for (String key : urlDepartmentsEn.keySet()) {
 			if (url.contains(key)) {
-				String dept = depts.get(key);
-				usedDepts.add(dept);
+				// String dept = depts.get(key);
+				// usedDepts.add(dept);
 				return depts.get(key);
 			}
 		}
@@ -802,9 +802,11 @@ public class Main {
 
 		if (dept != null && !dept.equals("") && !dept.equals("null")) {
 			if (lang.contains("en")) {
-				this.UsedDepartmentsEn.add(dept);
+				this.urlDepartmentsEn.put(url, dept);
+				// this.UsedDepartmentsEn.add(dept);
 			} else {
-				this.UsedDepartmentsFr.add(dept);
+				this.urlDepartmentsFr.put(url, dept);
+				// this.UsedDepartmentsFr.add(dept);
 			}
 			return dept;
 		} else {
