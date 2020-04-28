@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: testbed-alpha-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+spec:
+  tls:
+  - hosts:
+    - testbed.tbs.alpha.canada.ca
+    secretName: testbed-alpha-tls-secret-staging
+  rules:
+  - host: testbed.tbs.alpha.canada.ca
+    http:
+      paths:
+      - backend:
+          serviceName: testbed-web
+          servicePort: 9090
+        path: /
+      
