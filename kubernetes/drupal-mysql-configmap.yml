@@ -1,0 +1,21 @@
+apiVersion: v1
+data:
+  mysql.cnf: |-
+    [mysqld]
+    max_allowed_packet = 256M
+    innodb_buffer_pool_size = 4096M
+    innodb_buffer_pool_instances = 4
+    table_definition_cache = 4096
+    table_open_cache = 8192
+    innodb_flush_log_at_trx_commit=2
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2020-03-05T14:29:37Z"
+  labels:
+    velero.io/backup-name: daily-drupal-20200305010022
+    velero.io/restore-name: daily-drupal-20200305010022-20200305092902
+  name: drupal-mysql-configuration
+  namespace: drupal
+  resourceVersion: "11976433"
+  selfLink: /api/v1/namespaces/drupal/configmaps/drupal-mysql-configuration
+  uid: b38b17df-eb4e-4c27-a014-e844bdbfc318

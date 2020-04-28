@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  mysql.cnf: |-
+    [mysqld]
+    max_allowed_packet = 256M
+    innodb_buffer_pool_size = 4096M
+    innodb_buffer_pool_instances = 4
+    table_definition_cache = 4096
+    table_open_cache = 8192
+    innodb_flush_log_at_trx_commit=2
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2020-02-04T16:03:52Z"
+  name: pspc-drupal-mysql-configuration
+  namespace: pspc-drupal
+  resourceVersion: "4981771"
+  selfLink: /api/v1/namespaces/pspc-drupal/configmaps/pspc-drupal-mysql-configuration
+  uid: f5e082b4-881f-4a16-a2c8-a6b5bb9e1908

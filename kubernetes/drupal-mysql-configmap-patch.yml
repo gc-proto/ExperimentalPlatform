@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  mysql.cnf: |-
+   [mysqld]
+    key_buffer_size         = 16M  
+    read_buffer_size        = 60K  
+    sort_buffer_size        = 1M  
+    innodb_buffer_pool_size = 64M  
+    tmp_table_size          = 8M  
+    max_allowed_packet      = 16M  
+    thread_stack            = 192K  
+    thread_cache_size       = 8  
+    # This replaces the startup script and checks MyISAM tables if needed
+    # the first time they are touched
+    max_connections        = 25
+kind: ConfigMap
+metadata:
+  labels:
+    velero.io/backup-name: daily-drupal-20200305010022
+    velero.io/restore-name: daily-drupal-20200305010022-20200305092902
+  name: drupal-mysql-configuration
+  namespace: drupal
+ 
