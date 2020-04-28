@@ -45,9 +45,7 @@ public class Main {
 			"Breadcrumb LVL4 URL", "Last Modified", "Last Crawled", "Author", "dcterms.subject", "dcterms.audience",
 			"dcterms.type", "desc" };
 
-	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Content Type(s)", "H2", "Keywords",
-			"Modified Date", "Language", "AEM Content Type", "Page Performance", "URL", "Last Published date",
-			"Audience", "New Page", "Comments" };
+	
 
 	public String[] OUTPUT_HEADERS_FR = {};
 
@@ -73,26 +71,30 @@ public class Main {
 			list.add(theme);
 			list.add(department);
 			list.add("<a href=\"" + URL + "\">" + title + "</a>");
-			list.add(contentTypes);
+			list.add(language);
+			list.add(modifiedDate);
+			list.add(lastPublishedDate);
+			list.add("<a href=\"" + URL + "\">" + URL + "</a>");
 			list.add(h2);
 			list.add(keywords);
-			list.add(modifiedDate);
-			list.add(language);
+			list.add(contentTypes);
 			list.add(AEMContentType);
+			list.add(audience);
+			list.add(newPage);
 			java.util.Date date = new Date();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			String format = formatter.format(date);
 			list.add("<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + URL + "&start=2020-01-01" + "&end="
 					+ format + "\">" + title + "</a>");
-			list.add("<a href=\"" + URL + "\">" + URL + "</a>");
-			list.add(lastPublishedDate);
-			list.add(audience);
-			list.add(newPage);
 			list.add("");
 			return list;
 
 		}
 	}
+	
+	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Language", "Modified Date",
+			"Last Published date", "URL", "Subtitle (H2)", "Keywords","Content Type(s)", "AEM Content Type",
+			 "Audience", "New Page","Page Performance", "Comments" };
 
 	public HashMap<String, OutputData> covidMap = new HashMap<String, OutputData>();
 	public HashMap<String, OutputData> aemMap = new HashMap<String, OutputData>();
