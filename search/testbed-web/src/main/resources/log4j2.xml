@@ -10,7 +10,7 @@
         <AppenderRef ref="Console" />
     </Root>
 
-    <Logger name="ca.canada.treasury.testbed.web" level="info" additivity="false">
+    <Logger name="ca.canada.treasury.testbed.web" level="debug" additivity="false">
       <AppenderRef ref="Console" />
     </Logger>
     <Logger name="com" level="info" additivity="false">
