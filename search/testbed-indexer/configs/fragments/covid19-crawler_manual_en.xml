@@ -7,6 +7,7 @@
 
 	<startURLs stayOnDomain="true" stayOnPort="false"
 		stayOnProtocol="false">
+		<url>https://www.canada.ca/en/immigration-refugees-citizenship/services/coronavirus-covid19.html</url>
 		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200323-eng.pdf</url>
 		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-annex-a-eng.pdf</url>
 		<url>https://www.tc.gc.ca/CivilAviation/regserv/Affairs/exemptions/docs/en/3249.htm</url>

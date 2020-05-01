@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<!-- Configuration documentation: https://norconex.com/collectors/collector-http/configuration -->
+
+<httpcollector id="TBS Canada Collector">
+	# Please define the following variables in a ".variables" file.
+	# or uncomment them here.
+	##set($workdir = "path to generated files")
+	##set($solrURL = "URL to solr collection")
+	<progressDir>$workdir</progressDir>
+	<logsDir>$workdir</logsDir>
+	<crawlers>
+		#parse("fragments/canada-crawler.xml")
+	</crawlers>
+</httpcollector>

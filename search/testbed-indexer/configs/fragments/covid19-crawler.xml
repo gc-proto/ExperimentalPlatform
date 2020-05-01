@@ -109,7 +109,13 @@
 					<toValue>true</toValue>
 				</replace>
 			</tagger>
-
+			
+			<!--  Extract all links -->
+			<tagger class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector="a" extract="attr(href)"
+					toField="links" overwrite="true" />
+			</tagger>
+			
 			<!-- Extract all H2 and bread crumb levels 2, 3, 4 if they exist: -->
 			<tagger
 				class="com.norconex.importer.handler.tagger.impl.DOMTagger">

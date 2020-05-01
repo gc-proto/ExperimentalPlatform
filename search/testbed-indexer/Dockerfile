@@ -15,6 +15,8 @@ ENV PATH="/opt/indexer-data:/opt/docker-scripts:$PATH" \
     INDEXER_HOME=/opt/indexer-data \
     INDEXER_PID_DIR=/home/indexer 
 
+
+
 # Add the indexer user to run the java indexer in the entrypoint
 RUN set -x; \
   groupadd -r --gid "$INDEXER_GID" "$INDEXER_GROUP"; \
@@ -29,16 +31,22 @@ RUN mkdir -p /opt/indexer-data; \
     usermod -aG root indexer; \
     apt-get update; \
     apt-get install -y openjdk-8-jre-headless;
+
+USER root
+COPY ./certs /tmp/certs
+RUN yes | keytool -importcert -alias www.tc.gc.ca -keystore /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/cacerts -storepass changeit -file /tmp/certs/www.tc.gc.ca.cer
+RUN rm -R /tmp/certs
+
 # Add below to debug
 #    apt-get install nginx -y
 
 # Making sure that the user indexer can access these files
-COPY --chown=indexer:indexer src/test/data/ /opt/indexer-data
-COPY --chown=indexer:indexer docker-scripts/ /opt/docker-scripts
-COPY --chown=indexer:indexer configs/ /opt/indexer-configs/
-
 # COPY and extract at the same time the tar file.
 ADD --chown=indexer:indexer /target/$ZNAME.$ZFORMAT /opt/docker-scripts/
+COPY --chown=indexer:indexer src/test/data/ /opt/indexer-data
+COPY --chown=indexer:indexer docker-scripts/ /opt/docker-scripts
+
+
 
 # Validate files transfer in docker build and unix format the sh file
 RUN chmod +x /opt/docker-scripts/*; \
@@ -50,13 +58,8 @@ RUN chmod +x /opt/docker-scripts/*; \
     sed -i -e 's/\r$//' /opt/docker-scripts/indexer-run; \
     cat /opt/docker-scripts/docker-entrypoint
 
-USER $INDEXER_USER
+COPY --chown=indexer:indexer configs/ /opt/indexer-configs/
 
-#RUN java -classpath "$SPATH/$ZNAME/lib/*:$SPATH/$ZNAME/classes"  ca.canada.treasury.testbed.util.InstallCert www.tc.gc.ca:443
-USER root
-COPY ./certs /tmp/certs
-RUN yes | keytool -importcert -alias www.tc.gc.ca -keystore /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/cacerts -storepass changeit -file /tmp/certs/www.tc.gc.ca.cer
-RUN rm -R /tmp/certs
 USER $INDEXER_USER
 
 

@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: testbed-indexer
+  name: testbed-indexer-canada
 spec:
   schedule: "30 9 * * *"
   jobTemplate:
@@ -9,7 +9,8 @@ spec:
       template:
         spec:
           containers:
-          - name: testbed-indexer
+          - name: testbed-indexer-canada
             image: ryanhyma/testbed_indexer:1.0.0
+            command: ["indexer-run-canada"]
             imagePullPolicy: Always
           restartPolicy: OnFailure

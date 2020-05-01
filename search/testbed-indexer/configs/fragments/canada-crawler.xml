@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<crawler id="TBS Canada Crawler">
+
+	<startURLs stayOnDomain="true" stayOnPort="false"
+		stayOnProtocol="false">
+		<url>https://pm.gc.ca/</url>
+		<url>https://www.canada.ca/</url>
+	</startURLs>
+	<userAgent>TBS Canada Crawler</userAgent>
+
+	<workDir>$workdir</workDir>
+
+	<!-- We go unlimited depth to make sure we follow all the pagination. - 
+		We are filtering out every that does not come from search results. -->
+	<maxDepth>-1</maxDepth>
+
+	<!-- Aggressiveness: no point being too aggressive here. -->
+	<numThreads>3</numThreads>
+	<delay default="250" ignoreRobotsCrawlDelay="false" scope="site" />
+
+	<!-- Because we are explicit in the pages we want, we ignore most site crawling 
+		directives. -->
+	<robotsMeta ignore="false" />
+	<robotsTxt ignore="false" />
+	<canonicalLinkDetector ignore="false" />
+	<sitemapResolverFactory ignore="false" />
+
+	<!-- If no longer found in search results, do not keep it. -->
+	<orphansStrategy>PROCESS</orphansStrategy>
+
+	<!-- Useful to uncomment for troubleshooting: -->
+	<!-- <maxDocuments>12</maxDocuments> <metadataChecksummer disabled="true" 
+		/> <documentChecksummer disabled="true" /> -->
+
+	<!-- Extract/follow links from search result only. -->
+	<linkExtractors>
+		<extractor
+			class="com.norconex.collector.http.url.impl.GenericLinkExtractor">
+			<tags>
+				<tag name="a" attribute="href" />
+			</tags>
+		</extractor>
+	</linkExtractors>
+	<!-- We only index pages coming from search results, except other result 
+		- pages. -->
+	<documentFilters>
+		<filter
+			class="com.norconex.collector.core.filter.impl.ExtensionReferenceFilter"
+			onMatch="exclude" caseSensitive="false">pdf,doc,docx</filter>
+	</documentFilters>
+
+	<importer>
+
+		<preParseHandlers>
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector="html" extract="outerHtml" toField="html" />
+			</tagger>
+
+			<!-- Extract all links -->
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector="a" extract="attr(href)" toField="links"
+					overwrite="true" />
+			</tagger>
+			
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector="html" extract="attr(lang)" toField="language"
+					overwrite="true" />
+			</tagger>
+			
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
+				<dom selector="meta" extract="outerHtml" toField="metadata"
+					overwrite="true" />
+			</tagger>
+			
+			
+			<!-- Remove portions of a page we do not care about (e.g., "noise"): -->
+			<transformer
+				class="com.norconex.importer.handler.transformer.impl.StripBetweenTransformer"
+				inclusive="true">
+				<restrictTo field="document.contentType">text/html</restrictTo>
+				<stripBetween>
+					<start><![CDATA[<html\b.*?>]]></start>
+					<end><![CDATA[</html>]]></end>
+				</stripBetween>
+			</transformer>
+			
+			
+
+		</preParseHandlers>
+
+		<postParseHandlers>
+			<tagger
+				class="com.norconex.importer.handler.tagger.impl.KeepOnlyTagger">
+				<fields>
+					language,
+					links,
+					html,
+					metadata
+				</fields>
+			</tagger>
+		</postParseHandlers>
+
+	</importer>
+
+	<committer class="com.norconex.committer.solr.SolrCommitter">
+		<solrURL>${solrURL}</solrURL>
+		<queueDir>${workdir}/solrcommitter-queue_${lang}</queueDir>
+		<queueSize>20</queueSize>
+		<commitBatchSize>20</commitBatchSize>
+		<maxRetries>3</maxRetries>
+		<maxRetryWait>10 seconds</maxRetryWait>
+	</committer>
+</crawler>
