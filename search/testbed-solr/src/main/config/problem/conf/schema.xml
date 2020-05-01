@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- For more information, on how to customize this file, please see http://lucene.apache.org/solr/guide/documents-fields-and-schema-design.html 
+	OR: https://github.com/apache/lucene-solr/blob/branch_8_4/solr/server/solr/ 
+	configsets/_default/conf/managed-schema -->
+<schema name="default-config" version="1.6">
+
+	<field name="id" type="string" indexed="true" stored="true"
+		required="true" multiValued="false" />
+	<field name="_version_" type="plong" indexed="false"
+		stored="false" />
+	<field name="date" type="pdate" multiValued="false"
+		indexed="true" stored="true" />
+	<field name="problem" type="string" multiValued="false"
+		indexed="true" stored="true" />
+	<field name="problemDetails" type="string" multiValued="false"
+		indexed="true" stored="true" />
+	<field name="language" type="string" multiValued="false"
+		indexed="true" stored=" true " />
+	<field name="url" type="string" multiValued="false"
+		indexed="true" stored=" true " />
+	<field name="department" type="string" multiValued="false"
+		indexed="true" stored=" true " />
+
+	<!-- Basic field types: -->
+	<fieldType name="string" class="solr.StrField"
+		sortMissingLast="true" docValues="true" />
+	<fieldType name="pdate" class="solr.DatePointField"
+		docValues="true" />
+	<fieldType name="plong" class="solr.LongPointField"
+		docValues="true" />
+
+	<uniqueKey>id</uniqueKey>
+</schema>

@@ -20,7 +20,7 @@ RUN set -x; \
   mkdir -p /var/docker-scripts; \
   chown -R solr:solr "/var/docker-scripts";
 
-COPY --chown=solr:solr docker-scripts/ /var/docker-scripts
+
 
 # Install all the tools needed in this linux to start others
 RUN apt-get update; \
@@ -36,12 +36,11 @@ RUN apt-get update; \
 RUN set -x; \
     wget -nv https://archive.apache.org/dist/lucene/solr/"$SOLR_SERVER_VERSION"/solr-"$SOLR_SERVER_VERSION".zip;
 
+
+
 # Extract and setup the folders for data
 RUN set -x; \
-    unzip solr-"$SOLR_SERVER_VERSION".zip -d /var;  \
-    sed -i -e 's/\r$//' /var/docker-scripts/docker-entrypoint; \
-    sed -i -e 's/\r$//' /var/docker-scripts/solr-run; \
-    chmod 755 /var/docker-scripts/*; 
+    unzip solr-"$SOLR_SERVER_VERSION".zip -d /var;
 
 # Remove the downloaded file to save some space in the docker image
 RUN rm solr-"$SOLR_SERVER_VERSION".zip; \ 
@@ -53,7 +52,13 @@ RUN rm solr-"$SOLR_SERVER_VERSION".zip; \
 RUN cp -R "${SOLR_ROOT_PATH}/contrib/extraction/lib" "${SOLR_ROOT_PATH}/server/solr-webapp/webapp/WEB-INF"; \
     cp "${SOLR_ROOT_PATH}/dist/solr-cell-${SOLR_SERVER_VERSION}.jar" "${SOLR_ROOT_PATH}/server/solr-webapp/webapp/WEB-INF/lib/"; \
     chown -R solr:solr "$SOLR_ROOT_PATH/server/solr-webapp/webapp/WEB-INF"; 
- 
+
+
+COPY --chown=solr:solr docker-scripts/ /var/docker-scripts
+RUN sed -i -e 's/\r$//' /var/docker-scripts/docker-entrypoint; \
+    sed -i -e 's/\r$//' /var/docker-scripts/solr-run; \
+	chmod 755 /var/docker-scripts/*;
+     
 # Add the Solr core into the existing solr data path
 COPY --chown=solr:solr src/main/config/ "$SOLR_DATA_DIR"
 

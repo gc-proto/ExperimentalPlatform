@@ -11,39 +11,20 @@
     <field name="id"           type="string"  indexed="true"  stored="true" required="true" multiValued="false" />
     <field name="_version_"    type="plong"   indexed="false" stored="false"/>
 
-    <field name="domain"       type="string"  multiValued="false" indexed="true"  stored="true"/>
-    <field name="language"     type="string"  multiValued="true" indexed="true"  stored="true"/>
-    <field name="filetype"     type="string"  multiValued="false" indexed="true"  stored="true"/>
-    <field name="lastmodified" type="pdate"   multiValued="false" indexed="true"  stored="true"/>
-    <field name="lastcrawled"  type="pdate"   multiValued="false" indexed="true"  stored="true"/>
-    <field name="author"       type="string"  multiValued="true" indexed="true"  stored="true"/>
-    <field name="subject"      type="string"  multiValued="true"  indexed="true"  stored="true"/>
-    <field name="audience"     type="string"  multiValued="true"  indexed="true"  stored="true"/>
-    <field name="category"     type="string"  multiValued="true"  indexed="true"  stored="true"/>
-    <field name="keywords"     type="string"  multiValued="true"  indexed="true"  stored="true"/>
-
-    <!-- Fulltext, language neutral: -->
-    <field name="title"     type="text_general" multiValued="true"  indexed="true"  stored="true"/>
-    <field name="desc"      type="text_general" multiValued="true"  indexed="true"  stored="true"/>
-    <field name="content"   type="text_general" multiValued="false" indexed="true"  stored="true"/>
-
-    <!-- HTML headings: -->
-    <field name="h2"        type="string"  multiValued="true"  indexed="true"  stored="true"/>
-
-    <!-- Breadcrumb names for different levels, and their URLs: -->
-    <field name="bc2_name"  type="string"  multiValued="true"  indexed="true"  stored="true"/>  
-    <field name="bc2_url"   type="string"  multiValued="true"  indexed="false" stored="true"/>
-    <field name="bc3_name"  type="string"  multiValued="true"  indexed="true"  stored="true"/>
-    <field name="bc3_url"   type="string"  multiValued="true"  indexed="false" stored="true"/>
-    <field name="bc4_name"  type="string"  multiValued="true"  indexed="true"  stored="true"/>
-    <field name="bc4_url"   type="string"  multiValued="true"  indexed="false" stored="true"/>
-
-    <!-- Does it contain a covid-19 alert? -->
-    <field name="alert"     type="boolean" multiValued="false"  indexed="true"  stored="true" default="false"/>
+    <!--  All links contained in a page -->
+    <field name="links"     type="strings" multiValued="true"  indexed="true"  stored="true" />
+    <field name="metadata"     type="strings" multiValued="true"  indexed="true"  stored="true" />
 
     <uniqueKey>id</uniqueKey>
+    
+    <field name="html" type="html" indexed="false" stored="true"/>
+    
+    <field name="language"     type="string"  multiValued="true" indexed="true"  stored="true"/>
+    
+    <field name="content"   type="text_general" multiValued="false" indexed="true"  stored="true"/>
 
     <!-- Basic field types: -->
+    <fieldType name="html"     class="solr.TextField" docValues="false"/>
     <fieldType name="string"   class="solr.StrField" sortMissingLast="true" docValues="true" />
     <fieldType name="strings"  class="solr.StrField" sortMissingLast="true" multiValued="true" docValues="true" />
     <fieldType name="boolean"  class="solr.BoolField" sortMissingLast="true"/>
