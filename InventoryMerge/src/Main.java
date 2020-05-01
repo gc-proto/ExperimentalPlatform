@@ -79,7 +79,7 @@ public class Main {
 			list.add(contentTypes);
 			list.add(AEMContentType);
 			list.add(audience);
-			list.add(newPage);
+			
 			java.util.Date date = new Date();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			String format = formatter.format(date);
@@ -93,7 +93,7 @@ public class Main {
 
 	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Language", "Modified Date",
 			"Last Published date", "URL", "Subtitle (H2)", "Keywords", "Content Type(s)", "AEM Content Type",
-			"Audience", "New Page", "Page Performance", "Comments" };
+			"Audience", "Page Performance", "Comments" };
 
 	public HashMap<String, OutputData> covidMap = new HashMap<String, OutputData>();
 	public HashMap<String, OutputData> aemMap = new HashMap<String, OutputData>();
@@ -845,7 +845,7 @@ public class Main {
 					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
 					outputData.language = record.get("Language");
 					outputData.audience = this.determineAudience(record);
-					outputData.newPage = this.determineNewURL(outputData.URL, "en");
+					//outputData.newPage = this.determineNewURL(outputData.URL, "en");
 					this.covidMap.put(record.get("URL"), outputData);
 				}
 			}
@@ -872,7 +872,7 @@ public class Main {
 					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
 					outputData.language = record.get("Language");
 					outputData.audience = this.determineAudience(record);
-					outputData.newPage = this.determineNewURL(outputData.URL, "fr");
+					//outputData.newPage = this.determineNewURL(outputData.URL, "fr");
 					this.covidMap.put(record.get("URL"), outputData);
 				}
 			}
@@ -900,7 +900,7 @@ public class Main {
 					outputData.AEMContentType = this.capitalizeWord(contentType);
 					outputData.lastPublishedDate = record.get("Last Published date");
 					outputData.audience = this.determineAudience(record);
-					outputData.newPage = this.determineNewURL(outputData.URL, outputData.language);
+					//outputData.newPage = this.determineNewURL(outputData.URL, outputData.language);
 					this.aemMap.put(record.get("Public path"), outputData);
 				}
 			}
