@@ -20,6 +20,11 @@
 		indexed="true" stored=" true " />
 	<field name="department" type="string" multiValued="false"
 		indexed="true" stored=" true " />
+	<field name="resolution" type="string" multiValued="false"
+		indexed="true" stored=" true " /> 
+	<field name="resolutionDate" type="pdate" multiValued="false"
+		indexed="true" stored="true" />
+
 
 	<!-- Basic field types: -->
 	<fieldType name="string" class="solr.StrField"
