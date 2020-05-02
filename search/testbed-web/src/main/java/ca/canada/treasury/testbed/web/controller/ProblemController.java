@@ -1,11 +1,6 @@
 package ca.canada.treasury.testbed.web.controller;
 
-import static ca.canada.treasury.testbed.web.service.impl.SolrUtil.COLLECTION_COVID19;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.NoOpResponseParser;
 import org.apache.solr.client.solrj.request.QueryRequest;
@@ -63,6 +57,30 @@ public class ProblemController {
 		}
 	}
 
+	@PostMapping(value = "/updateProblem")
+	public @ResponseBody String updateProblem(HttpServletRequest request) {
+		try {
+			String urlString = "http://localhost:8983/solr/problem";
+			SolrClient Solr = new HttpSolrClient.Builder(urlString).build();
+			SolrInputDocument toIndexDoc = new SolrInputDocument();
+			toIndexDoc.addField("id", request.getParameter("id"));
+			toIndexDoc.addField("url", request.getParameter("url"));
+			toIndexDoc.addField("date", request.getParameter("problemDate"));
+			toIndexDoc.addField("problem", request.getParameter("problem"));
+			toIndexDoc.addField("problemDetails", request.getParameter("problemDetails"));
+			toIndexDoc.addField("department", request.getParameter("department"));
+			toIndexDoc.addField("language", request.getParameter("language"));
+			toIndexDoc.addField("resolution", request.getParameter("resolution"));
+			String resolutionDate = format.format(new Date());
+			toIndexDoc.addField("resolutionDate", resolutionDate);
+			Solr.add(toIndexDoc);
+			Solr.commit();
+			return resolutionDate;
+		} catch (Exception e) {
+			return "Error:" + e.getMessage();
+		}
+	}
+
 	public String getData() throws Exception {
 		StringBuilder builder = new StringBuilder();
 		LOG.debug("Probelm request...");
@@ -74,16 +92,14 @@ public class ProblemController {
 		q.set("omitHeader", "true");
 		q.setQuery("*:*");
 
-		String fileLang = "";
 		String lang = "en";
 		if (StringUtils.isNotBlank(lang)) {
 			q.set("fq", "language:" + lang);
-			fileLang = "_" + lang;
 		} else {
 			q.set("qf", "id");
 		}
 
-		q.setFields("url", "problem", "problemDetails", "date", "language", "department");
+		q.setFields("id", "url", "problem", "problemDetails", "date", "language", "department","resolution","resolutionDate");
 
 		q.setStart(0);
 		q.setRows(10000);
@@ -98,15 +114,24 @@ public class ProblemController {
 		solrReq.setResponseParser(rawXMLResponseParser);
 		String xml = (String) (solr.request(solrReq).get("response"));
 		Document document = DocumentHelper.parseText(xml);
+		@SuppressWarnings("unchecked")
 		List<Element> results = document.selectNodes("//doc");
 		for (Element elem : results) {
-			builder.append("<tr><td>" + elem.selectSingleNode("//str[@name='department']").getText() + "</td>");
-			builder.append("<td>" + elem.selectSingleNode("//str[@name='url']").getText() + "</td>");
-			builder.append("<td>" + elem.selectSingleNode("//str[@name='problem']").getText() + "</td>");
-			builder.append("<td>" + elem.selectSingleNode("//str[@name='problemDetails']").getText() + "</td>");
-			builder.append("<td>" + elem.selectSingleNode("//date[@name='date']").getText() + "</td>");
-			builder.append("<td>" + "</td>");
-			builder.append("<td>" + "</td>");
+			builder.append("<tr><td>" + elem.selectSingleNode("str[@name='department']").getText() + "</td>");
+			builder.append("<td>" + elem.selectSingleNode("str[@name='language']").getText() + "</td>");
+			builder.append("<td>" + elem.selectSingleNode("str[@name='url']").getText() + "</td>");
+			builder.append("<td>" + elem.selectSingleNode("str[@name='problem']").getText() + "</td>");
+			builder.append("<td>" + elem.selectSingleNode("str[@name='problemDetails']").getText() + "</td>");
+			builder.append("<td>" + elem.selectSingleNode("date[@name='date']").getText() + "</td>");
+			try {
+				builder.append("<td>" + elem.selectSingleNode("str[@name='resolution']").getText() + "</td>");
+				builder.append("<td>" + elem.selectSingleNode("date[@name='resolutionDate']").getText() + "</td>");
+			} catch (Exception e) {
+				builder.append("<td></td>");
+				builder.append("<td></td>");
+			}
+			builder.append("<td><button id='" + elem.selectSingleNode("str[@name='id']").getText()
+					+ "' class='btn resolveBtn'>Resolve</button></td>");
 			builder.append("</tr>");
 		}
 		return builder.toString();

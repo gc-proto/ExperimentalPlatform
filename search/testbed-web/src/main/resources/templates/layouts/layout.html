@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="no-js lt-ie9" th:lang="${lang}" dir="ltr"><![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" dir="ltr" th:lang="${lang}" xmlns:th="http://www.thymeleaf.org"
+<html class="no-js" dir="ltr" th:lang="${lang}"
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <!--<![endif]-->
 <head>
@@ -14,15 +15,18 @@
 <!-- Meta data-->
 <!-- Load closure template scripts -->
 
-<script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/soyutils.js"></script>
-<script th:src="${'https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/wet-' + lang + '.js'}"></script>
+<script
+	src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/soyutils.js"></script>
+<script
+	th:src="${'https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/wet-' + lang + '.js'}"></script>
 <noscript>
-		<!-- Write closure fall-back static file -->
-		<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_31/cdts/static/refTop.html -->
+	<!-- Write closure fall-back static file -->
+	<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_31/cdts/static/refTop.html -->
 </noscript>
 <!-- Write closure template -->
 <script>
 	document.write(wet.builder.refTop({
+		"isApplication" : true,
 		"cdnEnv" : "prod"
 	}));
 </script>
@@ -36,8 +40,12 @@
 	<!-- Write closure template -->
 	<script>
 		var defTop = document.getElementById("def-top");
-		defTop.outerHTML = wet.builder.top({
-			"cdnEnv" : "esdcprod",
+		defTop.outerHTML = wet.builder.appTop({
+			"cdnEnv" : "prod",
+			"appName" : [ {
+				"text" : "[[#{title}]]",
+				"href" : "https://problem.tbs.alpha.canada.ca"
+			} ],
 			lngLinks : [ {
 				lang : "[[${altLang}]]",
 				href : "[[${langUrl}]]",
@@ -46,17 +54,20 @@
 		});
 	</script>
 	<main role="main" property="mainContentOfPage" class="container-fluid">
-	<th:block layout:fragment="content"></th:block>
-	<div id="def-preFooter">
-		<!-- Write closure fall-back static file -->
-		<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-${lang}.html -->
-	</div>
-	<!-- Write closure template --> <script>
-		var defPreFooter = document.getElementById("def-preFooter");
-		defPreFooter.outerHTML = wet.builder.preFooter({
-			"dateModified" : "2019-03-19"
-		});
-	</script> </main>
+		<br/>
+		<th:block layout:fragment="content"></th:block>
+		<div id="def-preFooter">
+			<!-- Write closure fall-back static file -->
+			<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-${lang}.html -->
+		</div>
+		<!-- Write closure template -->
+		<script>
+			var defPreFooter = document.getElementById("def-preFooter");
+			defPreFooter.outerHTML = wet.builder.preFooter({
+				"dateModified" : "2019-05-01"
+			});
+		</script>
+	</main>
 	<div id="def-footer">
 		<!-- Write closure fall-back static file -->
 		<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/footer-${lang}.html -->
@@ -64,14 +75,16 @@
 	<!-- Write closure template -->
 	<script>
 		var defFooter = document.getElementById("def-footer");
-		defFooter.outerHTML = wet.builder.footer({
-			"cdnEnv" : "prod"
+		defFooter.outerHTML = wet.builder.appFooter({
+			"cdnEnv" : "prod",
+			"showFeatures" : false
 		});
 	</script>
 	<!-- Write closure template -->
 	<script>
 		document.write(wet.builder.refFooter({
-			"cdnEnv" : "prod"
+			"cdnEnv" : "prod",
+			"isApplication" : true
 		}));
 	</script>
 	<th:block layout:fragment="script"></th:block>

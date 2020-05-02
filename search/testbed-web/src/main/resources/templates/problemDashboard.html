@@ -9,19 +9,87 @@
 		<thead>
 			<tr>
 				<th>Department</th>
+				<th>Language</th>
 				<th>URL</th>
 				<th>Problem</th>
 				<th>Problem Details</th>
 				<th>Date Entered</th>
 				<th>Resolution</th>
 				<th>Resolution Date</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<tbody>
 			<div th:remove="tag" th:utext="${data}"></div>
 		</tbody>
 	</table>
+	<section id="submitWindow"
+		class="mfp-hide modal-dialog modal-content overlay-def">
+		<header class="modal-header">
+			<h1 class="modal-title">Resolution</h1>
+		</header>
+		<div class="modal-body">
+			<div class="wb-frmvld">
+				<form id="resolutionForm" name="resolutionForm" method="post">
+					<div class="form-group">
+						<label for="comments" class="control-label required">
+							Notes: </label>
+						<textarea id="notes" name="notes" class="form-control"
+							required="required" rows="10" cols="47"></textarea>
+					</div>
+					<input type="submit" class="btn" name="submit" id="submit"
+						value="Submit" />
+				</form>
+			</div>
+		</div>
+	</section>
+
+
 
 </th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).on("wb-ready.wb", function() {
+			$(".resolveBtn").on("click", function(e) {
+				var id = $(e.target).attr("id");
+				$('input#submit').click(function(e) {
+					e.preventDefault();
+					var items = $("#" + id).parent().parent().find("td");
+					var obj = {
+						"department" : $(items.get(0)).text(),
+						"language" : $(items.get(1)).text(),
+						"url" : $(items.get(2)).text(),
+						"problem" : $(items.get(3)).text(),
+						"problemDetails" : $(items.get(4)).text(),
+						"problemDate" : $(items.get(5)).text(),
+						"resolution" : $("#notes").val(),
+						"id" : id
+					};
+					$.ajax({
+					    type:     "post",
+					    data:     obj,
+					    cache:    false,
+					    url:      "updateProblem",
+					    dataType: "text",
+					    error: function (xhr,status, error) {
+					    	console.log(xhr.responseText);
+					    },
+					    success: function (date) {
+					    	$(items.get(6)).text($("#notes").val());
+					    	$("#notes").val("");
+					    	$(items.get(7)).text(date);
+					    	$(".popup-modal-dismiss").click();
+					    }
+					});
+					
+				});
+				wb.doc.trigger("open.wb-lbx", [ [ {
+					src : "#submitWindow",
+					type : "inline"
+				} ] ]);
 
+			});
+		});
+	</script>
+</th:block>
 </html>
