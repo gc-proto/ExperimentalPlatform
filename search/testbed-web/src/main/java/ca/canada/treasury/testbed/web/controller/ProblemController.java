@@ -19,7 +19,9 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,11 +38,16 @@ public class ProblemController {
 	@Autowired
 	private SolrClient solr;
 
+	@Value("${solr.url}")
+	private String solrBaseUrl;
+
+	@CrossOrigin(origins = "*")
 	@PostMapping(value = "/addProblem")
 	public @ResponseBody String addProblem(HttpServletRequest request) {
 		try {
-			String urlString = "http://localhost:8983/solr/problem";
-			SolrClient Solr = new HttpSolrClient.Builder(urlString).build();
+			String urlString = solrBaseUrl + "/" + COLLECTION_PROBLEM;
+			LOG.info(urlString);
+			SolrClient solr = new HttpSolrClient.Builder(urlString).build();
 			SolrInputDocument toIndexDoc = new SolrInputDocument();
 			toIndexDoc.addField("id", System.currentTimeMillis());
 			toIndexDoc.addField("url", request.getParameter("url"));
@@ -49,19 +56,20 @@ public class ProblemController {
 			toIndexDoc.addField("problemDetails", request.getParameter("problemDetails"));
 			toIndexDoc.addField("department", "Health Canada");
 			toIndexDoc.addField("language", request.getParameter("language"));
-			Solr.add(toIndexDoc);
-			Solr.commit();
+			solr.add(toIndexDoc);
+			solr.commit();
 			return "Problem added.";
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
 		}
 	}
-
+	@CrossOrigin(origins = "*")
 	@PostMapping(value = "/updateProblem")
 	public @ResponseBody String updateProblem(HttpServletRequest request) {
 		try {
-			String urlString = "http://localhost:8983/solr/problem";
-			SolrClient Solr = new HttpSolrClient.Builder(urlString).build();
+			String urlString = solrBaseUrl + "/" + COLLECTION_PROBLEM;
+			LOG.info(urlString);
+			SolrClient solr = new HttpSolrClient.Builder(urlString).build();
 			SolrInputDocument toIndexDoc = new SolrInputDocument();
 			toIndexDoc.addField("id", request.getParameter("id"));
 			toIndexDoc.addField("url", request.getParameter("url"));
@@ -73,14 +81,14 @@ public class ProblemController {
 			toIndexDoc.addField("resolution", request.getParameter("resolution"));
 			String resolutionDate = format.format(new Date());
 			toIndexDoc.addField("resolutionDate", resolutionDate);
-			Solr.add(toIndexDoc);
-			Solr.commit();
+			solr.add(toIndexDoc);
+			solr.commit();
 			return resolutionDate;
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
 		}
 	}
-
+	
 	public String getData() throws Exception {
 		StringBuilder builder = new StringBuilder();
 		LOG.debug("Probelm request...");
@@ -99,7 +107,8 @@ public class ProblemController {
 			q.set("qf", "id");
 		}
 
-		q.setFields("id", "url", "problem", "problemDetails", "date", "language", "department","resolution","resolutionDate");
+		q.setFields("id", "url", "problem", "problemDetails", "date", "language", "department", "resolution",
+				"resolutionDate");
 
 		q.setStart(0);
 		q.setRows(10000);

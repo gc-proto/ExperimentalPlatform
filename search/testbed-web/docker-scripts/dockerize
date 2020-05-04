@@ -1,0 +1,4 @@
+cd ..
+mvn install
+docker build . -t ryanhyma/testbed_web:1.0.0
+docker push ryanhyma/testbed_web:1.0.0
