@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: testbed-indexer-canada
 spec:
-  schedule: "30 9 * * *"
+  schedule: "0 23 */2 * *"
   jobTemplate:
     spec:
       template:
