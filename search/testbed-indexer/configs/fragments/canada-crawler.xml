@@ -4,8 +4,8 @@
 
 	<startURLs stayOnDomain="true" stayOnPort="false"
 		stayOnProtocol="false">
-		<url>https://pm.gc.ca/</url>
-		<url>https://www.canada.ca/</url>
+		<urlsFile>/opt/indexer-configs/fragments/allSearchUrls.txt</urlsFile>
+		
 	</startURLs>
 	<userAgent>TBS Canada Crawler</userAgent>
 
@@ -48,6 +48,16 @@
 		<filter
 			class="com.norconex.collector.core.filter.impl.ExtensionReferenceFilter"
 			onMatch="exclude" caseSensitive="false">pdf,doc,docx</filter>
+		<filter
+			class="com.norconex.collector.core.filter.impl.RegexReferenceFilter"
+			onMatch="exclude">
+			^https://www\.canada\.ca/en/sr/.*$
+		</filter>
+		<filter
+			class="com.norconex.collector.core.filter.impl.RegexReferenceFilter"
+			onMatch="exclude">
+			^https://www\.canada\.ca/fr/sr/.*$
+		</filter>
 	</documentFilters>
 
 	<importer>
@@ -64,20 +74,20 @@
 				<dom selector="a" extract="attr(href)" toField="links"
 					overwrite="true" />
 			</tagger>
-			
+
 			<tagger
 				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
 				<dom selector="html" extract="attr(lang)" toField="language"
 					overwrite="true" />
 			</tagger>
-			
+
 			<tagger
 				class="com.norconex.importer.handler.tagger.impl.DOMTagger">
 				<dom selector="meta" extract="outerHtml" toField="metadata"
 					overwrite="true" />
 			</tagger>
-			
-			
+
+
 			<!-- Remove portions of a page we do not care about (e.g., "noise"): -->
 			<transformer
 				class="com.norconex.importer.handler.transformer.impl.StripBetweenTransformer"
@@ -88,8 +98,8 @@
 					<end><![CDATA[</html>]]></end>
 				</stripBetween>
 			</transformer>
-			
-			
+
+
 
 		</preParseHandlers>
 
