@@ -51,10 +51,10 @@
 	<script th:inline="javascript">
 		$(document).on("wb-ready.wb", function() {
 			$(".resolveBtn").on("click", function(e) {
-				var id = $(e.target).attr("id");
+				var id = $(e.target).attr("id").replace("resolve","");
 				$('input#submit').click(function(e) {
 					e.preventDefault();
-					var items = $("#" + id).parent().parent().find("td");
+					var items = $("#resolve" + id).parent().parent().parent().find("td");
 					var obj = {
 						"department" : $(items.get(0)).text(),
 						"language" : $(items.get(1)).text(),
@@ -88,6 +88,23 @@
 					type : "inline"
 				} ] ]);
 
+			});
+			
+			$(".deleteBtn").on("click", function(e) {
+				var id = $(e.target).attr("id").replace("delete","");
+				$.ajax({
+				    type:     "get",
+				    data:     {"id" : id},
+				    cache:    false,
+				    url:      "deleteProblem",
+				    dataType: "text",
+				    error: function (xhr,status, error) {
+				    	console.log(xhr.responseText);
+				    },
+				    success: function (date) {
+				    	$(e.target).parent().parent().parent().remove();
+				    }
+				});
 			});
 		});
 	</script>

@@ -63,7 +63,7 @@ public class ProblemController {
 			return "Error:" + e.getMessage();
 		}
 	}
-	@CrossOrigin(origins = "*")
+
 	@PostMapping(value = "/updateProblem")
 	public @ResponseBody String updateProblem(HttpServletRequest request) {
 		try {
@@ -88,7 +88,22 @@ public class ProblemController {
 			return "Error:" + e.getMessage();
 		}
 	}
-	
+
+	@GetMapping(value = "/deleteProblem")
+	public @ResponseBody String deleteProblem(HttpServletRequest request) {
+		try {
+			String urlString = solrBaseUrl + "/" + COLLECTION_PROBLEM;
+			LOG.info(urlString);
+			SolrClient solr = new HttpSolrClient.Builder(urlString).build();
+			String id = request.getParameter("id");
+			solr.deleteById(id);
+			solr.commit();
+			return "Deleted";
+		} catch (Exception e) {
+			return "Error:" + e.getMessage();
+		}
+	}
+
 	public String getData() throws Exception {
 		StringBuilder builder = new StringBuilder();
 		LOG.debug("Probelm request...");
@@ -139,8 +154,11 @@ public class ProblemController {
 				builder.append("<td></td>");
 				builder.append("<td></td>");
 			}
-			builder.append("<td><button id='" + elem.selectSingleNode("str[@name='id']").getText()
-					+ "' class='btn resolveBtn'>Resolve</button></td>");
+			builder.append("<td><div class='btn-group'><button id='resolve"
+					+ elem.selectSingleNode("str[@name='id']").getText()
+					+ "' class='btn btn-xs resolveBtn'>Resolve</button><button id='delete"
+					+ elem.selectSingleNode("str[@name='id']").getText()
+					+ "' class='btn btn-xs deleteBtn'>Delete</button></div></td>");
 			builder.append("</tr>");
 		}
 		return builder.toString();
