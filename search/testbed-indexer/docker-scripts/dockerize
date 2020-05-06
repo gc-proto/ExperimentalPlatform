@@ -1,6 +1,5 @@
 #!/bin/bash
 cd ..
-mvn install
 docker build . -t ryanhyma/testbed_indexer:$1
 docker push ryanhyma/testbed_indexer:$1
 

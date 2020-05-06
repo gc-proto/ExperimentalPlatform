@@ -2,5 +2,5 @@
 cd ..
 docker build . -t ryanhyma/testbed_solr:$1
 docker push ryanhyma/testbed_solr:$1
-kubectl config use-context microk8s
+#kubectl config use-context microk8s
 kubectl rollout restart statefulset/testbed-solr

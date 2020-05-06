@@ -34,7 +34,7 @@
 	<maxDepth>-1</maxDepth>
 
 	<!-- Aggressiveness: no point being too aggressive here. -->
-	<numThreads>2</numThreads>
+	<numThreads>1</numThreads>
 	<delay default="500" ignoreRobotsCrawlDelay="false" scope="site" />
 
 	<!-- Because we are explicit in the pages we want, we ignore most site crawling 
@@ -353,10 +353,10 @@
 	<committer class="com.norconex.committer.solr.SolrCommitter">
 		<solrURL>${solrURL}</solrURL>
 		<queueDir>${workdir}/solrcommitter-queue_${lang}</queueDir>
-		<queueSize>20</queueSize>
-		<commitBatchSize>20</commitBatchSize>
-		<maxRetries>3</maxRetries>
-		<maxRetryWait>10 seconds</maxRetryWait>
+		<queueSize>100</queueSize>
+		<commitBatchSize>100</commitBatchSize>
+		<maxRetries>15</maxRetries>
+		<maxRetryWait>120 seconds</maxRetryWait>
 	</committer>
 	<!-- <committer class="com.norconex.committer.core.impl.JSONFileCommitter"> 
 		<directory>${workdir}/crawledfiles_${lang}</directory> <pretty>true</pretty> 
