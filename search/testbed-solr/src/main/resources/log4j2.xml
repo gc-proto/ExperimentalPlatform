@@ -11,7 +11,7 @@
         <AppenderRef ref="Console" />
     </Root>
 
-    <Logger name="ca.canada.treasury.testbed.solr" level="info" additivity="false">
+    <Logger name="ca.canada.treasury.testbed.solr" level="all" additivity="false">
       <AppenderRef ref="Console" />
     </Logger>
 <!-- 
@@ -20,10 +20,10 @@
     </Logger>
  -->
   
-    <Logger name="com" level="warn" additivity="false">
+    <Logger name="com" level="all" additivity="false">
       <AppenderRef ref="Console" />
     </Logger>
-    <Logger name="org" level="warn" additivity="false">
+    <Logger name="org" level="all" additivity="false">
       <AppenderRef ref="Console" />
     </Logger>
 

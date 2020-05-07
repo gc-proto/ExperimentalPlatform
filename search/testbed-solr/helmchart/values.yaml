@@ -7,7 +7,6 @@ replicaCount: 1
 image:
   repository: ryanhyma/testbed_solr
   tag: 1.0.0
- # pullPolicy: IfNotPresent
   pullPolicy: Always
   pullSecret: regcred
 
@@ -59,29 +58,29 @@ ingress:
 ##
 resources:
   requests:
-    memory: 500Mi
-    cpu: 500m
+    memory: 1000Mi
+    cpu: 1000m
   limits:
     memory: 3000Mi
-    cpu: 1750m
+    cpu: 1000m
 
 nodeSelector: {}
 
 tolerations: []
 
 livenessProbe:
-  initialDelaySeconds: 160
-  periodSeconds: 30
-  timeoutSeconds: 120
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
   successThreshold: 1
-  failureThreshold: 10
+  failureThreshold: 3
 
 readinessProbe:
-  initialDelaySeconds: 120
-  periodSeconds: 30
-  timeoutSeconds: 120
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
   successThreshold: 1
-  failureThreshold: 10
+  failureThreshold: 3
 
 ## Persist data to a persistent volume
 persistent:

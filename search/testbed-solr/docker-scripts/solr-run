@@ -13,4 +13,4 @@ java -version
 echo ${SPATH}
 
 # Command to run Solr and keep the verbose logs so the docker remains running
-solr start -f -p 8983 -m 3000M
+solr start -f -p 8983 -m 1000M

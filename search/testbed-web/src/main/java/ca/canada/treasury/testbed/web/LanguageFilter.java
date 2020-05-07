@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 
-@Component
 public class LanguageFilter implements Filter {
 
 	@Override
