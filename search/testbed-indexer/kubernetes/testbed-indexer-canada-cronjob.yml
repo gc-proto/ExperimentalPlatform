@@ -13,4 +13,17 @@ spec:
             image: ryanhyma/testbed_indexer:1.0.0
             command: ["indexer-run-canada"]
             imagePullPolicy: Always
+            volumeMounts:
+              - name: cron-vol
+                mountPath: /opt/indexer-data
           restartPolicy: OnFailure
+          volumes:
+            - name: cron-vol
+              persistentVolumeClaim:
+                claimName: indexer-pv-claim
+          securityContext:
+           runAsUser: 8080
+           runAsGroup: 8080
+           fsGroup: 8080
+                
+          
