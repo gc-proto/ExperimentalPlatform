@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,7 +32,7 @@ public class Main {
 	// public static final String PAGE_PERFORMANCE_URL =
 	// "http://pageperformance-nginx/php/process-cj.php";
 	public static final String PAGE_PERFORMANCE_URL = "https://pageperformance.alpha.canada.ca/php/process-cj.php";
-	public static int NUM_THREADS = 6;
+	public static int NUM_THREADS = 2;
 	private ExecutorService executor = null;
 	public static AtomicInteger numCached = new AtomicInteger(0);
 
@@ -45,7 +47,8 @@ public class Main {
 	}
 
 	public Main() {
-		this.executor = Executors.newFixedThreadPool(NUM_THREADS);
+		this.executor = new ThreadPoolExecutor(NUM_THREADS, NUM_THREADS, 0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>());
 	}
 
 	public void setupDriver() {
@@ -53,8 +56,8 @@ public class Main {
 	}
 
 	public void cachePages() {
-		// this.cachePages(thirtyDaysAgo, today);
-		// this.cachePages(sevenDaysAgo, today);
+		this.cachePages(sevenDaysAgo, today);
+		this.cachePages(thirtyDaysAgo, today);
 		this.cachePages(yesterday, today);
 	}
 
@@ -62,7 +65,11 @@ public class Main {
 		for (String url : links) {
 			if (url.contains("www.canada.ca")) {
 				Runnable cacher = new PageCacher(url, from, to);
-				this.executor.execute(cacher);
+				try {
+					this.executor.execute(cacher);
+				} catch (Exception e) {
+
+				}
 			}
 		}
 		this.executor.shutdown();
@@ -72,6 +79,7 @@ public class Main {
 			} catch (Exception e) {
 			}
 		}
+		System.out.println("All pages cached.");
 	}
 
 	public static class PageCacher implements Runnable {
@@ -91,8 +99,10 @@ public class Main {
 				URL url = new URL(PAGE_PERFORMANCE_URL + "?url=" + URLEncoder.encode(pageURL, "UTF-8") + "&start="
 						+ from + "&end=" + to);
 				System.out.println("Caching: " + pageURL);
+				System.out.println("Cache call:" + url.toString());
 				Document doc = Jsoup.connect(url.toString()).timeout(5 * 60 * 1000).get();
-				System.out.println(doc.outerHtml());
+				System.out
+						.println("Finished caching: " + pageURL + " Output:" + doc.outerHtml().replaceAll("\\s+", ""));
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
