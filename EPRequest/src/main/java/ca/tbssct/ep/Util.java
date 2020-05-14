@@ -157,7 +157,7 @@ public class Util {
 		} catch (Exception e) {
 
 		}
-		return prop.getProperty("secretPath");
+		return prop.getProperty("helmScriptPath");
 	}
 
 	public static View handleError(String error, String instanceName, Logger logger) {

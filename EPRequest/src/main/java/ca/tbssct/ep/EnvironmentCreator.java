@@ -21,15 +21,13 @@ public class EnvironmentCreator {
 		String publicIP = Util.GetPublicIp();
 		if (!publicIP.equals("null")) {
 			// now use the command line to add a DNS entry using the azure command line.
-			logger.info(Util.ExecuteCommand(HELM_SCRIPTS,
-					"az network dns record-set a add-record -g DNSZone -z " + Util.GetHost() + " -n " + instanceName
-							+ " -a " + publicIP));
+			logger.info(Util.ExecuteCommand(HELM_SCRIPTS, "az network dns record-set a add-record -g DNSZone -z "
+					+ Util.GetHost() + " -n " + instanceName + " -a " + publicIP));
 			// check that the DNS record is available.
 			boolean keepGoing = true;
 			int count = 0;
 			while (keepGoing) {
-				String response = Util.ExecuteCommand(HELM_SCRIPTS,
-						"nslookup " + instanceName + Util.GetHost());
+				String response = Util.ExecuteCommand(HELM_SCRIPTS, "nslookup " + instanceName + "." + Util.GetHost());
 				logger.info(response);
 				if (response.contains(publicIP)) {
 					logger.info("DNS entry found. Confirmation will be sent");
@@ -57,8 +55,8 @@ public class EnvironmentCreator {
 
 	public boolean deployDrupal(String instanceName, EPRequest epRequest) {
 		try {
-			String output = Util.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS
-					+ Util.GetValuesTemplate() + " " + HELM_SCRIPTS + "values-" + instanceName + ".yaml");
+			String output = Util.ExecuteCommand(HELM_SCRIPTS, "cp " + HELM_SCRIPTS + Util.GetValuesTemplate() + " "
+					+ HELM_SCRIPTS + "values-" + instanceName + ".yaml");
 			if (output.toUpperCase().contains("ERROR")) {
 				Util.handleError(output, instanceName, logger);
 				return false;
@@ -66,15 +64,14 @@ public class EnvironmentCreator {
 			logger.info(output);
 			EnvironmentCreator.this.updateValuesFile(HELM_SCRIPTS + "values-" + instanceName + ".yaml",
 					epRequest.getPassword(), epRequest.getEmailAddress(), instanceName);
-			String helmMsg = Util.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName
-					+ " --namespace " + instanceName + " -f values-" + instanceName + ".yaml --timeout 30m --wait .");
+			String helmMsg = Util.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName + " --namespace "
+					+ instanceName + "-drupal" + " -f values-" + instanceName + ".yaml --timeout 30m --wait .");
 			logger.info(helmMsg);
 			if (helmMsg.toUpperCase().contains("ERROR")) {
 				logger.info("Trying again once...");
 				helmMsg = Util.ExecuteCommand(HELM_SCRIPTS, "helm delete " + instanceName);
-				helmMsg = Util.ExecuteCommand(HELM_SCRIPTS,
-						"helm install " + instanceName + " --namespace " + instanceName + " -f values-" + instanceName
-								+ ".yaml --timeout 30m --wait .");
+				helmMsg = Util.ExecuteCommand(HELM_SCRIPTS, "helm install " + instanceName + " --namespace "
+						+ instanceName + "-drupal" + " -f values-" + instanceName + ".yaml --timeout 30m --wait .");
 				logger.info(helmMsg);
 				if (helmMsg.toUpperCase().contains("ERROR")) {
 					Util.handleError(helmMsg, instanceName, logger);
@@ -94,17 +91,14 @@ public class EnvironmentCreator {
 
 	public boolean createNFSShares(String instanceName) {
 		// add the secret to the share
-		String output = Util.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName);
+		String output = Util.ExecuteCommand(AZURE_SCRIPTS, "./createNFSSecret.sh " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
 			Util.handleError(output, instanceName, logger);
 			return false;
 		} else {
-			output = Util.ExecuteCommand(AZURE_SCRIPTS,
-					"./createNFSShare.sh " + instanceName + "-drupal-private");
-			output += Util.ExecuteCommand(AZURE_SCRIPTS,
-					"./createNFSShare.sh " + instanceName + "-drupal-public");
-			output += Util.ExecuteCommand(AZURE_SCRIPTS,
-					"./createNFSShare.sh " + instanceName + "-drupal-themes");
+			output = Util.ExecuteCommand(AZURE_SCRIPTS, "./createNFSShare.sh " + instanceName + "-drupal-private");
+			output += Util.ExecuteCommand(AZURE_SCRIPTS, "./createNFSShare.sh " + instanceName + "-drupal-public");
+			output += Util.ExecuteCommand(AZURE_SCRIPTS, "./createNFSShare.sh " + instanceName + "-drupal-themes");
 			if ((output.toUpperCase().contains("\"CREATED\": FALSE") || output.toUpperCase().contains("ERROR"))
 					&& !output.toUpperCase().contains("ALREADY EXISTS")) {
 				Util.handleError(output, instanceName, logger);
@@ -117,8 +111,7 @@ public class EnvironmentCreator {
 	}
 
 	public boolean createNamespace(String instanceName) {
-		String output = Util.ExecuteCommand(HELM_SCRIPTS,
-				"kubectl create namespace " + instanceName + "-drupal");
+		String output = Util.ExecuteCommand(HELM_SCRIPTS, "kubectl create namespace " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR") && !output.toUpperCase().contains("ALREADY EXISTS")) {
 			Util.handleError(output, instanceName, logger);
 			return false;
@@ -173,8 +166,7 @@ public class EnvironmentCreator {
 	}
 
 	public boolean scheduleBackup(String instanceName) {
-		String output = Util.ExecuteCommand(AZURE_SCRIPTS,
-				"./schedule-namespace.sh " + instanceName + "-drupal");
+		String output = Util.ExecuteCommand(VELERO_SCRIPTS, "./schedule-namespace.sh " + instanceName + "-drupal");
 		if (output.toUpperCase().contains("ERROR")) {
 			Util.handleError(output, instanceName, logger);
 			return false;
@@ -194,7 +186,5 @@ public class EnvironmentCreator {
 				((instanceName + "." + Util.GetHost()).toLowerCase().replace(".", "-") + "-tls-secret"));
 		Util.writeFile(path, content);
 	}
-
-	
 
 }
