@@ -32,7 +32,7 @@ public class Main {
 	// public static final String PAGE_PERFORMANCE_URL =
 	// "http://pageperformance-nginx/php/process-cj.php";
 	public static final String PAGE_PERFORMANCE_URL = "https://pageperformance.alpha.canada.ca/php/process-cj.php";
-	public static int NUM_THREADS = 2;
+	public static int NUM_THREADS = 4;
 	private ExecutorService executor = null;
 	public static AtomicInteger numCached = new AtomicInteger(0);
 
@@ -129,17 +129,22 @@ public class Main {
 	}
 
 	public void downloadPageList() throws Exception {
-		Document doc = Jsoup.connect("https://covid-19inventory.tbs.alpha.canada.ca/covid19_fr.html").get();
+		Document doc = Jsoup.connect("https://covid-19inventory.tbs.alpha.canada.ca/covid19_fr.html").maxBodySize(0).get();
 		this.links = new HashSet<String>();
 		links.addAll(this.parseDocument(doc));
-		doc = Jsoup.connect("https://covid-19inventory.tbs.alpha.canada.ca/covid19_en.html").get();
+		doc = Jsoup.connect("https://covid-19inventory.tbs.alpha.canada.ca/covid19_en.html").maxBodySize(0).get();
 		links.addAll(this.parseDocument(doc));
+		for (String link : links) {
+			System.out.println(link);
+		}
+		System.out.println("End of links: "+links.size());
 	}
 
 	public List<String> parseDocument(Document doc) {
 		List<String> list = new ArrayList<String>();
 		Element table = doc.getElementById("dataset-filter");
 		Elements elements = table.select("td:eq(2) a");
+		System.out.println("Elements: "+elements.size());
 		for (Element element : elements) {
 			String url = element.attr("href");
 			list.add(url);
