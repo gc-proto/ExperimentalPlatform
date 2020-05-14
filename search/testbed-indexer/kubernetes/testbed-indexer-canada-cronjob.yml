@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: testbed-indexer-canada
 spec:
-  schedule: "0 23 */2 * *"
+  schedule: "0 0 * * 0"
   jobTemplate:
     spec:
       template:
@@ -16,6 +16,13 @@ spec:
             volumeMounts:
               - name: cron-vol
                 mountPath: /opt/indexer-data
+            resources: 
+              limits:
+                cpu: 500m
+                memory: 512Mi
+              requests:
+                cpu: 500m
+                memory: 512Mi
           restartPolicy: OnFailure
           volumes:
             - name: cron-vol
@@ -25,5 +32,6 @@ spec:
            runAsUser: 8080
            runAsGroup: 8080
            fsGroup: 8080
+          
                 
           

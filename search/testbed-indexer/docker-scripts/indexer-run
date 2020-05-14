@@ -14,7 +14,7 @@ echo $SOLR_URL
 echo ${SPATH}
 
 
-java -Dfile.encoding=UTF8 -classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" com.norconex.collector.http.HttpCollector -a start -c /opt/indexer-configs/covid19-collector.xml -k -v /opt/indexer-configs/covid19-collector-prod.variables
+java -Dfile.encoding=UTF8 -Xmx512m -classpath "${SPATH}/${ZNAME}/lib/*:${SPATH}/${ZNAME}/classes" com.norconex.collector.http.HttpCollector -a start -c /opt/indexer-configs/covid19-collector.xml -k -v /opt/indexer-configs/covid19-collector-prod.variables
 
 
 

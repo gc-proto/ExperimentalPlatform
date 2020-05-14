@@ -202,7 +202,6 @@ https://diffournisseur.contratscanada.gc.ca/
 http://ccsso.ca
 http://certification.esdc.gc.ca/lea-mcl/
 http://cestmajournee.gc.ca
-http://charts.gc.ca
 http://chis.nrcan.gc.ca
 http://sopf.gc.ca/en/
 http://cippn-fnpim.aadnc-aandc.gc.ca

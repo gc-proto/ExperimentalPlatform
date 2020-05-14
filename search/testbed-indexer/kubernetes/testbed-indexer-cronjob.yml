@@ -12,4 +12,11 @@ spec:
           - name: testbed-indexer
             image: ryanhyma/testbed_indexer:1.0.0
             imagePullPolicy: Always
+            resources: 
+              limits:
+                cpu: 500m
+                memory: 512Mi
+              requests:
+                cpu: 500m
+                memory: 512Mi
           restartPolicy: OnFailure
