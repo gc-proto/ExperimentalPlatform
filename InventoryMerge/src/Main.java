@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,6 +12,7 @@ import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -21,12 +23,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class Main {
 
@@ -64,12 +82,14 @@ public class Main {
 		public String audience = "";
 		public String newPage = "";
 		public String comments = "";
+		public String uniqueVisitors;
 
 		public List<String> asList() {
 			List<String> list = new ArrayList<String>();
 			list.add(theme);
 			list.add(department);
 			list.add("<a href=\"" + URL + "\">" + title + "</a>");
+			list.add(this.uniqueVisitors);
 			list.add(language);
 			list.add(modifiedDate);
 			list.add(lastPublishedDate);
@@ -79,7 +99,7 @@ public class Main {
 			list.add(contentTypes);
 			list.add(AEMContentType);
 			list.add(audience);
-			
+
 			java.util.Date date = new Date();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			String format = formatter.format(date);
@@ -91,9 +111,9 @@ public class Main {
 		}
 	}
 
-	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Language", "Modified Date",
-			"Last Published date", "URL", "Subtitle (H2)", "Keywords", "Content Type(s)", "AEM Content Type",
-			"Audience", "Page Performance", "Comments" };
+	public String[] OUTPUT_HEADERS_EN = { "Theme", "Department", "Title", "Unique Visitors (Weekly)", "Language",
+			"Modified Date", "Last Published date", "URL", "Subtitle (H2)", "Keywords", "Content Type(s)",
+			"AEM Content Type", "Audience", "Page Performance", "Comments" };
 
 	public HashMap<String, OutputData> covidMap = new HashMap<String, OutputData>();
 	public HashMap<String, OutputData> aemMap = new HashMap<String, OutputData>();
@@ -119,9 +139,16 @@ public class Main {
 	public String importDate = "";
 	public String lastImportDate = "";
 
+	private String today;
+	// private String yesterday;
+	private String sevenDaysAgo;
+	// private String thirtyDaysAgo;
+	private String datePostFix = "T00:00:00.000";
+
 	public static void main(String args[]) throws Exception {
 		Main main = new Main(args[0], args[1]);
 		// main.dumpAEMAudience();
+		main.calculateDates();
 		main.loadFrenchOutputHeaders();
 		main.loadThemes();
 		main.loadDepartments();
@@ -145,6 +172,77 @@ public class Main {
 		System.out.println("URL Count:" + this.completURLList.size());
 		this.compareManualList("en");
 		this.compareManualList("fr");
+	}
+
+	public void calculateDates() {
+		this.today = DATE_FORMAT.format(new Date());
+		// this.yesterday = this.calculateDays(-1);
+		this.sevenDaysAgo = this.calculateDays(-7);
+		// this.thirtyDaysAgo = this.calculateDays(-30);
+	}
+
+	public String calculateMonth(int month) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, month);
+		return DATE_FORMAT.format(cal.getTime());
+	}
+
+	public String calculateDays(int days) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, days);
+		return DATE_FORMAT.format(cal.getTime());
+	}
+
+	public class PagePerformance {
+		String type;
+		String url;
+		String oUrl;
+		String[] dates = new String[2];
+	}
+
+	public String determineUniqueVisits(String url) throws IOException {
+
+		if (url.contains("www.canada.ca")) {
+			String json = null;
+			JsonObject obj = null;
+			JsonObject summary = null;
+			JsonArray array = null;
+			try {
+				PagePerformance pojo1 = new PagePerformance();
+				pojo1.type = "uvrap";
+				pojo1.oUrl = url.replace("http://", "").replace("https://", "");
+				pojo1.url = url.replace("http://", "").replace("https://", "");
+				pojo1.dates[0] = this.sevenDaysAgo + this.datePostFix;
+				pojo1.dates[1] = this.today + this.datePostFix;
+
+				String postUrl = "https://pageperformance.tbs.alpha.canada.ca/php/process.php?mode=update";
+				Gson gson = new Gson();
+				HttpPost post = new HttpPost(postUrl);
+				String jsonReq = gson.toJson(pojo1);
+				StringEntity postingString = new StringEntity(jsonReq);
+				post.setEntity(postingString);
+				post.setHeader("Content-type", "application/json");
+				HttpClient client = HttpClientBuilder.create().build();
+				HttpResponse response = client.execute(post);
+
+				HttpEntity entity = response.getEntity();
+				Header encodingHeader = entity.getContentEncoding();
+
+				// you need to know the encoding to parse correctly
+				Charset encoding = encodingHeader == null ? StandardCharsets.UTF_8
+						: Charsets.toCharset(encodingHeader.getValue());
+
+				// use org.apache.http.util.EntityUtils to read json as string
+				json = EntityUtils.toString(entity, encoding);
+				obj = JsonParser.parseString(json).getAsJsonObject();
+				summary = obj.get("summaryData").getAsJsonObject();
+				array = summary.get("searchTotals").getAsJsonArray();
+				return array.get(0).getAsInt() + "";
+			} catch (Exception e) {
+				System.out.println("URL" + url + " " + e.getMessage());
+			}
+		}
+		return "";
 	}
 
 	public String determineNewURL(String url, String lang) {
@@ -845,7 +943,8 @@ public class Main {
 					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
 					outputData.language = record.get("Language");
 					outputData.audience = this.determineAudience(record);
-					//outputData.newPage = this.determineNewURL(outputData.URL, "en");
+					// outputData.newPage = this.determineNewURL(outputData.URL, "en");
+					//outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
 					this.covidMap.put(record.get("URL"), outputData);
 				}
 			}
@@ -872,7 +971,8 @@ public class Main {
 					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
 					outputData.language = record.get("Language");
 					outputData.audience = this.determineAudience(record);
-					//outputData.newPage = this.determineNewURL(outputData.URL, "fr");
+					//outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
+					// outputData.newPage = this.determineNewURL(outputData.URL, "fr");
 					this.covidMap.put(record.get("URL"), outputData);
 				}
 			}
@@ -900,7 +1000,9 @@ public class Main {
 					outputData.AEMContentType = this.capitalizeWord(contentType);
 					outputData.lastPublishedDate = record.get("Last Published date");
 					outputData.audience = this.determineAudience(record);
-					//outputData.newPage = this.determineNewURL(outputData.URL, outputData.language);
+					// outputData.newPage = this.determineNewURL(outputData.URL,
+					// outputData.language);
+					outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
 					this.aemMap.put(record.get("Public path"), outputData);
 				}
 			}
