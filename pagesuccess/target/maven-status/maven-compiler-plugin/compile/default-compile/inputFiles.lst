@@ -1,0 +1,13 @@
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/web/config/PageConfig.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/auth/UserRepository.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/auth/CustomUserDetailsService.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/auth/Role.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/web/config/CustomizeAuthenticationSuccessHandler.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/web/controller/LoginController.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/auth/RoleRepository.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/web/filter/LanguageFilter.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/auth/UserValidator.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/auth/User.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/web/config/WebSecurityConfig.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/web/controller/ProblemController.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/web/PageSuccessApplication.java

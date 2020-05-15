@@ -1,0 +1,13 @@
+ca/gc/tbs/web/config/WebSecurityConfig.class
+ca/gc/tbs/web/PageSuccessApplication.class
+ca/gc/tbs/auth/User.class
+ca/gc/tbs/web/config/PageConfig.class
+ca/gc/tbs/web/controller/ProblemController.class
+ca/gc/tbs/auth/CustomUserDetailsService.class
+ca/gc/tbs/auth/UserRepository.class
+ca/gc/tbs/auth/UserValidator.class
+ca/gc/tbs/auth/RoleRepository.class
+ca/gc/tbs/auth/Role.class
+ca/gc/tbs/web/controller/LoginController.class
+ca/gc/tbs/web/filter/LanguageFilter.class
+ca/gc/tbs/web/config/CustomizeAuthenticationSuccessHandler.class
