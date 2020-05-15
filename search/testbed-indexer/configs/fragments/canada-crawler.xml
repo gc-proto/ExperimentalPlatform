@@ -24,7 +24,7 @@
 	<robotsMeta ignore="false" />
 	<robotsTxt ignore="false" />
 	<canonicalLinkDetector ignore="false" />
-	<sitemapResolverFactory ignore="false" />
+	<sitemapResolverFactory ignore="true" />
 
 	<!-- If no longer found in search results, do not keep it. -->
 	<orphansStrategy>PROCESS</orphansStrategy>
@@ -47,7 +47,7 @@
 	<documentFilters>
 		<filter
 			class="com.norconex.collector.core.filter.impl.ExtensionReferenceFilter"
-			onMatch="exclude" caseSensitive="false">pdf,doc,docx</filter>
+			onMatch="exclude" caseSensitive="false">pdf,doc,docx,svg,jpg,jpeg</filter>
 		<filter
 			class="com.norconex.collector.core.filter.impl.RegexReferenceFilter"
 			onMatch="exclude">
@@ -57,6 +57,11 @@
 			class="com.norconex.collector.core.filter.impl.RegexReferenceFilter"
 			onMatch="exclude">
 			^https://www\.canada\.ca/fr/sr/.*$
+		</filter>
+		<filter
+			class="com.norconex.collector.core.filter.impl.RegexReferenceFilter"
+			onMatch="exclude">
+			.*[\.\/]{5}.*
 		</filter>
 	</documentFilters>
 

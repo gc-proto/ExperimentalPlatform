@@ -184,7 +184,6 @@ http://wwwapps.tc.gc.ca/Saf-Sec-Sur/7/VRDB-BDRV/search-recherche/menu.aspx?lang=
 http://dcc-cdc.gc.ca/
 http://dfo-mpo.gc.ca/
 http://www.bio.gc.ca/
-http://chs-shc.gc.ca/
 http://geoportal.gc.ca/
 http://isdm-gdsi.gc.ca/
 http://www.pac.dfo-mpo.gc.ca/
