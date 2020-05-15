@@ -42,7 +42,6 @@ import org.jsoup.select.Elements;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -82,7 +81,7 @@ public class Main {
 		public String audience = "";
 		public String newPage = "";
 		public String comments = "";
-		public String uniqueVisitors;
+		public String uniqueVisitors="";
 
 		public List<String> asList() {
 			List<String> list = new ArrayList<String>();
@@ -99,12 +98,12 @@ public class Main {
 			list.add(contentTypes);
 			list.add(AEMContentType);
 			list.add(audience);
-
-			java.util.Date date = new Date();
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			String format = formatter.format(date);
-			list.add("<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + URL + "&start=2020-01-01" + "&end="
-					+ format + "\">" + title + "</a>");
+			if (URL.contains("www.canada.ca")) {
+				list.add("<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + URL + "&start="
+						+ Main.sevenDaysAgo + "&end=" + Main.today + "\">" + title + "</a>");
+			} else {
+				list.add("");
+			}
 			list.add("");
 			return list;
 
@@ -139,9 +138,9 @@ public class Main {
 	public String importDate = "";
 	public String lastImportDate = "";
 
-	private String today;
+	public static String today;
 	// private String yesterday;
-	private String sevenDaysAgo;
+	public static String sevenDaysAgo;
 	// private String thirtyDaysAgo;
 	private String datePostFix = "T00:00:00.000";
 
@@ -175,9 +174,9 @@ public class Main {
 	}
 
 	public void calculateDates() {
-		this.today = DATE_FORMAT.format(new Date());
+		today = DATE_FORMAT.format(new Date());
 		// this.yesterday = this.calculateDays(-1);
-		this.sevenDaysAgo = this.calculateDays(-7);
+		sevenDaysAgo = this.calculateDays(-7);
 		// this.thirtyDaysAgo = this.calculateDays(-30);
 	}
 
@@ -212,8 +211,8 @@ public class Main {
 				pojo1.type = "uvrap";
 				pojo1.oUrl = url.replace("http://", "").replace("https://", "");
 				pojo1.url = url.replace("http://", "").replace("https://", "");
-				pojo1.dates[0] = this.sevenDaysAgo + this.datePostFix;
-				pojo1.dates[1] = this.today + this.datePostFix;
+				pojo1.dates[0] = sevenDaysAgo + this.datePostFix;
+				pojo1.dates[1] = today + this.datePostFix;
 
 				String postUrl = "https://pageperformance.tbs.alpha.canada.ca/php/process.php?mode=update";
 				Gson gson = new Gson();
@@ -237,9 +236,13 @@ public class Main {
 				obj = JsonParser.parseString(json).getAsJsonObject();
 				summary = obj.get("summaryData").getAsJsonObject();
 				array = summary.get("searchTotals").getAsJsonArray();
-				return array.get(0).getAsInt() + "";
+				String returnValue = array.get(0).getAsInt() + "";
+				if (returnValue == null || returnValue.contains("null")) {
+					returnValue = "";
+				}
+				return returnValue;
 			} catch (Exception e) {
-				System.out.println("URL" + url + " " + e.getMessage());
+				System.out.println("Could not find in cache: " + url + " " + e.getMessage());
 			}
 		}
 		return "";
@@ -944,7 +947,7 @@ public class Main {
 					outputData.language = record.get("Language");
 					outputData.audience = this.determineAudience(record);
 					// outputData.newPage = this.determineNewURL(outputData.URL, "en");
-					//outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
+					// outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
 					this.covidMap.put(record.get("URL"), outputData);
 				}
 			}
@@ -971,7 +974,7 @@ public class Main {
 					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
 					outputData.language = record.get("Language");
 					outputData.audience = this.determineAudience(record);
-					//outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
+					// outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
 					// outputData.newPage = this.determineNewURL(outputData.URL, "fr");
 					this.covidMap.put(record.get("URL"), outputData);
 				}
