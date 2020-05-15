@@ -32,7 +32,7 @@ public class Main {
 	// public static final String PAGE_PERFORMANCE_URL =
 	// "http://pageperformance-nginx/php/process-cj.php";
 	public static final String PAGE_PERFORMANCE_URL = "https://pageperformance.alpha.canada.ca/php/process-cj.php";
-	public static int NUM_THREADS = 4;
+	public static int NUM_THREADS = 3;
 	private ExecutorService executor = null;
 	public static AtomicInteger numCached = new AtomicInteger(0);
 
@@ -103,6 +103,7 @@ public class Main {
 				Document doc = Jsoup.connect(url.toString()).timeout(5 * 60 * 1000).get();
 				System.out
 						.println("Finished caching: " + pageURL + " Output:" + doc.outerHtml().replaceAll("\\s+", ""));
+				Thread.sleep(1000);
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
