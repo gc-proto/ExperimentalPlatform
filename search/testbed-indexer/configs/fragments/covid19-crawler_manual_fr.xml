@@ -7,6 +7,7 @@
 	
 	<startURLs stayOnDomain="true" stayOnPort="false"
 		stayOnProtocol="false">
+		<url>https://covid-prestations.alpha.canada.ca/fr/debut</url>
 		<url>https://www.canada.ca/fr/immigration-refugies-citoyennete/services/coronavirus-covid19.html</url>
 		<url>https://www.tc.gc.ca/fr/services/aviation/services-aeriens-commerciaux/formation-regulateurs-vol-manuels-exploitation/bulletin-regulateur-verificateur-agree-rva-no-01-20-mesures-reponse-nouveau-coronavirus-covid-19.html</url>
 		<url>https://www.international.gc.ca/development-developpement/partners-partenaires/bt-oa/guidance-covid-guide.aspx?lang=fra</url>
