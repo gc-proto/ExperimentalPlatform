@@ -1,5 +1,8 @@
 package ca.gc.tbs.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 
 public class Problem {
@@ -14,6 +17,7 @@ public class Problem {
 	private String resolution;
 	private String topic;
 	private String problemDate;
+	private List<String> tags = new ArrayList<String>();
 
 	public Problem(String id, String url, String problemDate, String problem, String problemDetails, String department,
 			String language, String resolutionDate, String resolution, String topic) {
@@ -108,5 +112,13 @@ public class Problem {
 
 	public void setProblemDate(String problemDate) {
 		this.problemDate = problemDate;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 }

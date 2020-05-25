@@ -1,7 +1,6 @@
 package ca.gc.tbs.controller;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import ca.gc.tbs.domain.User;
-import ca.gc.tbs.repository.UserRepository;
+import ca.gc.tbs.service.UserService;
 
 @Controller
 public class UserController {
@@ -25,16 +27,16 @@ public class UserController {
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	private UserRepository repository;
+	private UserService service;
 
 	@GetMapping(value = "/u/update")
 	public @ResponseBody String updateUser(HttpServletRequest request) {
 		try {
-			Optional<User> opt = repository.findById(request.getParameter("id"));
-			User user = opt.get();
+
+			User user = service.findUserById(request.getParameter("id"));
 			boolean enabled = Boolean.parseBoolean(request.getParameter("enabled"));
 			user.setEnabled(enabled);
-			this.repository.save(user);
+			this.service.saveUser(user);
 			return "Updated";
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
@@ -44,10 +46,23 @@ public class UserController {
 	@GetMapping(value = "/u/delete")
 	public @ResponseBody String deleteProblem(HttpServletRequest request) {
 		try {
-			this.repository.deleteById(request.getParameter("id"));
+			this.service.deleteUserById(request.getParameter("id"));
 			return "deleted";
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
+		}
+	}
+
+	/* TODO check for prod environment and disable */
+	@GetMapping(value = "/u/enableAdmin")
+	public View deleteProblem(HttpServletRequest request, RedirectAttributes atts) {
+		try {
+			this.service.enableAdmin(request.getParameter("email"));
+			atts.addFlashAttribute("successMessage", "User has been enabled and admin");
+			return new RedirectView("/success");
+		} catch (Exception e) {
+			atts.addFlashAttribute("errorMessage", "Failed to enable admin." + e.getMessage());
+			return new RedirectView("/error");
 		}
 	}
 
@@ -56,7 +71,7 @@ public class UserController {
 		String returnData = "";
 		try {
 			StringBuilder builder = new StringBuilder();
-			List<User> users = this.repository.findAll();
+			List<User> users = this.service.findAllUsers();
 			for (User user : users) {
 				builder.append("<tr><td>" + user.getEmail() + "</td>");
 
@@ -68,14 +83,13 @@ public class UserController {
 				builder.append("<td>" + (user.isEnabled() ? "Enabled" : "Awaiting approval") + "</td>");
 				builder.append("<td><div class='btn-group'>");
 				if (!user.isEnabled()) {
-					builder.append("<button id='enable" + user.getId()
-							+ "' class='btn btn-xs enableBtn'>Enable</button>");
+					builder.append(
+							"<button id='enable" + user.getId() + "' class='btn btn-xs enableBtn'>Enable</button>");
 				} else {
-					builder.append("<button id='disable" + user.getId()
-							+ "' class='btn btn-xs disableBtn'>Disable</button>");
+					builder.append(
+							"<button id='disable" + user.getId() + "' class='btn btn-xs disableBtn'>Disable</button>");
 				}
-				builder.append("<button id='delete" + user.getId()
-						+ "' class='btn btn-xs deleteBtn'>Delete</button>");
+				builder.append("<button id='delete" + user.getId() + "' class='btn btn-xs deleteBtn'>Delete</button>");
 
 				builder.append("</div></td>");
 				builder.append("</tr>");

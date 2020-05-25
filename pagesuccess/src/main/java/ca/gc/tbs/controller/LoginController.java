@@ -1,10 +1,9 @@
 package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.User;
-import ca.gc.tbs.service.CustomUserDetailsService;
+import ca.gc.tbs.service.UserService;
 
 import java.text.SimpleDateFormat;
-
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class LoginController {
@@ -21,7 +23,7 @@ public class LoginController {
 	public static final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
 
 	@Autowired
-	private CustomUserDetailsService userService;
+	private UserService userService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView login() {
@@ -51,20 +53,24 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ModelAndView createNewUser(@Valid User user) {
-		ModelAndView modelAndView = new ModelAndView();
+	public RedirectView createNewUser(@Valid User user, RedirectAttributes atts) {
 		userService.saveUser(user);
-		modelAndView.addObject("successMessage", "User has been registered successfully");
-		modelAndView.addObject("user", new User());
-		modelAndView.setViewName("login");
-		return modelAndView;
+		atts.addFlashAttribute("successMessage",
+				"User has been registered successfully. You will be notified when the account has been activated.");
+		return new RedirectView("success");
 	}
 
-	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-	public ModelAndView home() {
+	@RequestMapping(value = { "/success" }, method = RequestMethod.GET)
+	public String success() {
+		return "success";
+	}
+
+	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
+	public View home() {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("home");
-		return modelAndView;
+		RedirectView view = new RedirectView("signin");
+		return view;
 	}
 
 }

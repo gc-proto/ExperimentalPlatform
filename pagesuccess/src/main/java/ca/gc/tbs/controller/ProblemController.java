@@ -1,6 +1,7 @@
 package ca.gc.tbs.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.service.ContentService;
 
 @Controller
 public class ProblemController {
@@ -33,16 +37,38 @@ public class ProblemController {
 	@Autowired
 	private ProblemRepository repository;
 
+	@Autowired
+	private ContentService contentService;
+
 	@CrossOrigin(origins = "*")
 	@PostMapping(value = "/addProblem")
-	public @ResponseBody String addProblem(HttpServletRequest request) {
+	public View addProblem(HttpServletRequest request) {
 
 		try {
+			String problemDetails = request.getParameter("problemDetails");
+			problemDetails = this.contentService.cleanContent(problemDetails);
 			Problem problem = new Problem(System.currentTimeMillis() + "", request.getParameter("url"),
-					format.format(new Date()), request.getParameter("problem"), request.getParameter("problemDetails"),
-					"Health Canada", request.getParameter("language"), "", "", "");
+					format.format(new Date()), request.getParameter("problem"), problemDetails, "Health Canada",
+					request.getParameter("language"), "", "", "");
 			repository.save(problem);
-			return "Problem added.";
+			return new RedirectView("/dashboard");
+		} catch (Exception e) {
+			return new RedirectView("/error");
+		}
+	}
+
+	@PostMapping(value = "/updateTags")
+	public @ResponseBody String updateTags(HttpServletRequest request) {
+		try {
+			Optional<Problem> opt = repository.findById(request.getParameter("id"));
+			String tags[] = request.getParameter("tags").split(",");
+			for (int i = 0; i < tags.length; i++) {
+				tags[i] = tags[i].trim();
+			}
+			Problem problem = opt.get();
+			problem.setTags(Arrays.asList(tags));
+			this.repository.save(problem);
+			return this.generateTagHtml(problem.getTags());
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
 		}
@@ -72,6 +98,14 @@ public class ProblemController {
 		}
 	}
 
+	public String generateTagHtml(List<String> tags) {
+		StringBuilder builder = new StringBuilder();
+		for (String tag : tags) {
+			builder.append("<button class='btn btn-xs'>" + tag + " (x)</button>");
+		}
+		return builder.toString();
+	}
+
 	public String getData() {
 
 		String returnData = "";
@@ -85,6 +119,9 @@ public class ProblemController {
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
 				builder.append("<td>" + problem.getProblemDate() + "</td>");
+				builder.append("<td>");
+				builder.append(this.generateTagHtml(problem.getTags()));
+				builder.append("</td>");
 				try {
 					builder.append("<td>" + problem.getResolution() + "</td>");
 					builder.append("<td>" + problem.getResolutionDate() + "</td>");
@@ -92,9 +129,10 @@ public class ProblemController {
 					builder.append("<td></td>");
 					builder.append("<td></td>");
 				}
-				builder.append("<td><div class='btn-group'><button id='resolve" + problem.getId()
+				builder.append("<td><div class='btn-group'><button id='tag" + problem.getId()
+						+ "' class='btn btn-xs tagBtn'>Tag</button><button id='resolve" + problem.getId()
 						+ "' class='btn btn-xs resolveBtn'>Resolve</button><button id='delete" + problem.getId()
-						+ "' class='btn btn-xs deleteBtn'>Delete</button></div></td>");
+						+ "' class='btn btn-xs deleteBtn'><span class='fas fa-trash-alt'></span><span class='wb-inv'>Delete</span></button></div></td>");
 				builder.append("</tr>");
 			}
 			returnData = builder.toString();

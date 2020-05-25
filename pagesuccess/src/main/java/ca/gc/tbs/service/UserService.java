@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -37,6 +38,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return userRepository.findByEmail(email);
 	}
 
+	public User findUserById(String Id) {
+		return userRepository.findByEmail(Id);
+	}
+
+	public void deleteUserById(String Id) {
+		userRepository.deleteById(Id);
+	}
+
+	public List<User> findAllUsers() {
+		return userRepository.findAll();
+	}
+
 	public void saveUser(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		user.setDateCreated(DATE_FORMAT.format(new Date()));
@@ -48,6 +61,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 			userRole = roleRepository.findByRole("USER");
 		}
 		user.setRoles(new HashSet<>(Arrays.asList(userRole)));
+		userRepository.save(user);
+	}
+
+	public void enableAdmin(String email) {
+		User user = this.findUserByEmail(email);
+		user.setRoles(new HashSet<>(Arrays.asList(roleRepository.findByRole("ADMIN"))));
+		user.setEnabled(true);
 		userRepository.save(user);
 	}
 
