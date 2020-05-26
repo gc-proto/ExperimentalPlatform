@@ -56,6 +56,20 @@ public class ProblemController {
 			return new RedirectView("/error");
 		}
 	}
+	
+	@PostMapping(value = "/deleteTag")
+	public @ResponseBody String deleteTag(HttpServletRequest request) {
+		try {
+			String tag = request.getParameter("tag");
+			Optional<Problem> opt = repository.findById(request.getParameter("id"));
+			Problem problem = opt.get();
+			problem.getTags().remove(tag);
+			this.repository.save(problem);
+			return this.generateTagHtml(problem);
+		} catch (Exception e) {
+			return "Error:" + e.getMessage();
+		}
+	}
 
 	@PostMapping(value = "/updateTags")
 	public @ResponseBody String updateTags(HttpServletRequest request) {
@@ -68,7 +82,7 @@ public class ProblemController {
 			Problem problem = opt.get();
 			problem.setTags(Arrays.asList(tags));
 			this.repository.save(problem);
-			return this.generateTagHtml(problem.getTags());
+			return this.generateTagHtml(problem);
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
 		}
@@ -98,10 +112,11 @@ public class ProblemController {
 		}
 	}
 
-	public String generateTagHtml(List<String> tags) {
+	public String generateTagHtml(Problem problem) {
 		StringBuilder builder = new StringBuilder();
-		for (String tag : tags) {
-			builder.append("<button class='btn btn-xs'>" + tag + " (x)</button>");
+		for (String tag : problem.getTags()) {
+			builder.append("<button id='tagDelete" + problem.getId() + "' class='tagDeleteBtn btn btn-xs'>" + tag
+					+ " (x)</button>");
 		}
 		return builder.toString();
 	}
@@ -119,8 +134,8 @@ public class ProblemController {
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
 				builder.append("<td>" + problem.getProblemDate() + "</td>");
-				builder.append("<td>");
-				builder.append(this.generateTagHtml(problem.getTags()));
+				builder.append("<td class='tagCol'>");
+				builder.append(this.generateTagHtml(problem));
 				builder.append("</td>");
 				try {
 					builder.append("<td>" + problem.getResolution() + "</td>");

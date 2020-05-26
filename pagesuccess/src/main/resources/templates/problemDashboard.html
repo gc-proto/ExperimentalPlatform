@@ -53,8 +53,7 @@
 			<div class="wb-frmvld">
 				<form id="tagsForm" name="tagsForm" method="post">
 					<div class="form-group">
-						<label for="tags" class="control-label required">
-							Tags: </label>
+						<label for="tags" class="control-label required"> Tags: </label>
 						<textarea id="tags" name="tags" class="form-control"
 							required="required" rows="10" cols="47"></textarea>
 					</div>
@@ -64,7 +63,7 @@
 			</div>
 		</div>
 	</section>
-	
+
 
 
 
@@ -76,9 +75,10 @@
 				var id = $(e.target).attr("id").replace("resolve","");
 				var items = $("#resolve" + id).parent().parent().parent().find("td");
 				$("#notes").val($(items.get(7)).text());
-				alert($('#submitWindow').find('input#submit').length);
-				$('#submitWindow').find('input#submit').off.click(function(e) {
+				//alert($('#submitWindow').find('input#submit').length);
+				$('#submitWindow').find('input#submit').off().on("click",function(e) {
 					e.preventDefault();
+					e.stopImmediatePropagation();
 					var obj = {
 						"department" : $(items.get(0)).text(),
 						"language" : $(items.get(1)).text(),
@@ -115,7 +115,7 @@
 			});
 			
 			$(".deleteBtn").on("click", function(e) {
-				var id = $(e.target).attr("id").replace("delete","");
+				var id = $(e.target).parent().attr("id").replace("delete","");
 				$.ajax({
 				    type:     "get",
 				    data:     {"id" : id},
@@ -126,7 +126,7 @@
 				    	console.log(xhr.responseText);
 				    },
 				    success: function () {
-				    	$(e.target).parent().parent().parent().remove();
+				    	$(e.target).parent().parent().parent().parent().remove();
 				    }
 				});
 			});
@@ -136,8 +136,9 @@
 				var items = $("#tag" + id).parent().parent().parent().find("td");
 				var tags = $(items.get(6)).text().replace(/\s*\(x\)\s*/g,",").replace(/.$/,"");
 				$("#tags").val(tags);
-				$('#tagWindow').find('input#submit').click(function(e) {
+				$('#tagWindow').find('input#submit').off().on("click",function(e) {
 					e.preventDefault();
+					e.stopImmediatePropagation();
 					var obj = {
 						"tags" : $("#tags").val(),
 						"id" : id
@@ -164,6 +165,28 @@
 					type : "inline"
 				} ] ]);
 
+			});
+			
+			$(".tagCol").on("click",".tagDeleteBtn", function(e) {
+				var id = $(e.target).attr("id").replace("tagDelete","");
+				var tag = $(e.target).text().replace(/\s*\(x\)\s*/g,"");
+				var obj = {
+					"tag" : tag,
+					"id" : id
+				};
+				$.ajax({
+				    type:     "post",
+				    data:     obj,
+				    cache:    false,
+				    url:      "deleteTag",
+				    dataType: "text",
+				    error: function (xhr,status, error) {
+				    	console.log(xhr.responseText);
+				    },
+				    success: function (tags) {
+				    	$(e.target).remove();
+				    }
+				});
 			});
 		});
 	</script>
