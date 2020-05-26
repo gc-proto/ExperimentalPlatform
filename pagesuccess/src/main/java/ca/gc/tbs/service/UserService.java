@@ -27,6 +27,7 @@ public class UserService implements UserDetailsService {
 
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+	public static final String ADMIN_ROLE = "ADMIN";
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -39,7 +40,12 @@ public class UserService implements UserDetailsService {
 	}
 
 	public User findUserById(String Id) {
-		return userRepository.findByEmail(Id);
+		return userRepository.findById(Id).get();
+	}
+
+	public List<User> findUserByRole(String role) {
+		Role oRole = this.roleRepository.findByRole(role);
+		return userRepository.findByRolesContaining(oRole);
 	}
 
 	public void deleteUserById(String Id) {

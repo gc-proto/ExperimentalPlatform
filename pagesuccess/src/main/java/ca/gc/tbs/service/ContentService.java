@@ -9,17 +9,11 @@ public class ContentService {
 	}
 	
 	public String cleanContent(String content) {
-		content = this.cleanPersonalInfo(content);
 		content = this.cleanPostalCode(content);
 		content = this.cleanPhoneNumber(content);
 		content = this.cleanEmailAddress(content);
 		content = this.cleanSIN(content);
-		content = BadWords.filterText(content);
-		return content;
-	}
-
-	private String cleanPersonalInfo(String content) {
-		content = this.cleanPostalCode(content);
+		content = BadWords.censor(content);
 		return content;
 	}
 

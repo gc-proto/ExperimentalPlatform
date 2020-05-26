@@ -166,6 +166,7 @@ public class BadWords {
 
 	static String censor(String text) {
 
+		text = removeLeetSpeak(text);
 		// Break down sentence by ' ' spaces
 		// and store each individual word in
 		// a different list
