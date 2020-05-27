@@ -5,7 +5,7 @@
 	layout:decorate="~{wide}" lang="en">
 
 <th:block layout:fragment="content">
-	<table class="wb-tables table">
+	<table id="problemTable" class="wb-tables table">
 		<thead>
 			<tr>
 				<th>Department</th>
@@ -126,7 +126,10 @@
 				    	console.log(xhr.responseText);
 				    },
 				    success: function () {
-				    	$(e.target).parent().parent().parent().parent().remove();
+				    	var tr = $(e.target).parent().parent().parent().parent();
+				    	var row = $('#problemTable').DataTable().row($(tr));
+				    	row.remove();
+				    	$('#problemTable').DataTable().draw("full-hold");
 				    }
 				});
 			});

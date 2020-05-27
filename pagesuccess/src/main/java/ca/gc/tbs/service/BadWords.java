@@ -7,18 +7,16 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 public class BadWords {
 
-	static Map<String, String[]> words = new HashMap<String, String[]>();
+	static Set<String> words = new HashSet<String>();
 
 	public class LengthComparator implements java.util.Comparator<String> {
 
@@ -33,32 +31,22 @@ public class BadWords {
 		}
 	}
 
-	static int largestWordLength = 0;
-
 	public static void loadConfigs() {
 		loadGoogleConfigs();
-		loadFileConfigs("/static/badwords/facebook_badwords_en.txt");
-		loadFileConfigs("/static/badwords/youtube_badwords_en.txt");
-		loadFileConfigs("/static/badwords/badwords_fr.txt");
-		loadFileConfigs("/static/badwords/threats_fr.txt");
-		loadFileConfigs("/static/badwords/threats_en.txt");
+		loadFileConfigs("static/badwords/facebook_badwords_en.txt");
+		loadFileConfigs("static/badwords/youtube_badwords_en.txt");
+		loadFileConfigs("static/badwords/badwords_fr.txt");
+		loadFileConfigs("static/badwords/threats_fr.txt");
+		loadFileConfigs("static/badwords/threats_en.txt");
 		System.out.println("Loaded " + words.size() + " words to filter out");
 	}
 
 	public static void loadFileConfigs(String filePath) {
-		String[] ignore_in_combination_with_words = new String[] {};
 		try {
-			Resource resource = new ClassPathResource(filePath);
-			Path path = Paths.get(resource.getURI());
-			String newWords[] = new String(Files.readAllBytes(path)).split(",");
+			Resource resource = new ClassPathResource(filePath, BadWords.class.getClassLoader());
+			String newWords[] = IOUtils.toString(resource.getInputStream(), "UTF-8").split(",");
 			for (String word : newWords) {
-				word = word.trim();
-				if (word.length() > largestWordLength) {
-					largestWordLength = word.length();
-				}
-				if (!words.containsKey(word)) {
-					words.put(word.replaceAll(" ", ""), ignore_in_combination_with_words);
-				}
+				words.add(word.trim());
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -80,16 +68,7 @@ public class BadWords {
 						continue;
 					}
 					String word = content[0];
-					String[] ignore_in_combination_with_words = new String[] {};
-					if (content.length > 1) {
-						ignore_in_combination_with_words = content[1].split("_");
-					}
-
-					if (word.length() > largestWordLength) {
-						largestWordLength = word.length();
-					}
-					words.put(word.replaceAll(" ", ""), ignore_in_combination_with_words);
-
+					words.add(word);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -116,54 +95,6 @@ public class BadWords {
 		return input;
 	}
 
-	/**
-	 * Iterates over a String input and checks whether a cuss word was found in a
-	 * list, then checks if the word should be ignored (e.g. bass contains the word
-	 * *ss).
-	 * 
-	 * @param input
-	 * @return
-	 */
-
-	public static ArrayList<String> badWordsFound(String input) {
-		if (input == null) {
-			return new ArrayList<>();
-		}
-
-		ArrayList<String> badWords = new ArrayList<>();
-
-		// iterate over each letter in the word
-		for (int start = 0; start < input.length(); start++) {
-			// from each letter, keep going to find bad words until either the end of the
-			// sentence is reached, or the max word length is reached.
-			for (int offset = 1; offset < (input.length() + 1 - start) && offset < largestWordLength; offset++) {
-				String wordToCheckOrig = input.substring(start, start + offset);
-				String wordToCheck = removeLeetSpeak(wordToCheckOrig);
-				wordToCheck = wordToCheck.toLowerCase().replaceAll("[^a-zA-Z]", "");
-				if (words.containsKey(wordToCheck) && wordToCheck.length() > 0) {
-					// for example, if you want to say the word bass, that should be possible.
-					String[] ignoreCheck = words.get(wordToCheck);
-					boolean ignore = false;
-					for (int s = 0; s < ignoreCheck.length; s++) {
-						if (input.contains(ignoreCheck[s])) {
-							ignore = true;
-							break;
-						}
-					}
-					if (!ignore) {
-						badWords.add(wordToCheckOrig);
-					}
-				}
-			}
-		}
-
-		for (String s : badWords) {
-			System.out.println(s + " qualified as a bad word in a username");
-		}
-		return badWords;
-
-	}
-
 	static String censor(String text) {
 
 		text = removeLeetSpeak(text);
@@ -182,7 +113,7 @@ public class BadWords {
 			String wordToCheckOrig = i;
 			String wordToCheck = removeLeetSpeak(wordToCheckOrig);
 			wordToCheck = wordToCheck.toLowerCase().replaceAll("[^a-zA-Z]", "");
-			if (words.containsKey(wordToCheck)) {
+			if (words.contains(wordToCheck)) {
 				// changing the censored word to
 				// created asterisks censor
 				word_list[index] = createMask(wordToCheckOrig);
@@ -205,13 +136,4 @@ public class BadWords {
 		return mask;
 	}
 
-	public static String filterText(String input) {
-		List<String> badWords = badWordsFound(input);
-		badWords.sort(Comparator.comparingInt(String::length).reversed());
-		for (String badWord : badWords) {
-			String mask = createMask(badWord);
-			input = StringUtils.replaceIgnoreCase(input, badWord, mask);
-		}
-		return input;
-	}
 }

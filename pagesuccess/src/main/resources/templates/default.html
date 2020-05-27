@@ -38,7 +38,23 @@
 	</div>
 
 	<!-- Write closure template -->
-	<script>
+	<script sec:authorize="isAuthenticated()">
+		var defTop = document.getElementById("def-top");
+		defTop.outerHTML = wet.builder.appTop({
+			"cdnEnv" : "prod",
+			"appName" : [ {
+				"text" : "[[#{title}]]",
+				"href" : "https://problem.tbs.alpha.canada.ca"
+			} ],
+			"signOut": [{"href": "/logout"}],
+			lngLinks : [ {
+				lang : "[[${altLang}]]",
+				href : "[[${langUrl}]]",
+				text : "[[${altLangText}]]",
+			} ]
+		});
+	</script>
+	<script sec:authorize="isAnonymous()">
 		var defTop = document.getElementById("def-top");
 		defTop.outerHTML = wet.builder.appTop({
 			"cdnEnv" : "prod",

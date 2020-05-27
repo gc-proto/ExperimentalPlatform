@@ -3,7 +3,8 @@
 <!--[if gt IE 8]><!-->
 <html class="no-js" dir="ltr" th:lang="${lang}"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <!--<![endif]-->
 <head>
 <meta charset="utf-8">
@@ -38,7 +39,45 @@
 	</div>
 
 	<!-- Write closure template -->
-	<script>
+	<script sec:access="isAuthenticated() and hasRole('ADMIN')">
+		var defTop = document.getElementById("def-top");
+		defTop.outerHTML = wet.builder.appTop({
+			"cdnEnv" : "prod",
+			"appName" : [ {
+				"text" : "[[#{title}]]",
+				"href" : "https://pagesuccess.tbs.alpha.canada.ca"
+			} ],
+			"menuPath" : "/menu/admin_[[${lang}]].html",
+			"signOut" : [ {
+				"href" : "/logout"
+			} ],
+			lngLinks : [ {
+				lang : "[[${altLang}]]",
+				href : "[[${langUrl}]]",
+				text : "[[${altLangText}]]",
+			} ]
+		});
+	</script>
+	<script sec:access="isAuthenticated() and hasRole('USER')">
+		var defTop = document.getElementById("def-top");
+		defTop.outerHTML = wet.builder.appTop({
+			"cdnEnv" : "prod",
+			"appName" : [ {
+				"text" : "[[#{title}]]",
+				"href" : "https://pagesuccess.tbs.alpha.canada.ca"
+			} ],
+			"menuPath" : "menu/user_[[${lang}]].html",
+			"signOut" : [ {
+				"href" : "/logout"
+			} ],
+			lngLinks : [ {
+				lang : "[[${altLang}]]",
+				href : "[[${langUrl}]]",
+				text : "[[${altLangText}]]",
+			} ]
+		});
+	</script>
+	<script sec:authorize="isAnonymous()">
 		var defTop = document.getElementById("def-top");
 		defTop.outerHTML = wet.builder.appTop({
 			"cdnEnv" : "prod",
@@ -54,7 +93,7 @@
 		});
 	</script>
 	<main role="main" property="mainContentOfPage" class="container-fluid">
-		<br/>
+		<br />
 		<th:block layout:fragment="content"></th:block>
 		<div id="def-preFooter">
 			<!-- Write closure fall-back static file -->

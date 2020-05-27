@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
+import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import ca.gc.tbs.service.UserService;
 
 @Configuration
@@ -53,5 +53,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
 	}
+	
+    @Bean
+	public SpringSecurityDialect springSecurityDialect(){
+        return new SpringSecurityDialect();
+    }
+    
+
 
 }

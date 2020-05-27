@@ -8,12 +8,10 @@ services:
     - mongodb_data_container:/data/db
   pagesuccess:
     build: .
-    volumes:
-    - .:/app
-    - ~/.m2:/root/.m2
     working_dir: /app
     ports:
-    - 9090:9090
+    - 8080:8080
+    - 8000:8000
     command: mvn -X clean spring-boot:run
     depends_on:
     - mongodb

@@ -18,7 +18,6 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Component
 public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -36,7 +35,7 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 		if (savedRequest == null || savedRequest.getRedirectUrl().contains("signin")) {
 			for (GrantedAuthority auth : authentication.getAuthorities()) {
 				if ("ADMIN".equals(auth.getAuthority())) {
-					response.sendRedirect("/u/users");
+					response.sendRedirect("/u/index");
 				} else {
 					response.sendRedirect("/dashboard");
 				}
