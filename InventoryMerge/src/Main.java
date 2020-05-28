@@ -1,13 +1,22 @@
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
@@ -40,6 +49,19 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.FileList;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -81,7 +103,7 @@ public class Main {
 		public String audience = "";
 		public String newPage = "";
 		public String comments = "";
-		public String uniqueVisitors="";
+		public String uniqueVisitors = "";
 
 		public List<String> asList() {
 			List<String> list = new ArrayList<String>();
@@ -129,6 +151,12 @@ public class Main {
 	public Map<String, String> aemDepartmentsEn = new HashMap<String, String>();
 	public Map<String, String> aemDepartmentsFr = new HashMap<String, String>();
 
+	private static String CREDENTIALS_FILE_PATH = "secrets/credentials.json";
+	private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+	private static final String TOKENS_DIRECTORY_PATH = "tokens";
+	private static final List<String> SCOPES = Collections.singletonList("https://www.googleapis.com/auth/drive");
+	private static final String APPLICATION_NAME = "Inventory Merge";
+
 	// public HashSet<String> UsedDepartmentsEn = new HashSet<String>();
 	// public HashSet<String> UsedDepartmentsFr = new HashSet<String>();
 
@@ -145,7 +173,9 @@ public class Main {
 	private String datePostFix = "T00:00:00.000";
 
 	public static void main(String args[]) throws Exception {
+
 		Main main = new Main(args[0], args[1]);
+		downloadAEMDump("05-22-2020");
 		// main.dumpAEMAudience();
 		main.calculateDates();
 		main.loadFrenchOutputHeaders();
@@ -171,6 +201,48 @@ public class Main {
 		System.out.println("URL Count:" + this.completURLList.size());
 		this.compareManualList("en");
 		this.compareManualList("fr");
+	}
+
+	private static void downloadAEMDump(String date) throws GeneralSecurityException, IOException {
+
+		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+		Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+				.setHttpRequestInitializer(getCredentials(HTTP_TRANSPORT)).setApplicationName(APPLICATION_NAME).build();
+		// Print the names and IDs for up to 10 files.
+		FileList result = service.files().list().setQ(
+				"'1g-Hw69qCUiGpG6-chf0UMYAj9RCDr6HP' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false")
+				.setSpaces("drive").setFields("nextPageToken, files(id, name, parents)").execute();
+		List<com.google.api.services.drive.model.File> files = result.getFiles();
+		if (files == null || files.isEmpty()) {
+			System.out.println("No files found.");
+		} else {
+			System.out.println("Files:");
+			for (com.google.api.services.drive.model.File file : files) {
+				System.out.printf("%s (%s)\n", file.getName(), file.getId());
+				if (file.getName().contains(date) && file.getName().contains("publish")) {
+					try (FileOutputStream outputStream = new FileOutputStream("import/" + file.getName())) {
+						service.files().export(file.getId(), "text/csv").executeMediaAndDownloadTo(outputStream);
+
+					}
+
+				}
+			}
+		}
+
+	}
+
+	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+		// Load client secrets.
+		InputStream in = new FileInputStream(new File(CREDENTIALS_FILE_PATH));
+		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+
+		// Build flow and trigger user authorization request.
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
+				clientSecrets, SCOPES)
+						.setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+						.setAccessType("offline").build();
+		LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
 
 	public void calculateDates() {
