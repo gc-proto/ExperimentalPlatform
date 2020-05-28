@@ -17,5 +17,5 @@ RUN mvn package
 RUN mkdir -p /app
 RUN cp /build/target/PageSuccess-0.0.1-SNAPSHOT.jar /app/app.jar
 ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar","/app/app.jar"]
 
