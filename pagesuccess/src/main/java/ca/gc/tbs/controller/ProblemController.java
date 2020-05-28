@@ -49,14 +49,14 @@ public class ProblemController {
 			problemDetails = this.contentService.cleanContent(problemDetails);
 			Problem problem = new Problem(System.currentTimeMillis() + "", request.getParameter("url"),
 					format.format(new Date()), request.getParameter("problem"), problemDetails, "Health Canada",
-					request.getParameter("language"), "", "", "");
+					request.getParameter("language"), "", "", "", "Test");
 			repository.save(problem);
 			return new RedirectView("/dashboard");
 		} catch (Exception e) {
 			return new RedirectView("/error");
 		}
 	}
-	
+
 	@PostMapping(value = "/deleteTag")
 	public @ResponseBody String deleteTag(HttpServletRequest request) {
 		try {

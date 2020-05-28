@@ -17,10 +17,15 @@ public class Problem {
 	private String resolution;
 	private String topic;
 	private String problemDate;
+	private String title;
 	private List<String> tags = new ArrayList<String>();
 
+	public Problem() {
+
+	}
+
 	public Problem(String id, String url, String problemDate, String problem, String problemDetails, String department,
-			String language, String resolutionDate, String resolution, String topic) {
+			String language, String resolutionDate, String resolution, String topic, String title) {
 		super();
 		this.id = id;
 		this.url = url;
@@ -32,6 +37,7 @@ public class Problem {
 		this.topic = topic;
 		this.department = department;
 		this.language = language;
+		this.title = title;
 	}
 
 	public String getId() {
@@ -120,5 +126,13 @@ public class Problem {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }
