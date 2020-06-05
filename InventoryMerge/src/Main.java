@@ -175,7 +175,7 @@ public class Main {
 	public static void main(String args[]) throws Exception {
 
 		Main main = new Main(args[0], args[1]);
-		downloadAEMDump("05-22-2020");
+		//downloadAEMDump("05-22-2020");
 		// main.dumpAEMAudience();
 		main.calculateDates();
 		main.loadFrenchOutputHeaders();

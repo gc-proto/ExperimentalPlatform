@@ -6,8 +6,7 @@
 <head>
 <meta charset="utf-8">
 <!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW) wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-<title>Outil d'inventaire du contenu Web du GC de la COVID-19 -
-	<!-- IMPORT DATE --></title>
+<title>Outil d'inventaire du contenu Web du GC de la COVID-19 - </title>
 <meta content="width=device-width,initial-scale=1" name="viewport">
 <!-- Meta data -->
 <meta name="description" content="COVID-19">
@@ -229,6 +228,28 @@ select {
 				.on(
 						"wb-ready.wb",
 						function() {
+							function formatDate() {
+							    var d = new Date(),
+							        month = '' + (d.getMonth() + 1),
+							        day = '' + d.getDate(),
+							        year = d.getFullYear();
+
+							    if (month.length < 2) 
+							        month = '0' + month;
+							    if (day.length < 2) 
+							        day = '0' + day;
+
+							    return [year, month, day].join('-');
+							}
+							
+							var title = $('title').text() + formatDate();
+							$('title').text(title);
+							$('.app-name').text(title);
+							$('time').text(formatDate());
+							
+							
+							
+							
 							i18n = wb.i18n;
 							i18nText = {
 								aria : {
@@ -349,19 +370,7 @@ select {
 								});
 								$(".popup-modal-dismiss").click();
 							});
-							function formatDate(date) {
-							    var d = new Date(date),
-							        month = '' + (d.getMonth() + 1),
-							        day = '' + d.getDate(),
-							        year = d.getFullYear();
-
-							    if (month.length < 2) 
-							        month = '0' + month;
-							    if (day.length < 2) 
-							        day = '0' + day;
-
-							    return [year, month, day].join('-');
-							}
+							
 						});
 	</script>
 	<section id="submitWindow"
