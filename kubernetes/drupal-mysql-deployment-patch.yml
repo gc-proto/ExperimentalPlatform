@@ -1,0 +1,122 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+  generation: 2
+  labels:
+    app: drupal-mysql
+    chart: mysql-0.19.0
+    heritage: Helm
+    release: drupal
+    velero.io/backup-name: daily-drupal-20200305010022
+    velero.io/restore-name: daily-drupal-20200305010022-20200305092902
+  name: drupal-mysql
+  namespace: drupal
+spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      app: drupal-mysql
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2020-04-28T17:09:17-04:00"
+      creationTimestamp: null
+      labels:
+        app: drupal-mysql
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-root-password
+              name: drupal-mysql
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-password
+              name: drupal-mysql
+        - name: MYSQL_USER
+          value: wxt
+        - name: MYSQL_DATABASE
+          value: wxt
+        image: mysql:5.7.28
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: drupal-mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 500Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: data
+        - mountPath: /etc/mysql/conf.d/mysql.cnf
+          name: configurations
+          subPath: mysql.cnf
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - rm
+        - -fr
+        - /var/lib/mysql/lost+found
+        image: busybox:1.29.3
+        imagePullPolicy: IfNotPresent
+        name: remove-lost-found
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: data
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: drupal-mysql-configuration
+        name: configurations
+      - name: data
+        persistentVolumeClaim:
+          claimName: drupal-mysql

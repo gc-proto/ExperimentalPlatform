@@ -66,13 +66,11 @@ data:
               try_files $uri $uri/ /index.html /index.php?$query_string;
           }
 
-
-         
-
           location ~ \.php$ {
             proxy_intercept_errors on;
             include fastcgi_params;
-            fastcgi_read_timeout 120;
+            fastcgi_read_timeout 3000;
+            fastcgi_send_timeout 3000;
             fastcgi_param SCRIPT_FILENAME $request_filename;
             fastcgi_intercept_errors on;
             fastcgi_pass pageperformance-php:9000;
