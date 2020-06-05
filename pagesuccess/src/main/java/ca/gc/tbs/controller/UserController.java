@@ -32,11 +32,7 @@ public class UserController {
 	@GetMapping(value = "/u/update")
 	public @ResponseBody String updateUser(HttpServletRequest request) {
 		try {
-
-			User user = service.findUserById(request.getParameter("id"));
-			boolean enabled = Boolean.parseBoolean(request.getParameter("enabled"));
-			user.setEnabled(enabled);
-			this.service.saveUser(user);
+			this.service.enable(request.getParameter("id"));
 			return "Updated";
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
@@ -54,7 +50,7 @@ public class UserController {
 	}
 
 	/* TODO check for prod environment and disable */
-	@GetMapping(value = "/u/enableAdmin")
+	@GetMapping(value = "/enableAdmin")
 	public View deleteProblem(HttpServletRequest request, RedirectAttributes atts) {
 		try {
 			this.service.enableAdmin(request.getParameter("email"));

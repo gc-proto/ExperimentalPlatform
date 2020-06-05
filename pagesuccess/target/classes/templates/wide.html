@@ -39,7 +39,7 @@
 	</div>
 
 	<!-- Write closure template -->
-	<script sec:access="isAuthenticated() and hasRole('ADMIN')">
+	<script sec:authorize="hasAuthority('ADMIN')">
 		var defTop = document.getElementById("def-top");
 		defTop.outerHTML = wet.builder.appTop({
 			"cdnEnv" : "prod",
@@ -58,7 +58,7 @@
 			} ]
 		});
 	</script>
-	<script sec:access="isAuthenticated() and hasRole('USER')">
+	<script sec:authorize="hasAuthority('USER')">
 		var defTop = document.getElementById("def-top");
 		defTop.outerHTML = wet.builder.appTop({
 			"cdnEnv" : "prod",
@@ -66,7 +66,7 @@
 				"text" : "[[#{title}]]",
 				"href" : "https://pagesuccess.tbs.alpha.canada.ca"
 			} ],
-			"menuPath" : "menu/user_[[${lang}]].html",
+			"menuPath" : "/menu/user_[[${lang}]].html",
 			"signOut" : [ {
 				"href" : "/logout"
 			} ],

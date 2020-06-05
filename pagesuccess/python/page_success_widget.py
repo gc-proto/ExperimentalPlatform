@@ -1,17 +1,21 @@
 #import libraries
 import pandas as pd
 import csv
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import nltk
 from wordcloud import WordCloud
 
+
+
 #import CSV file as a Pandas dataframe
-data = pd.read_csv('page_success_widget_all.csv', index_col = 0)
+data = pd.read_csv('page_success_may_24.csv', index_col = 0)
 
     #Separate English and French data
-data_en = data[data['Page URL'].str.contains("EN", na=False)]
+data_en = data[data['Page URL'].str.contains("/en", na=False)]
 
-data_fr = data[data['Page URL'].str.contains("FR", na=False)]
+data_fr = data[data['Page URL'].str.contains("/fr", na=False)]
 
     #look at what's wrong
 what = data["What's wrong"]
@@ -25,21 +29,24 @@ what_fr = data_fr["What's wrong"]
 plt.rcParams['figure.figsize'] = (10, 6)
 plt.gcf().subplots_adjust(left=0.25)
 what.value_counts().sort_values().plot.barh(title = 'Feedback by reason', x='Reason', y='Number of occurrences')
-plt.show()
+plt.savefig('feedback_by_reason.png')
+#plt.show()
 
 
 #plot by task
-tasks = data['Tasks']
-tasks = data_en["Tasks"].str.split(", ", n = 3, expand = True)
+tasks = data['Topic']
+tasks = data_en["Topic"].str.split(", ", n = 3, expand = True)
 tasks = tasks.apply(pd.Series.value_counts)
 tasks = tasks.fillna(0)
 tasks = tasks[0] + tasks[1] + tasks[2]
 tasks = tasks.astype(int)
 tasks = tasks.sort_values(ascending = False)
+tasks = tasks[0:30]
 plt.rcParams['figure.figsize'] = (14, 8)
 plt.gcf().subplots_adjust(left=0.30)
-tasks.sort_values().plot.barh(title = 'Feedback by task', x='Reason', y='Number of occurrences')
-plt.show()
+tasks.sort_values().plot.barh(title = 'Top 30 tasks', x='Reason', y='Number of occurrences')
+plt.savefig('feedback_by_task.png')
+#plt.show()
 
 #analyzing  words
 word_list_en = data_en["Details"].tolist()
@@ -84,7 +91,8 @@ most_common_df = pd.DataFrame(most_common_en, columns = ['Word', 'Count'])
 most_common_df.plot.barh(title = 'Most frequent words - English - All feedback', x='Word',y='Count')
 plt.rcParams['figure.figsize'] = (14, 8)
 plt.gcf().subplots_adjust(left=0.20)
-plt.show()
+plt.savefig('frequent_words_en_all.png')
+#plt.show()
 
 
 #WordCloud English
@@ -97,8 +105,8 @@ import matplotlib.pyplot as plt
 plt.imshow(wordcloud, interpolation='bilinear')
 
 plt.axis("off")
-
-plt.show()
+plt.savefig('word_cloud_en.png')
+#plt.show()
 
 #remove French stop words
 
@@ -145,7 +153,8 @@ most_common_df_fr = pd.DataFrame(most_common_fr, columns = ['Mot', 'Nombre'])
 most_common_df_fr.plot.barh(title = 'Mots les plus fréquents - Toute la rétroaction - Français', x='Mot',y='Nombre')
 plt.rcParams['figure.figsize'] = (14, 8)
 plt.gcf().subplots_adjust(left=0.20)
-plt.show()
+plt.savefig('frequent_words_fr_all.png')
+#plt.show()
 
 
 #WordCloud French
@@ -159,8 +168,8 @@ import matplotlib.pyplot as plt
 plt.imshow(wordcloud, interpolation='bilinear')
 
 plt.axis("off")
-
-plt.show()
+plt.savefig('word_cloud_fr.png')
+#plt.show()
 
 
 #English bigrams
@@ -176,11 +185,10 @@ bcf_list = bcf.nbest(BigramAssocMeasures.likelihood_ratio, 20)
 bcf_joint_list = []
 for words in bcf_list:
         bcf_joint_list.append(' '.join(words))
-print('')
-print('')
-print('Most probable bigrams:')
-for item in bcf_joint_list:
-        print(item)
+
+#save list in txt file
+with open("bigrams_en.txt", "w") as output:
+        output.write(str(bcf_joint_list))
 
 
 #English trigrams
@@ -192,11 +200,8 @@ tcf_list = tcf.nbest(TrigramAssocMeasures.likelihood_ratio, 20)
 tcf_joint_list = []
 for words in tcf_list:
         tcf_joint_list.append(' '.join(words))
-print('')
-print('')
-print('Most probable trigrams:')
-for item in tcf_joint_list:
-        print(item)
+with open("trigrams_en.txt", "w") as output:
+        output.write(str(tcf_joint_list))
 
 
 #French bigrams
@@ -209,11 +214,8 @@ bcffr_list = bcffr.nbest(BigramAssocMeasures.likelihood_ratio, 20)
 bcffr_joint_list = []
 for words in bcffr_list:
         bcffr_joint_list.append(' '.join(words))
-print('')
-print('')
-print('Bigrammes les plus probables :')
-for item in bcffr_joint_list:
-        print(item)
+with open("bigrams_fr.txt", "w") as output:
+        output.write(str(bcffr_joint_list))
 
 
 #French trigrams
@@ -226,11 +228,8 @@ tcffr_list = tcffr.nbest(TrigramAssocMeasures.likelihood_ratio, 20)
 tcffr_joint_list = []
 for words in tcffr_list:
         tcffr_joint_list.append(' '.join(words))
-print('')
-print('')
-print('Trigrammes les plus probables :')
-for item in tcffr_joint_list:
-        print(item)
+with open("trigrams_fr.txt", "w") as output:
+        output.write(str(tcffr_joint_list))
 
 
 #look at data by what's wrong value_counts
@@ -261,7 +260,8 @@ most_common_missing_df = pd.DataFrame(most_common_missing_en, columns = ['Word',
 most_common_missing_df.plot.barh(title = 'Most frequent words - English - Information is missing', x='Word',y='Count')
 plt.rcParams['figure.figsize'] = (14, 8)
 plt.gcf().subplots_adjust(left=0.20)
-plt.show()
+plt.savefig('frequent_missing_en.png')
+#plt.show()
 
 
 # most common words clear
@@ -291,4 +291,5 @@ most_common_clear_df = pd.DataFrame(most_common_clear_en, columns = ['Word', 'Co
 most_common_clear_df.plot.barh(title = 'Most frequent words - English - Information is not clear', x='Word',y='Count')
 plt.rcParams['figure.figsize'] = (14, 8)
 plt.gcf().subplots_adjust(left=0.20)
-plt.show()
+plt.savefig('frequent_not_clear_en.png')
+#plt.show()

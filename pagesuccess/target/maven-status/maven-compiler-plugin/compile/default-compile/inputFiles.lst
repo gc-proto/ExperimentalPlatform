@@ -16,4 +16,6 @@
 /Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/controller/UserController.java
 /Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/controller/LoginController.java
 /Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/domain/Role.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/controller/ReportController.java
+/Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/controller/ImportController.java
 /Users/ryanhyma/Experimentation-Platform/pagesuccess/src/main/java/ca/gc/tbs/service/BadWords.java

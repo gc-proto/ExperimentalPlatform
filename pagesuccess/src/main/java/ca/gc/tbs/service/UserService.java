@@ -69,6 +69,12 @@ public class UserService implements UserDetailsService {
 		user.setRoles(new HashSet<>(Arrays.asList(userRole)));
 		userRepository.save(user);
 	}
+	
+	public void enable(String id) {
+		User user = this.findUserById(id);
+		user.setEnabled(true);
+		userRepository.save(user);
+	}
 
 	public void enableAdmin(String email) {
 		User user = this.findUserByEmail(email);

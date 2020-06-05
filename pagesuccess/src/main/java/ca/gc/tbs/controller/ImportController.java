@@ -19,12 +19,17 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.service.ContentService;
 
 @Controller
 public class ImportController {
 
 	@Autowired
 	ProblemRepository problemRepository;
+	
+	
+	@Autowired
+	ContentService contentService;
 
 	// Mon May 18 2020 23:02:28 GMT+0000 (Coordinated Universal Time)
 	SimpleDateFormat INPUT_FORMAT = new SimpleDateFormat("EEE MMM dd yyyy");
@@ -42,28 +47,31 @@ public class ImportController {
 				try {
 					if (record.get("Y/N").equals("No")) {
 						Problem problem = new Problem();
-						problem.setId(record.get("Ref Number").replace("/",""));
+						problem.setId(record.get("Ref Number").replace("/", ""));
 						INPUT_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
 						String sDate = record.get("Date/time received");
-						sDate = sDate.substring(0,sDate.indexOf("("));
+						sDate = sDate.substring(0, sDate.indexOf("("));
 						Date date = INPUT_FORMAT.parse(sDate);
 						problem.setProblemDate(OUTPUT_FORMAT.format(date));
 						problem.setTitle(record.get("Page Title"));
 						problem.setUrl(record.get("Page URL"));
 						problem.setProblem(record.get("What's wrong"));
-						problem.setProblemDetails(record.get("Details"));
-						problem.setTags(Arrays.asList(record.get("Topic").split(",")));
+						problem.setProblemDetails(this.contentService.cleanContent(record.get("Details")));
+						String[] topics = record.get("Topic").trim().split(",");
+						if (topics.length > 0) {
+							problem.setTags(Arrays.asList(topics));
+						}
 						problem.setResolution(record.get("Notes"));
 						problem.setResolutionDate("");
 						problem.setDepartment("Health");
 						if (problem.getUrl().contains("/en/")) {
-							problem.setLanguage("en");	
+							problem.setLanguage("en");
 						} else {
 							problem.setLanguage("fr");
 						}
-						
+
 						this.problemRepository.save(problem);
-						
+
 					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage());

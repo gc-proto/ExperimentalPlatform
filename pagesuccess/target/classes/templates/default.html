@@ -3,7 +3,8 @@
 <!--[if gt IE 8]><!-->
 <html class="no-js" dir="ltr" th:lang="${lang}"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <!--<![endif]-->
 <head>
 <meta charset="utf-8">
@@ -37,16 +38,37 @@
 		<!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/top-${lang}.html -->
 	</div>
 
-	<!-- Write closure template -->
-	<script sec:authorize="isAuthenticated()">
+	<script sec:authorize="hasAuthority('ADMIN')">
 		var defTop = document.getElementById("def-top");
 		defTop.outerHTML = wet.builder.appTop({
 			"cdnEnv" : "prod",
 			"appName" : [ {
 				"text" : "[[#{title}]]",
-				"href" : "https://problem.tbs.alpha.canada.ca"
+				"href" : "https://pagesuccess.tbs.alpha.canada.ca"
 			} ],
-			"signOut": [{"href": "/logout"}],
+			"menuPath" : "/menu/admin_[[${lang}]].html",
+			"signOut" : [ {
+				"href" : "/logout"
+			} ],
+			lngLinks : [ {
+				lang : "[[${altLang}]]",
+				href : "[[${langUrl}]]",
+				text : "[[${altLangText}]]",
+			} ]
+		});
+	</script>
+	<script sec:authorize="hasAuthority('USER')">
+		var defTop = document.getElementById("def-top");
+		defTop.outerHTML = wet.builder.appTop({
+			"cdnEnv" : "prod",
+			"appName" : [ {
+				"text" : "[[#{title}]]",
+				"href" : "https://pagesuccess.tbs.alpha.canada.ca"
+			} ],
+			"menuPath" : "/menu/user_[[${lang}]].html",
+			"signOut" : [ {
+				"href" : "/logout"
+			} ],
 			lngLinks : [ {
 				lang : "[[${altLang}]]",
 				href : "[[${langUrl}]]",
@@ -70,7 +92,7 @@
 		});
 	</script>
 	<main role="main" property="mainContentOfPage" class="container">
-		<br/>
+		<br />
 		<th:block layout:fragment="content"></th:block>
 		<div id="def-preFooter">
 			<!-- Write closure fall-back static file -->

@@ -40,10 +40,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/checkExists").permitAll()
-				.antMatchers("/error").permitAll().antMatchers("/u/enableAdmin").permitAll().antMatchers("/login")
-				.permitAll().antMatchers("/signup").permitAll().antMatchers("/success").permitAll()
-				.antMatchers("/dashboard/**").hasAuthority("ADMIN").anyRequest().authenticated().and().csrf().disable()
-				.formLogin().successHandler(customizeAuthenticationSuccessHandler).loginPage("/login")
+				.antMatchers("/error").permitAll().antMatchers("/enableAdmin").permitAll().antMatchers("/login")
+				.permitAll().antMatchers("/signup").permitAll().antMatchers("/success").permitAll().antMatchers("/u/**")
+				.hasAnyAuthority("ADMIN").antMatchers("/python/**").hasAnyAuthority("USER,ADMIN")
+				.antMatchers("/reports/**").hasAnyAuthority("USER,ADMIN").antMatchers("/dashboard/**")
+				.hasAnyAuthority("USER,ADMIN").anyRequest().authenticated().and().csrf().disable().formLogin()
+				.successHandler(customizeAuthenticationSuccessHandler).loginPage("/login")
 				.failureUrl("/login?error=true").usernameParameter("email").passwordParameter("password").and().logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/").and()
 				.exceptionHandling();
@@ -53,12 +55,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
 	}
-	
-    @Bean
-	public SpringSecurityDialect springSecurityDialect(){
-        return new SpringSecurityDialect();
-    }
-    
 
+	@Bean
+	public SpringSecurityDialect springSecurityDialect() {
+		return new SpringSecurityDialect();
+	}
 
 }
