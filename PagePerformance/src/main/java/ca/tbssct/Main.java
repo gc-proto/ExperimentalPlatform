@@ -19,8 +19,8 @@ import org.jsoup.select.Elements;
 public class Main {
 
 	private HashSet<String> links = new HashSet<String>();
-	public static long WAIT_TIME = 10000;
-	public static long FIVE_MINUTES = 1000 * 60 * 5;
+	public static long WAIT_TIME = 1000;
+	public static int TIMEOUT = 1000 * 60 * 10;
 	// public static final String PAGE_PERFORMANCE_URL =
 	// "http://pageperformance-nginx/php/process-cj.php";
 	public static final String PAGE_PERFORMANCE_URL = "https://pageperformance.alpha.canada.ca/php/process-cj.php";
@@ -29,10 +29,8 @@ public class Main {
 	public static AtomicInteger numCached = new AtomicInteger(0);
 
 	public static void main(String[] args) throws Exception {
-
 		Main main = new Main();
 		main.downloadPageList();
-		main.cachePages();
 		main.cachePages();
 	}
 
@@ -75,10 +73,10 @@ public class Main {
 				URL url = new URL(PAGE_PERFORMANCE_URL + "?url=" + URLEncoder.encode(pageURL, "UTF-8"));
 				System.out.println("Caching: " + pageURL);
 				System.out.println("Cache call:" + url.toString());
-				Document doc = Jsoup.connect(url.toString()).timeout(5 * 60 * 1000).get();
+				Document doc = Jsoup.connect(url.toString()).timeout(TIMEOUT).get();
 				System.out
 						.println("Finished caching: " + pageURL + " Output:" + doc.outerHtml().replaceAll("\\s+", ""));
-				Thread.sleep(1000);
+				Thread.sleep(WAIT_TIME);
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
