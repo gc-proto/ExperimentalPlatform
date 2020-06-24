@@ -11,6 +11,7 @@
 				<th>Department</th>
 				<th>Language</th>
 				<th>URL</th>
+				<th>Yes/No</th>
 				<th>Problem</th>
 				<th>Problem Details</th>
 				<th>Date Entered</th>
@@ -71,21 +72,35 @@
 <th:block layout:fragment="script">
 	<script th:inline="javascript">
 		$(document).on("wb-ready.wb", function() {
+			const columns = {
+				DEPARTMENT : 0,
+				LANGUAGE : 1,
+				URL : 2,
+				YESNO : 3,
+				PROBLEM : 4,
+				PROBLEM_DETAILS : 5,
+				PROBLEM_DATE : 6,
+				TAGS : 7,
+				RESOLUTION : 8,
+				RESOLUTION_DATE : 9,
+				ACTION : 10
+			};
 			$(".resolveBtn").on("click", function(e) {
 				var id = $(e.target).attr("id").replace("resolve","");
 				var items = $("#resolve" + id).parent().parent().parent().find("td");
-				$("#notes").val($(items.get(7)).text());
+				$("#notes").val($(items.get(columns.RESOLUTION)).text());
 				//alert($('#submitWindow').find('input#submit').length);
 				$('#submitWindow').find('input#submit').off().on("click",function(e) {
 					e.preventDefault();
 					e.stopImmediatePropagation();
 					var obj = {
-						"department" : $(items.get(0)).text(),
-						"language" : $(items.get(1)).text(),
-						"url" : $(items.get(2)).text(),
-						"problem" : $(items.get(3)).text(),
-						"problemDetails" : $(items.get(4)).text(),
-						"problemDate" : $(items.get(5)).text(),
+						"department" : $(items.get(columns.DEPARMENT)).text(),
+						"language" : $(items.get(columns.LANGUAGE)).text(),
+						"url" : $(items.get(columns.URL)).text(),
+						"yesno" : $(items.get(columns.YESNO)).text(),
+						"problem" : $(items.get(columns.PROBLEM)).text(),
+						"problemDetails" : $(items.get(columns.PROBLEM_DETAILS)).text(),
+						"problemDate" : $(items.get(columns.PROBLEM_DATE)).text(),
 						"resolution" : $("#notes").val(),
 						"id" : id
 					};
@@ -99,9 +114,9 @@
 					    	console.log(xhr.responseText);
 					    },
 					    success: function (date) {
-					    	$(items.get(7)).text($("#notes").val());
+					    	$(items.get(columns.RESOLUTION)).text($("#notes").val());
 					    	$("#notes").val("");
-					    	$(items.get(8)).text(date);
+					    	$(items.get(columns.RESOLUTION_DATE)).text(date);
 					    	$(".popup-modal-dismiss").click();
 					    }
 					});
@@ -137,7 +152,7 @@
 			$(".tagBtn").on("click", function(e) {
 				var id = $(e.target).attr("id").replace("tag","");
 				var items = $("#tag" + id).parent().parent().parent().find("td");
-				var tags = $(items.get(6)).text().replace(/\s*\(x\)\s*/g,",").replace(/.$/,"");
+				var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g,",").replace(/.$/,"");
 				$("#tags").val(tags);
 				$('#tagWindow').find('input#submit').off().on("click",function(e) {
 					e.preventDefault();
@@ -156,7 +171,7 @@
 					    	console.log(xhr.responseText);
 					    },
 					    success: function (tags) {
-					    	$(items.get(6)).html(tags);
+					    	$(items.get(columns.TAGS)).html(tags);
 					    	$("#tags").val("");
 					    	$(".popup-modal-dismiss").click();
 					    }

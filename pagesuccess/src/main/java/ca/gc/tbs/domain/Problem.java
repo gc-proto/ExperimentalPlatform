@@ -18,6 +18,9 @@ public class Problem {
 	private String topic;
 	private String problemDate;
 	private String title;
+	private String yesno;
+	private String processed;
+	private String airTableSync;
 	private List<String> tags = new ArrayList<String>();
 
 	public Problem() {
@@ -134,5 +137,29 @@ public class Problem {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getYesno() {
+		return yesno;
+	}
+
+	public void setYesno(String yesno) {
+		this.yesno = yesno;
+	}
+
+	public String getProcessed() {
+		return processed;
+	}
+
+	public void setProcessed(String processed) {
+		this.processed = processed;
+	}
+
+	public String getAirTableSync() {
+		return airTableSync;
+	}
+
+	public void setAirTableSync(String airTableSync) {
+		this.airTableSync = airTableSync;
 	}
 }

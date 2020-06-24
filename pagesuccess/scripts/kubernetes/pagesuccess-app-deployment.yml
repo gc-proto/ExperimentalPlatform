@@ -21,9 +21,9 @@ spec:
         name: pagesuccess
         resources: 
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 1500m
+            memory: 2Gi
           requests:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 1500m
+            memory: 2Gi
 

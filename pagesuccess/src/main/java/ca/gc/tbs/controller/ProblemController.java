@@ -22,20 +22,25 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
+import ca.gc.tbs.domain.OriginalProblem;
 import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.repository.OriginalProblemRepository;
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.service.ContentService;
 
 @Controller
 public class ProblemController {
 
-	public static final String DATE_FORMAT = "yyyy-MM-dd";
-	public static final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+	public static final SimpleDateFormat INPUT_FORMAT = new SimpleDateFormat("EEE MMM dd yyyy");
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
 	public static final String COLLECTION_PROBLEM = "problem";
 
 	@Autowired
-	private ProblemRepository repository;
+	private ProblemRepository problemRepository;
+	
+	@Autowired
+	private OriginalProblemRepository originalProblemRepository;
 
 	@Autowired
 	private ContentService contentService;
@@ -48,9 +53,9 @@ public class ProblemController {
 			String problemDetails = request.getParameter("problemDetails");
 			problemDetails = this.contentService.cleanContent(problemDetails);
 			Problem problem = new Problem(System.currentTimeMillis() + "", request.getParameter("url"),
-					format.format(new Date()), request.getParameter("problem"), problemDetails, "Health Canada",
+					DATE_FORMAT.format(new Date()), request.getParameter("problem"), problemDetails, "Health Canada",
 					request.getParameter("language"), "", "", "", "Test");
-			repository.save(problem);
+			problemRepository.save(problem);
 			return new RedirectView("/dashboard");
 		} catch (Exception e) {
 			return new RedirectView("/error");
@@ -61,10 +66,10 @@ public class ProblemController {
 	public @ResponseBody String deleteTag(HttpServletRequest request) {
 		try {
 			String tag = request.getParameter("tag");
-			Optional<Problem> opt = repository.findById(request.getParameter("id"));
+			Optional<Problem> opt = problemRepository.findById(request.getParameter("id"));
 			Problem problem = opt.get();
 			problem.getTags().remove(tag);
-			this.repository.save(problem);
+			this.problemRepository.save(problem);
 			return this.generateTagHtml(problem);
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
@@ -74,14 +79,14 @@ public class ProblemController {
 	@PostMapping(value = "/updateTags")
 	public @ResponseBody String updateTags(HttpServletRequest request) {
 		try {
-			Optional<Problem> opt = repository.findById(request.getParameter("id"));
+			Optional<Problem> opt = problemRepository.findById(request.getParameter("id"));
 			String tags[] = request.getParameter("tags").split(",");
 			for (int i = 0; i < tags.length; i++) {
 				tags[i] = tags[i].trim();
 			}
 			Problem problem = opt.get();
 			problem.setTags(Arrays.asList(tags));
-			this.repository.save(problem);
+			this.problemRepository.save(problem);
 			return this.generateTagHtml(problem);
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
@@ -91,11 +96,11 @@ public class ProblemController {
 	@PostMapping(value = "/updateProblem")
 	public @ResponseBody String updateProblem(HttpServletRequest request) {
 		try {
-			Optional<Problem> opt = repository.findById(request.getParameter("id"));
+			Optional<Problem> opt = problemRepository.findById(request.getParameter("id"));
 			Problem problem = opt.get();
 			problem.setResolution(request.getParameter("resolution"));
-			problem.setResolutionDate(format.format(new Date()));
-			this.repository.save(problem);
+			problem.setResolutionDate(DATE_FORMAT.format(new Date()));
+			this.problemRepository.save(problem);
 			return problem.getResolutionDate();
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
@@ -105,7 +110,7 @@ public class ProblemController {
 	@GetMapping(value = "/deleteProblem")
 	public @ResponseBody String deleteProblem(HttpServletRequest request) {
 		try {
-			this.repository.deleteById(request.getParameter("id"));
+			this.problemRepository.deleteById(request.getParameter("id"));
 			return "deleted";
 		} catch (Exception e) {
 			return "Error:" + e.getMessage();
@@ -121,19 +126,20 @@ public class ProblemController {
 		return builder.toString();
 	}
 
-	public String getData() {
+	public String getProblemData() {
 
 		String returnData = "";
 		try {
 			StringBuilder builder = new StringBuilder();
-			List<Problem> problems = this.repository.findAll();
+			List<Problem> problems = this.problemRepository.findAll();
 			for (Problem problem : problems) {
 				builder.append("<tr><td>" + problem.getDepartment() + "</td>");
 				builder.append("<td>" + problem.getLanguage() + "</td>");
 				builder.append("<td>" + problem.getUrl() + "</td>");
+				builder.append("<td>" + problem.getYesno() + "</td>");
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
-				builder.append("<td>" + problem.getProblemDate() + "</td>");
+				builder.append("<td>" + DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())) + "</td>");
 				builder.append("<td class='tagCol'>");
 				builder.append(this.generateTagHtml(problem));
 				builder.append("</td>");
@@ -156,12 +162,43 @@ public class ProblemController {
 		}
 		return returnData;
 	}
+	
+	public String getBackupData() {
 
-	@GetMapping(value = "/dashboard")
-	public ModelAndView dashboard() throws Exception {
+		String returnData = "";
+		try {
+			StringBuilder builder = new StringBuilder();
+			List<OriginalProblem> problems = this.originalProblemRepository.findAll();
+			for (Problem problem : problems) {
+				builder.append("<tr>");
+				builder.append("<td>" + problem.getLanguage() + "</td>");
+				builder.append("<td>" + problem.getUrl() + "</td>");
+				builder.append("<td>" + problem.getYesno() + "</td>");
+				builder.append("<td>" + problem.getProblem() + "</td>");
+				builder.append("<td>" + problem.getProblemDetails() + "</td>");
+				builder.append("<td>" + DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())) + "</td>");
+				builder.append("</tr>");
+			}
+			returnData = builder.toString();
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+		}
+		return returnData;
+	}
+
+	@GetMapping(value = "/problemDashboard")
+	public ModelAndView problemDashboard() throws Exception {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("data", this.getData());
+		mav.addObject("data", this.getProblemData());
 		mav.setViewName("problemDashboard");
+		return mav;
+	}
+	
+	@GetMapping(value = "/backupDashboard")
+	public ModelAndView backupDashboard() throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("data", this.getBackupData());
+		mav.setViewName("backupDashboard");
 		return mav;
 	}
 
