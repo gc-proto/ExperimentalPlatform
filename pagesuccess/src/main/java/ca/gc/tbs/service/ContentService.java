@@ -4,13 +4,32 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ContentService {
+	
+	class CleanResult {
+		boolean emailCleaned = false;
+		boolean sinCleaned = false;
+		boolean phoneCleaned = false;
+		boolean postalCleaned = false;
+		String content = "";
+	}
+	
 	public ContentService() {
 		BadWords.loadConfigs();
 	}
 	
 	public String cleanContent(String content) {
-		content = this.cleanPostalCode(content);
-		content = this.cleanPhoneNumber(content);
+		CleanResult result = new CleanResult();
+		result.content = content;
+		String newContent = this.cleanPostalCode(result.content);
+		if (!newContent.contentEquals(content)) {
+			result.postalCleaned = true;
+			result.content = newContent;
+		}
+		newContent = this.cleanPhoneNumber(content);
+		if (!newContent.contentEquals(content)) {
+			result.postalCleaned = true;
+			result.content = newContent;
+		}
 		content = this.cleanEmailAddress(content);
 		content = this.cleanSIN(content);
 		content = BadWords.censor(content);

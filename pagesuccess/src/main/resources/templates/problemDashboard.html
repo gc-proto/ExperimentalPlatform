@@ -85,7 +85,7 @@
 				RESOLUTION_DATE : 9,
 				ACTION : 10
 			};
-			$(".resolveBtn").on("click", function(e) {
+			$("#problemTable").on("click",".resolveBtn", function(e) {
 				var id = $(e.target).attr("id").replace("resolve","");
 				var items = $("#resolve" + id).parent().parent().parent().find("td");
 				$("#notes").val($(items.get(columns.RESOLUTION)).text());
@@ -129,7 +129,7 @@
 
 			});
 			
-			$(".deleteBtn").on("click", function(e) {
+			$("#problemTable").on("click",".deleteBtn", function(e) {
 				var id = $(e.target).parent().attr("id").replace("delete","");
 				$.ajax({
 				    type:     "get",
@@ -149,7 +149,7 @@
 				});
 			});
 			
-			$(".tagBtn").on("click", function(e) {
+			$("#problemTable").on("click",".tagBtn", function(e) {
 				var id = $(e.target).attr("id").replace("tag","");
 				var items = $("#tag" + id).parent().parent().parent().find("td");
 				var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g,",").replace(/.$/,"");
@@ -185,7 +185,7 @@
 
 			});
 			
-			$(".tagCol").on("click",".tagDeleteBtn", function(e) {
+			$("#problemTable").on("click",".tagDeleteBtn", function(e) {
 				var id = $(e.target).attr("id").replace("tagDelete","");
 				var tag = $(e.target).text().replace(/\s*\(x\)\s*/g,"");
 				var obj = {

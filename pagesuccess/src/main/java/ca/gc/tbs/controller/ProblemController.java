@@ -38,7 +38,7 @@ public class ProblemController {
 
 	@Autowired
 	private ProblemRepository problemRepository;
-	
+
 	@Autowired
 	private OriginalProblemRepository originalProblemRepository;
 
@@ -129,10 +129,12 @@ public class ProblemController {
 	public String getProblemData() {
 
 		String returnData = "";
-		try {
-			StringBuilder builder = new StringBuilder();
-			List<Problem> problems = this.problemRepository.findAll();
-			for (Problem problem : problems) {
+
+		StringBuilder finalBuilder = new StringBuilder();
+		List<Problem> problems = this.problemRepository.findAll();
+		for (Problem problem : problems) {
+			try {
+				StringBuilder builder = new StringBuilder();
 				builder.append("<tr><td>" + problem.getDepartment() + "</td>");
 				builder.append("<td>" + problem.getLanguage() + "</td>");
 				builder.append("<td>" + problem.getUrl() + "</td>");
@@ -155,21 +157,23 @@ public class ProblemController {
 						+ "' class='btn btn-xs resolveBtn'>Resolve</button><button id='delete" + problem.getId()
 						+ "' class='btn btn-xs deleteBtn'><span class='fas fa-trash-alt'></span><span class='wb-inv'>Delete</span></button></div></td>");
 				builder.append("</tr>");
+				finalBuilder.append(builder);
+			} catch (Exception e) {
+				LOG.error("Could not display row because:" + problem.getId() + " " + e.getMessage());
 			}
-			returnData = builder.toString();
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
 		}
+		returnData = finalBuilder.toString();
+
 		return returnData;
 	}
-	
-	public String getBackupData() {
 
+	public String getBackupData() {
 		String returnData = "";
-		try {
-			StringBuilder builder = new StringBuilder();
-			List<OriginalProblem> problems = this.originalProblemRepository.findAll();
-			for (Problem problem : problems) {
+		StringBuilder finalBuilder = new StringBuilder();
+		List<OriginalProblem> problems = this.originalProblemRepository.findAll();
+		for (Problem problem : problems) {
+			try {
+				StringBuilder builder = new StringBuilder();
 				builder.append("<tr>");
 				builder.append("<td>" + problem.getLanguage() + "</td>");
 				builder.append("<td>" + problem.getUrl() + "</td>");
@@ -178,11 +182,12 @@ public class ProblemController {
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
 				builder.append("<td>" + DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())) + "</td>");
 				builder.append("</tr>");
+				finalBuilder.append(builder);
+			} catch (Exception e) {
+				LOG.error(e.getMessage());
 			}
-			returnData = builder.toString();
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
 		}
+		returnData = finalBuilder.toString();
 		return returnData;
 	}
 
@@ -193,7 +198,7 @@ public class ProblemController {
 		mav.setViewName("problemDashboard");
 		return mav;
 	}
-	
+
 	@GetMapping(value = "/backupDashboard")
 	public ModelAndView backupDashboard() throws Exception {
 		ModelAndView mav = new ModelAndView();

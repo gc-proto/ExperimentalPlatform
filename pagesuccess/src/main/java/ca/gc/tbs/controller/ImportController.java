@@ -5,8 +5,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.TimeZone;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -17,7 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
-import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.domain.OriginalProblem;
+import ca.gc.tbs.repository.OriginalProblemRepository;
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.service.ContentService;
 
@@ -26,13 +25,13 @@ public class ImportController {
 
 	@Autowired
 	ProblemRepository problemRepository;
-	
-	
+
+	@Autowired
+	OriginalProblemRepository originalProblemRespository;
+
 	@Autowired
 	ContentService contentService;
 
-	// Mon May 18 2020 23:02:28 GMT+0000 (Coordinated Universal Time)
-	SimpleDateFormat INPUT_FORMAT = new SimpleDateFormat("EEE MMM dd yyyy");
 	SimpleDateFormat OUTPUT_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	@GetMapping(value = "/importcsv")
@@ -45,34 +44,34 @@ public class ImportController {
 		try {
 			for (final CSVRecord record : parser) {
 				try {
-					if (record.get("Y/N").equals("No")) {
-						Problem problem = new Problem();
-						problem.setId(record.get("Ref Number").replace("/", ""));
-						INPUT_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-						String sDate = record.get("Date/time received");
-						sDate = sDate.substring(0, sDate.indexOf("("));
-						Date date = INPUT_FORMAT.parse(sDate);
-						problem.setProblemDate(OUTPUT_FORMAT.format(date));
-						problem.setTitle(record.get("Page Title"));
-						problem.setUrl(record.get("Page URL"));
-						problem.setProblem(record.get("What's wrong"));
-						problem.setProblemDetails(this.contentService.cleanContent(record.get("Details")));
-						String[] topics = record.get("Topic").trim().split(",");
-						if (topics.length > 0) {
-							problem.setTags(Arrays.asList(topics));
-						}
-						problem.setResolution(record.get("Notes"));
-						problem.setResolutionDate("");
-						problem.setDepartment("Health");
-						if (problem.getUrl().contains("/en/")) {
-							problem.setLanguage("en");
-						} else {
-							problem.setLanguage("fr");
-						}
-
-						this.problemRepository.save(problem);
-
+					OriginalProblem problem = new OriginalProblem();
+					problem.setId(record.get("Ref Number").replace("/", ""));
+					problem.setProblemDate(record.get("Date/time received"));
+					problem.setTitle(record.get("Page Title"));
+					problem.setUrl(record.get("Page URL"));
+					problem.setProblem(record.get("What's wrong"));
+					problem.setProblemDetails(record.get("Details"));
+					problem.setYesno(record.get("Y/N"));
+					String[] topics = record.get("Topic").trim().split(",");
+					if (topics.length > 0) {
+						problem.setTags(Arrays.asList(topics));
 					}
+					problem.setResolution("");
+					problem.setResolutionDate("");
+					problem.setDepartment("Health");
+					if (problem.getUrl().contains("/en/")) {
+						problem.setLanguage("en");
+					} else {
+						problem.setLanguage("fr");
+					}
+					problem.setPersonalInfoYN(record.get("Personal info (Y/N)"));
+					problem.setPersonalInfoTypes(record.get("Type of personal info"));
+					problem.setProcessed("false");
+					problem.setAirTableSync("false");
+					problem.setDataOrigin("Health CSV");
+					this.problemRepository.save(problem);
+					this.originalProblemRespository.save(problem);
+
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					e.printStackTrace();
@@ -83,6 +82,6 @@ public class ImportController {
 			parser.close();
 			reader.close();
 		}
-		return new RedirectView("/dashboard");
+		return new RedirectView("/problemDashboard");
 	}
 }

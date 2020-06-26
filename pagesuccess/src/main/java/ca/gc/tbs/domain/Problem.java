@@ -21,6 +21,10 @@ public class Problem {
 	private String yesno;
 	private String processed;
 	private String airTableSync;
+	private String personalInfoYN;
+	private String personalInfoTypes;
+	private String dataOrigin;
+	
 	private List<String> tags = new ArrayList<String>();
 
 	public Problem() {
@@ -161,5 +165,29 @@ public class Problem {
 
 	public void setAirTableSync(String airTableSync) {
 		this.airTableSync = airTableSync;
+	}
+
+	public String getPersonalInfoYN() {
+		return personalInfoYN;
+	}
+
+	public void setPersonalInfoYN(String personalInfoYN) {
+		this.personalInfoYN = personalInfoYN;
+	}
+
+	public String getPersonalInfoTypes() {
+		return personalInfoTypes;
+	}
+
+	public void setPersonalInfoTypes(String personalInfoTypes) {
+		this.personalInfoTypes = personalInfoTypes;
+	}
+
+	public String getDataOrigin() {
+		return dataOrigin;
+	}
+
+	public void setDataOrigin(String dataOrigin) {
+		this.dataOrigin = dataOrigin;
 	}
 }
