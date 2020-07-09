@@ -5,15 +5,30 @@
 	= "Solr URL" -->
 <crawler id="Covid-19 Crawler ${lang}">
 
-	<startURLs stayOnDomain="false" stayOnPort="false"
-		stayOnProtocol="false">
-		 
+	<startURLs stayOnDomain="false" stayOnPort="false" stayOnProtocol="false">
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=covid&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=coronavirus&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
-		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=cerb&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
-		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=&amp;exctq=Canada+Emergency+Response+Benefit&amp;anyq=&amp;noneq=&amp;fqupdate=&amp;dmn=&amp;fqocct=#wb-land</url>
-		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=sars&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=pcu&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=cerb&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=sars&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Canada+Emergency+Response+Benefit&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Prestation+canadienne+urgence&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=PPE&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=ÉPI&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=CEWS&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=SSUC&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=CEBA&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=CUEA&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Travel restrictions&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Restrictions de voyage&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=CECRA&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=AUCLC&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Temporary Wage Subsidy&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Subvention salariale temporaire&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Reopening&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=reouverture&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=CESB&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
+		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=PCUE&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		
 		<!--  basic search -->
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=covid</url>
@@ -22,9 +37,26 @@
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=cerb</url>
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=sars</url>
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Canada+Emergency+Response+Benefit</url>
-		
-		
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Prestation+canadienne+urgence</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=PPE</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=ÉPI</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=CEWS</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=SSUC</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=CEBA</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=CUEA</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Travel restrictions</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Restrictions de voyage</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=CECRA</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=AUCLC</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Temporary Wage Subsidy</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Subvention salariale temporaire</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Reopening</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=reouverture</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=CESB</url>
+		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=PCUE</url>
 	</startURLs>
+	
+	
 	<userAgent>TreasuryBoard/Covid crawler</userAgent>
 
 	<workDir>$workdir</workDir>

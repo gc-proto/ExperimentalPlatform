@@ -7,6 +7,7 @@
 
 	<startURLs stayOnDomain="true" stayOnPort="false"
 		stayOnProtocol="false">
+		<url>https://www.cbsa-asfc.gc.ca/services/covid/menu-eng.html</url>
 		<url>https://covid-benefits.alpha.canada.ca/en/start</url>
 		<url>https://www.canada.ca/en/immigration-refugees-citizenship/services/coronavirus-covid19.html</url>
 		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-19/20200323-eng.pdf</url>
@@ -158,8 +159,49 @@
 		<url>https://www.canada.ca/content/dam/phac-aspc/documents/services/diseases/2019-novel-coronavirus-infection/health-professionals/2019-nCoV-case-report-form-en.pdf</url>
 		<url>https://www.canada.ca/content/dam/tbs-sct/documents/covid-annex-b-eng.pdf</url>
 		<url>https://www.tc.gc.ca/eng/marinesafety/bulletins-2020-06-eng.htm</url>
-		
-
+		<url>https://www.cfib-fcei.ca/en/small-business-resources-dealing-covid-19</url>
+		<url>https://www.dfo-mpo.gc.ca/covid19/industry-industrie/index-eng.html</url>
+		<url>http://www.agr.gc.ca/eng/covid-19-information-for-the-agriculture-and-agri-food-industry/?id=1584732749543</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc.html</url>
+		<url>https://www.nrcan.gc.ca/our-natural-resources/covid-19-resources-canadas-natural-resources-sectors/22779</url>
+		<url>http://dfo-mpo.gc.ca/covid19/aquaculture/index-eng.html</url>
+		<url>https://www.bankofcanada.ca/2020/05/bank-canada-asks-retailers-continue-accepting-cash/?page_moved=1</url>
+		<url>https://www.canada.ca/en/revenue-agency/services/subsidy/emergency-wage-subsidy.html</url>
+		<url>https://www.canada.ca/en/employment-social-development/services/work-sharing/notice-covid-19.html#_Employers</url>
+		<url>https://www.cbsa-asfc.gc.ca/publications/cn-ad/cn20-19-eng.html</url>
+		<url>https://ceba-cuec.ca/</url>
+		<url>https://www.agr.gc.ca/eng/agricultural-programs-and-services/mandatory-isolation-support-for-temporary-foreign-workers-program/?id=1588186409721</url>
+		<url>https://www.agr.gc.ca/eng/agricultural-programs-and-services/mandatory-isolation-support-for-temporary-foreign-workers-program/step-2-who-is-eligible/?id=1588187049981</url>
+		<url>https://www.agr.gc.ca/eng/agricultural-programs-and-services/mandatory-isolation-support-for-temporary-foreign-workers-program/step-3-how-to-apply/?id=1588187120150</url>
+		<url>https://www.agr.gc.ca/eng/agricultural-programs-and-services/mandatory-isolation-support-for-temporary-foreign-workers-program/step-4-after-you-apply/?id=1588187208093</url>
+		<url>https://www.nrcan.gc.ca/science-data/funding-partnerships/funding-opportunities/current-funding-opportunities/emissions-reduction-fund/22781</url>
+		<url>https://www.infrastructure.gc.ca/plan/gtf-fte-eng.html</url>
+		<url>https://www.canadianbusinessresiliencenetwork.ca/</url>
+		<url>https://www.inspection.gc.ca/covid-19/cfia-information-for-industry/eng/1584462704366/1584462704709</url>
+		<url>https://www.tc.gc.ca/en/initiatives/covid-19-measures-updates-guidance-tc.html</url>
+		<url>http://dfo-mpo.gc.ca/covid19/aquaculture/index-eng.html</url>
+		<url>http://fednor.gc.ca/eic/site/099.nsf/eng/00025.html</url>
+		<url>https://www.cer-rec.gc.ca/bts/nws/whtnw/2020/2020-03-16-eng.html</url>
+		<url>https://laws.justice.gc.ca/eng/annualstatutes/2020_5/page-8.html</url>
+		<url>https://pgic-iogc.gc.ca/eng/1585920384068/1588353878756</url>
+		<url>http://fednor.gc.ca/eic/site/fednor-fednor.nsf/eng/fn04590.html</url>
+		<url>https://www.pgic-iogc.gc.ca/eng/1584562628695/1588353927767</url>
+		<url>https://www.canada.ca/en/employment-social-development/services/work-sharing/notice-covid-19.html#_employers</url>
+		<url>https://www.cbsa-asfc.gc.ca/publications/cn-ad/cn20-19-eng.html</url>
+		<url>https://www.nrcan.gc.ca/science-data/funding-partnerships/funding-opportunities/current-funding-opportunities/emissions-reduction-fund/22781</url>
+		<url>https://www.infrastructure.gc.ca/plan/gtf-fte-eng.html</url>
+		<url>https://www.bdc.ca/en/about/mediaroom/news_releases/pages/new-bdc-co-lending-program-finalized-will-progressively-be-made-available-by-financial-institutions-as-of-today.aspx</url>
+		<url>https://www.ic.gc.ca/eic/site/icgc.nsf/eng/07677.html</url>
+		<url>https://www.ic.gc.ca/eic/site/cd-dgc.nsf/eng/cs08613.html</url>
+		<url>http://www.ic.gc.ca/eic/site/125.nsf/eng/00025.html</url>
+		<url>https://ised-isde.canada.ca/ipm-mcpi/patents-brevets?search=filters%255b0%255d%255bfield%255d%3dcategory%26filters%255b0%255d%255bterm%255d%3dcovid-19%2brelated&amp;lang=en</url>
+		<url>https://www.sac-isc.gc.ca/eng/1584819394157/1584819418553#c</url>
+		<url>https://www.cannor.gc.ca/eng/1587153226618/1587153246025</url>
+		<url>https://fednor.gc.ca/eic/site/fednor-fednor.nsf/eng/fn04592.html</url>
+		<url>https://www.cannor.gc.ca/eng/1589295515132/1589295564439</url>
+		<url>https://www.nserc-crsng.gc.ca/innovate-innover/alliance-alliance/index_eng.asp</url>
+		<url>https://www.canada.ca/en/department-finance/economic-response-plan.html#individuals</url>
+		<url>https://www.ccohs.ca/products/publications/covid19/</url>
 	</startURLs>
 	<userAgent>TreasuryBoard/Covid crawler</userAgent>
 
@@ -362,12 +404,13 @@
 				<singleValue field="lastmodified" action="keepFirst" />
 				<singleValue field="alert" action="keepFirst" />
 			</tagger>
-			
+
 			<filter
 				class="com.norconex.importer.handler.filter.impl.DateMetadataFilter"
-				onMatch="include" field="lastmodified" format="yyyy-MM-dd'T00:00:00.000Z'">
-				 <condition operator="ge" date="TODAY-1Y" />
-      			<condition operator="lt" date="TODAY" />
+				onMatch="include" field="lastmodified"
+				format="yyyy-MM-dd'T00:00:00.000Z'">
+				<condition operator="ge" date="TODAY-1Y" />
+				<condition operator="lt" date="TODAY" />
 			</filter>
 
 			<tagger
