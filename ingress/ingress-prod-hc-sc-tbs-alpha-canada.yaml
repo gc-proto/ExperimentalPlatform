@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hc-sc-pilot-tbs-alpha-canada-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/app-root: /en/pilot
+spec:
+  tls:
+  - hosts:
+    - hc-sc.tbs.alpha.canada.ca
+    secretName: drupal-pilot-alpha-canada-tls-secret-prod
+  rules:
+  - host: hc-sc.tbs.alpha.canada.ca
+    http:
+      paths:
+      - backend:
+          serviceName: hc-drupal-nginx
+          servicePort: 80
+        path: /
+      
