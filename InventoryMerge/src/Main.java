@@ -1,16 +1,13 @@
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
@@ -51,7 +48,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -62,9 +58,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.FileList;
-import com.google.common.graph.ElementOrder.Type;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -88,6 +82,11 @@ public class Main {
 			"Breadcrumb LVL2 URL", "Breadcrumb LVL3 Name", "Breadcrumb LVL3 URL", "Breadcrumb LVL4 Name",
 			"Breadcrumb LVL4 URL", "Last Modified", "Last Crawled", "Author", "dcterms.subject", "dcterms.audience",
 			"dcterms.type", "desc" };
+
+	public static String[] MATCH_KEYWORDS = { "Canada Emergency Response Benefit", "Prestation canadienne d’urgence",
+			"COVID", "Coronavirus", "PPE", "ÉPI", "CEWS", "SSUC", "CERB", "PCU", "CEBA", "CUEA", "Travel restrictions",
+			"Restrictions de voyage", "Temporary Wage Subsidy", "Subvention salariale temporaire",
+			"CERCA", "AUCLC", "Reopening","reouverture","CESB","PCUE" };
 
 	public String[] OUTPUT_HEADERS_FR = {};
 
@@ -147,9 +146,6 @@ public class Main {
 	public Map<String, String> themeEn = new HashMap<String, String>();
 	public Map<String, String> themeFr = new HashMap<String, String>();
 
-	// public HashSet<String> usedThemesEn = new HashSet<String>();
-	// public HashSet<String> usedThemesFr = new HashSet<String>();
-
 	public Map<String, String> urlDepartmentsEn = new HashMap<String, String>();
 	public Map<String, String> urlDepartmentsFr = new HashMap<String, String>();
 	public Map<String, String> aemDepartmentsEn = new HashMap<String, String>();
@@ -159,27 +155,24 @@ public class Main {
 	private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final String TOKENS_DIRECTORY_PATH = "tokens";
 	private static final List<String> SCOPES = Collections.singletonList("https://www.googleapis.com/auth/drive");
-	// private static final String APPLICATION_NAME = "Inventory Merge";
+	private static final String APPLICATION_NAME = "Inventory Merge";
 
-	// public HashSet<String> UsedDepartmentsEn = new HashSet<String>();
-	// public HashSet<String> UsedDepartmentsFr = new HashSet<String>();
-
-	// public Set<String> completURLList;
-
-	DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	public static final DateFormat AEM_DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
 	public String importDate = "";
-
 	public static String today;
 	// private String yesterday;
 	public static String sevenDaysAgo;
 	// private String thirtyDaysAgo;
 	private String datePostFix = "T00:00:00.000";
 
+	public String[] IGNORE_LIST = { "https://achatsetventes.gc.ca" };
+
 	public static void main(String args[]) throws Exception {
 
 		Main main = new Main(args[0]);
-		// downloadAEMDump("05-22-2020");
-		// main.dumpAEMAudience();
+		downloadGCSearchDump(DATE_FORMAT.format(DATE_FORMAT.parse(args[0])));
+		downloadAEMDump(AEM_DATE_FORMAT.format(DATE_FORMAT.parse(args[0])));
 		main.calculateDates();
 		main.loadFrenchOutputHeaders();
 		main.loadThemes();
@@ -197,40 +190,66 @@ public class Main {
 		String aemName;
 	}
 
-	public Main(String importDate) throws Exception {
-		this.importDate = importDate;
-		// System.out.println("URL Count:" + this.completURLList.size());
-		// this.compareManualList("en");
-		// this.compareManualList("fr");
+	public Main(String date) throws Exception {
+		this.importDate = date;
 	}
 
-//	private static void downloadAEMDump(String date) throws GeneralSecurityException, IOException {
-//
-//		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-//		Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
-//				.setHttpRequestInitializer(getCredentials(HTTP_TRANSPORT)).setApplicationName(APPLICATION_NAME).build();
-//		// Print the names and IDs for up to 10 files.
-//		FileList result = service.files().list().setQ(
-//				"'1g-Hw69qCUiGpG6-chf0UMYAj9RCDr6HP' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false")
-//				.setSpaces("drive").setFields("nextPageToken, files(id, name, parents)").execute();
-//		List<com.google.api.services.drive.model.File> files = result.getFiles();
-//		if (files == null || files.isEmpty()) {
-//			System.out.println("No files found.");
-//		} else {
-//			System.out.println("Files:");
-//			for (com.google.api.services.drive.model.File file : files) {
-//				System.out.printf("%s (%s)\n", file.getName(), file.getId());
-//				if (file.getName().contains(date) && file.getName().contains("publish")) {
-//					try (FileOutputStream outputStream = new FileOutputStream("import/" + file.getName())) {
-//						service.files().export(file.getId(), "text/csv").executeMediaAndDownloadTo(outputStream);
-//
-//					}
-//
-//				}
-//			}
-//		}
-//
-//	}
+	private static void downloadAEMDump(String date) throws GeneralSecurityException, IOException {
+		File aemFile = new File("import/gcPageReport-publish-" + date + ".csv");
+		if (!aemFile.exists()) {
+			final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+			Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+					.setHttpRequestInitializer(getCredentials(HTTP_TRANSPORT)).setApplicationName(APPLICATION_NAME)
+					.build();
+			// Print the names and IDs for up to 10 files.
+			FileList result = service.files().list().setQ(
+					"'1g-Hw69qCUiGpG6-chf0UMYAj9RCDr6HP' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false")
+					.setSpaces("drive").setFields("nextPageToken, files(id, name, parents)").execute();
+			List<com.google.api.services.drive.model.File> files = result.getFiles();
+			if (files == null || files.isEmpty()) {
+				System.out.println("No files found.");
+			} else {
+				System.out.println("Files:");
+				for (com.google.api.services.drive.model.File file : files) {
+					System.out.printf("%s (%s)\n", file.getName(), file.getId());
+					if (file.getName().contains(date) && file.getName().contains("publish")) {
+						try (FileOutputStream outputStream = new FileOutputStream("import/" + file.getName())) {
+							service.files().get(file.getId()).executeMediaAndDownloadTo(outputStream);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private static void downloadGCSearchDump(String date) throws GeneralSecurityException, IOException {
+		File gcFileEN = new File("import/covid-inventory-" + date + "_EN.json");
+		File gcFileFR = new File("import/covid-inventory-" + date + "_FR.json");
+		if (!gcFileEN.exists() || !gcFileFR.exists()) {
+			final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+			Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+					.setHttpRequestInitializer(getCredentials(HTTP_TRANSPORT)).setApplicationName(APPLICATION_NAME)
+					.build();
+			// Print the names and IDs for up to 10 files.
+			FileList result = service.files().list().setQ(
+					"'1IhD6jM-40CUOTwTypfCv9RcNuMV55JHl' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false")
+					.setSpaces("drive").setFields("nextPageToken, files(id, name, parents)").execute();
+			List<com.google.api.services.drive.model.File> files = result.getFiles();
+			if (files == null || files.isEmpty()) {
+				System.out.println("No files found.");
+			} else {
+				System.out.println("Files:");
+				for (com.google.api.services.drive.model.File file : files) {
+					System.out.printf("%s (%s)\n", file.getName(), file.getId());
+					if (file.getName().contains(date)) {
+						try (FileOutputStream outputStream = new FileOutputStream("import/" + file.getName())) {
+							service.files().get(file.getId()).executeMediaAndDownloadTo(outputStream);
+						}
+					}
+				}
+			}
+		}
+	}
 
 	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
@@ -321,7 +340,7 @@ public class Main {
 				}
 				return returnValue;
 			} catch (Exception e) {
-				 System.out.println("Could not find in cache: " + url + " " + e.getMessage());
+				System.out.println("Could not find in cache: " + url + " " + e.getMessage());
 			}
 		}
 		return "";
@@ -794,23 +813,19 @@ public class Main {
 
 	public String contentTypeContent(Map<String, String> record, String url) {
 		boolean covid = false;
-		String checkFields[] = { "title_s", "dcterms_description_s", "id", "body_t_h1" };
+		String checkFields[] = { "title_s", "dcterms_description_s", "id", "body_t_h1", "keywords_t",
+				"dcterms.subject_s", "description_s" };
 		String contentType = "";
 
 		for (String checkField : checkFields) {
 			try {
 				String data = record.get(checkField).toUpperCase().trim();
-				if (data.contains("CANADA EMERGENCY RESPONSE BENEFIT")
-						|| data.contains("PRESTATION CANADIENNE D’URGENCE") || data.contains("CERB")
-						|| data.contains("COVID") || data.contains("CORONAVIRUS")
-						|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
+				if ((checkField.equals("id")) && (data.contains("NEWS") || data.contains("NOUVELLES"))) {
+					contentType += "Content type: News" + "\n\r";
+				} else {
 					covid = true;
 					contentType += checkField + ": " + record.get(checkField) + "\n\r";
-				} else if ((checkField.equals("id")) && (data.contains("NEWS") || data.contains("NOUVELLES"))) {
-					contentType += "Content type: News" + "\n\r";
-					// System.out.println("Checkfield:"+checkField);
 				}
-
 			} catch (Exception e) {
 
 			}
@@ -832,9 +847,7 @@ public class Main {
 		for (String checkField : checkFields) {
 			try {
 				String data = record.get(checkField).toUpperCase().trim();
-				if (data.contains("CANADA EMERGENCY RESPONSE BENEFIT")
-						|| data.contains("PRESTATION CANADIENNE D’URGENCE") || data.contains("CERB")
-						|| data.contains("COVID") || data.contains("CORONAVIRUS")
+				if (stringContainsItemFromList(data, MATCH_KEYWORDS)
 						|| (checkField.equals("Has Alert") && data.contains("TRUE"))) {
 					covid = true;
 					contentType += checkField + ": " + record.get(checkField) + "\n\r";
@@ -848,9 +861,7 @@ public class Main {
 					contentType += "Content type: News" + "\n\r";
 					// System.out.println("Checkfield:"+checkField);
 				}
-
 			} catch (Exception e) {
-
 			}
 		}
 		if (covid) {
@@ -912,7 +923,8 @@ public class Main {
 
 	public String determineContentType(String contentTypeContent, String lang) {
 		String substantiveContentTypes[] = { "Title", "dcterms.subject", "desc", "Description", "Name", "Page title",
-				"H1", "Keywords", "Primary topic", "Additional topics" };
+				"H1", "Keywords", "Primary topic", "Additional topics", "title_s", "dcterms_description_s", "id",
+				"body_t_h1", "keywords_t", "dcterms.subject_s", "description_s" };
 		String contentType;
 		if (contentTypeContent.contains("Content type: News")) {
 			if (lang.contains("en")) {
@@ -986,6 +998,7 @@ public class Main {
 				} else {
 					dept = aemDepartmentsFr.get(aemDept);
 				}
+				return dept;
 			}
 		} catch (Exception e) {
 
@@ -1054,48 +1067,60 @@ public class Main {
 		} catch (Exception e) {
 		}
 
-		Reader in4 = new FileReader("./import/covid-inventory-" + this.importDate + ".json");
+		Reader in4 = new FileReader("./import/covid-inventory-" + this.importDate + "_EN.json");
 		@SuppressWarnings("rawtypes")
 		java.lang.reflect.Type mapType = new TypeToken<Map<String, List>>() {
 		}.getType();
 		Map<String, List<Map<String, String>>> son = new Gson().fromJson(in4, mapType);
-		List<Map<String, String>> list = son.get("docs");
+		List<Map<String, String>> listen = son.get("docs");
+
+		Reader in5 = new FileReader("./import/covid-inventory-" + this.importDate + "_FR.json");
+		Map<String, List<Map<String, String>>> son2 = new Gson().fromJson(in5, mapType);
+		List<Map<String, String>> listfr = son2.get("docs");
+
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		list.addAll(listen);
+		list.addAll(listfr);
+		System.out.println("GC Search Count:" + list.size());
+
 		for (Map<String, String> record : list) {
 			OutputData outputData = new OutputData();
 			outputData.URL = ((String) record.get("id")).toLowerCase();
-			Date modifiedDate = null;
-			try {
-				modifiedDate = DATE_FORMAT.parse((String) record.get("dateModified_nf"));
-			} catch (Exception e) {
-				modifiedDate = this.getLastModifiedDate(outputData.URL);
-			}
+			if (!stringContainsItemFromList(outputData.URL, IGNORE_LIST)) {
+				Date modifiedDate = null;
+				try {
+					modifiedDate = DATE_FORMAT.parse((String) record.get("dateModified_nf"));
+				} catch (Exception e) {
+					modifiedDate = this.getLastModifiedDate(outputData.URL);
+				}
 
-			String contentTypeContent = this.contentTypeContent(record, outputData.URL);
-			if (!contentTypeContent.equals("")) {
-				// System.out.println(record.get("URL"));
-				outputData.title = record.get("title_s");
-				outputData.language = record.get("lang_s");
-				outputData.department = this.determineDept(outputData.URL, outputData.language, null, record);
-				outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-				outputData.h2 = "";
-				outputData.keywords = record.get("dcterms_description_s");
-				if (outputData.keywords == null || outputData.keywords.equals("")) {
-					outputData.keywords = record.get("description_s");
-					if (outputData.keywords == null) {
-						outputData.keywords = "";
+				String contentTypeContent = this.contentTypeContent(record, outputData.URL);
+				if (!contentTypeContent.equals("")) {
+					// System.out.println(record.get("URL"));
+					outputData.title = record.get("title_s");
+					outputData.language = record.get("lang_s");
+					outputData.department = this.determineDept(outputData.URL, outputData.language, null, record);
+					outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+					outputData.h2 = "";
+					outputData.keywords = record.get("keywords_t");
+					if (outputData.keywords == null || outputData.keywords.equals("")) {
+						outputData.keywords = record.get("description_s");
+						if (outputData.keywords == null) {
+							outputData.keywords = "";
+						}
 					}
+					outputData.contentTypes = this.determineContentType(contentTypeContent, "en");
+					if (modifiedDate == null) {
+						outputData.modifiedDate = "";
+					} else {
+						outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
+					}
+					outputData.language = record.get("lang_s");
+					outputData.audience = record.get("dcterms_audience_s");
+					// outputData.newPage = this.determineNewURL(outputData.URL, "en");
+					outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
+					this.covidMap.put(outputData.URL, outputData);
 				}
-				outputData.contentTypes = this.determineContentType(contentTypeContent, "en");
-				if (modifiedDate == null) {
-					outputData.modifiedDate = "";
-				} else {
-					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
-				}
-				outputData.language = record.get("lang_s");
-				outputData.audience = "";
-				// outputData.newPage = this.determineNewURL(outputData.URL, "en");
-				outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
-				this.covidMap.put(outputData.URL, outputData);
 			}
 		}
 		System.out.println(list.size());
@@ -1106,24 +1131,26 @@ public class Main {
 		for (CSVRecord record : records2) {
 			OutputData outputData = new OutputData();
 			outputData.URL = record.get("URL").toLowerCase();
-			Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
-			if (modifiedDate != null && modifiedDate.after(afterDate)) {
-				String contentTypeContent = this.contentTypeContent(record, outputData.URL);
-				if (!contentTypeContent.equals("")) {
-					// System.out.println(record.get("URL"));
-					outputData.title = record.get("Title");
-					outputData.language = record.get("Language");
-					outputData.department = this.determineDept(outputData.URL, outputData.language, record, null);
-					outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-					outputData.h2 = record.get("H2");
-					outputData.keywords = record.get("desc");
-					outputData.contentTypes = this.determineContentType(contentTypeContent, "en");
-					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
-					outputData.language = record.get("Language");
-					outputData.audience = this.determineAudience(record);
-					// outputData.newPage = this.determineNewURL(outputData.URL, "en");
-					// outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
-					this.covidMap.put(outputData.URL, outputData);
+			if (!stringContainsItemFromList(outputData.URL, IGNORE_LIST)) {
+				Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
+				if (modifiedDate != null && modifiedDate.after(afterDate)) {
+					String contentTypeContent = this.contentTypeContent(record, outputData.URL);
+					if (!contentTypeContent.equals("")) {
+						// System.out.println(record.get("URL"));
+						outputData.title = record.get("Title");
+						outputData.language = record.get("Language");
+						outputData.department = this.determineDept(outputData.URL, outputData.language, record, null);
+						outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+						outputData.h2 = record.get("H2");
+						outputData.keywords = record.get("desc");
+						outputData.contentTypes = this.determineContentType(contentTypeContent, "en");
+						outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
+						outputData.language = record.get("Language");
+						outputData.audience = this.determineAudience(record);
+						// outputData.newPage = this.determineNewURL(outputData.URL, "en");
+						// outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
+						this.covidMap.put(outputData.URL, outputData);
+					}
 				}
 			}
 		}
@@ -1133,55 +1160,60 @@ public class Main {
 		for (CSVRecord record : records3) {
 			OutputData outputData = new OutputData();
 			outputData.URL = record.get("URL").toLowerCase();
-			Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
-			if (modifiedDate != null && modifiedDate.after(afterDate)) {
+			if (!stringContainsItemFromList(outputData.URL, IGNORE_LIST)) {
+				Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
+				if (modifiedDate != null && modifiedDate.after(afterDate)) {
 
-				String contentTypeContent = this.contentTypeContent(record, outputData.URL);
-				if (!contentTypeContent.equals("")) {
-					// System.out.println(record.get("URL"));
-					outputData.title = record.get("Title");
-					outputData.language = record.get("Language");
-					outputData.department = this.determineDept(outputData.URL, outputData.language, record, null);
-					outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-					outputData.h2 = record.get("H2");
-					outputData.keywords = record.get("desc");
-					outputData.contentTypes = this.determineContentType(contentTypeContent, "fr");
-					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
-					outputData.language = record.get("Language");
-					outputData.audience = this.determineAudience(record);
-					// outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
-					// outputData.newPage = this.determineNewURL(outputData.URL, "fr");
-					this.covidMap.put(outputData.URL, outputData);
+					String contentTypeContent = this.contentTypeContent(record, outputData.URL);
+					if (!contentTypeContent.equals("")) {
+						// System.out.println(record.get("URL"));
+						outputData.title = record.get("Title");
+						outputData.language = record.get("Language");
+						outputData.department = this.determineDept(outputData.URL, outputData.language, record, null);
+						outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+						outputData.h2 = record.get("H2");
+						outputData.keywords = record.get("desc");
+						outputData.contentTypes = this.determineContentType(contentTypeContent, "fr");
+						outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
+						outputData.language = record.get("Language");
+						outputData.audience = this.determineAudience(record);
+						// outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
+						// outputData.newPage = this.determineNewURL(outputData.URL, "fr");
+						this.covidMap.put(outputData.URL, outputData);
+					}
 				}
 			}
 		}
 
-		Reader in = new FileReader("./import/gcPageReport-publish-" + this.importDate + ".csv");
+		Reader in = new FileReader(
+				"./import/gcPageReport-publish-" + AEM_DATE_FORMAT.format(DATE_FORMAT.parse(this.importDate)) + ".csv");
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
 		for (CSVRecord record : records) {
 			OutputData outputData = new OutputData();
 			outputData.URL = record.get("Public path").toLowerCase();
-			Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
-			if (modifiedDate != null && modifiedDate.after(afterDate)) {
-				String contentTypeContent = this.contentTypeContent(record, outputData.URL);
-				if (!contentTypeContent.equals("")) {
-					outputData.title = record.get("Page title");
-					outputData.language = this.determineLanguage(outputData.URL, record.get("gcLanguage"));
-					outputData.department = this.determineDept(outputData.URL, outputData.language, record, null);
-					outputData.theme = this.determineTheme(outputData.URL, outputData.language);
-					outputData.contentTypes = this.determineContentType(contentTypeContent, outputData.language);
-					outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
-					outputData.h2 = "";
-					outputData.keywords = record.get("Keywords");
-					String contentType = record.get("Content type").replace("gc:content-types/", ", ").replace("-", " ")
-							.trim().replaceFirst(",", "");
-					outputData.AEMContentType = this.capitalizeWord(contentType);
-					outputData.lastPublishedDate = record.get("Last Published date");
-					outputData.audience = this.determineAudience(record);
-					// outputData.newPage = this.determineNewURL(outputData.URL,
-					// outputData.language);
-					outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
-					this.aemMap.put(outputData.URL, outputData);
+			if (!stringContainsItemFromList(outputData.URL, IGNORE_LIST)) {
+				Date modifiedDate = this.getLastModifiedDate(record, outputData.URL, false);
+				if (modifiedDate != null && modifiedDate.after(afterDate)) {
+					String contentTypeContent = this.contentTypeContent(record, outputData.URL);
+					if (!contentTypeContent.equals("")) {
+						outputData.title = record.get("Page title");
+						outputData.language = this.determineLanguage(outputData.URL, record.get("gcLanguage"));
+						outputData.department = this.determineDept(outputData.URL, outputData.language, record, null);
+						outputData.theme = this.determineTheme(outputData.URL, outputData.language);
+						outputData.contentTypes = this.determineContentType(contentTypeContent, outputData.language);
+						outputData.modifiedDate = DATE_FORMAT.format(modifiedDate);
+						outputData.h2 = "";
+						outputData.keywords = record.get("Keywords");
+						String contentType = record.get("Content type").replace("gc:content-types/", ", ")
+								.replace("-", " ").trim().replaceFirst(",", "");
+						outputData.AEMContentType = this.capitalizeWord(contentType);
+						outputData.lastPublishedDate = record.get("Last Published date");
+						outputData.audience = this.determineAudience(record);
+						// outputData.newPage = this.determineNewURL(outputData.URL,
+						// outputData.language);
+						outputData.uniqueVisitors = this.determineUniqueVisits(outputData.URL);
+						this.aemMap.put(outputData.URL, outputData);
+					}
 				}
 			}
 		}

@@ -1,2 +1,2 @@
 cd ..
-mvn exec:java -Dexec.args="$1 $2"                     
+mvn exec:java -Dexec.args="$1"                     
