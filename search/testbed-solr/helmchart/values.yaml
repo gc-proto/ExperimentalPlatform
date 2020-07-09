@@ -95,7 +95,7 @@ persistent:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
-  size: 50Gi
+  size: 75Gi
   mountPath: /solrdata
   annotations:
     pv.beta.kubernetes.io/gid: "8983"
