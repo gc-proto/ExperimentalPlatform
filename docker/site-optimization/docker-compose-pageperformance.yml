@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: docker/images/pageperformance_nginx/Dockerfile
     ports:
-      - "8181:80"
+      - "8282:80"
     depends_on:
       - web
     restart: always
