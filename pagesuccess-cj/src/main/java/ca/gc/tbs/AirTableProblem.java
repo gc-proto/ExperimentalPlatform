@@ -1,4 +1,4 @@
-package ca.tbs;
+package ca.gc.tbs;
 import com.google.gson.annotations.SerializedName;
 
 public class AirTableProblem {
@@ -20,11 +20,16 @@ public class AirTableProblem {
 	@SerializedName("Details")
 	private String details;
 	@SerializedName("Tags")
-	private String[] tags;
+	private String tags;
 	@SerializedName("Info exists")
 	private String infoExists;
 	@SerializedName("PII")
 	private String PII;
+	
+	@SerializedName("PII Type")
+	private String PIIType;
+	
+	
 	@SerializedName("Topic - HC")
 	private String topic;
 	@SerializedName("Actionable")
@@ -77,10 +82,10 @@ public class AirTableProblem {
 	public void setDetails(String details) {
 		this.details = details;
 	}
-	public String[] getTags() {
+	public String getTags() {
 		return tags;
 	}
-	public void setTags(String[] tags) {
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
 	public String getInfoExists() {
@@ -112,6 +117,12 @@ public class AirTableProblem {
 	}
 	public void setYesno(String yesno) {
 		this.yesno = yesno;
+	}
+	public String getPIIType() {
+		return PIIType;
+	}
+	public void setPIIType(String pIIType) {
+		PIIType = pIIType;
 	}
 	
 	

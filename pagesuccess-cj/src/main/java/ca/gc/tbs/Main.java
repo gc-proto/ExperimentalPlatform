@@ -1,4 +1,4 @@
-package ca.tbs;
+package ca.gc.tbs;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -9,14 +9,19 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.sybit.airtable.Airtable;
 import com.sybit.airtable.Base;
 import com.sybit.airtable.Table;
 
+import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.repository.ProblemRepository;
+
 import static java.lang.System.exit;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"ca.gc.tbs.domain","ca.gc.tbs.repository"})
 public class Main implements CommandLineRunner {
 
 	public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -30,6 +35,9 @@ public class Main implements CommandLineRunner {
 	
 	@Value("${airtable.base}")
 	private String airtableBase;
+	
+	@Value("${airtable.tab}")
+	private String airtableTab;
 
 	public static void main(String args[]) throws Exception {
 		new SpringApplicationBuilder(Main.class).web(WebApplicationType.NONE) // .REACTIVE, .SERVLET
@@ -39,18 +47,33 @@ public class Main implements CommandLineRunner {
 	public Main() throws Exception {
 
 	}
+	
+	
 
 	@Override
 	public void run(String... args) throws Exception {
+		//this.resetAirTableFlag();
+		this.airTableSync();
+	}
+	
+	public void resetAirTableFlag() {
+		List<Problem> pList = this.problemRepository.findByAirTableSync("true");
+		for (Problem problem : pList) {
+			problem.setAirTableSync("false");
+			this.problemRepository.save(problem);
+		}
+	}
+	
+	public void airTableSync() throws Exception {
 		System.out.println("Awake...");
 		Airtable airtable = new Airtable().configure(this.airtableKey);
 		Base base = airtable.base(this.airtableBase);
 		@SuppressWarnings("unchecked")
-		Table<AirTableProblem> problemTable = base.table("Page Success Datastore Sync", AirTableProblem.class);
+		Table<AirTableProblem> problemTable = base.table(this.airtableTab, AirTableProblem.class);
 		System.out.println("Connected to Airtable");
-		System.out.println("Connected to MongoDB");
 		List<Problem> pList = this.problemRepository.findByAirTableSync(null);
 		pList.addAll(this.problemRepository.findByAirTableSync("false"));
+		System.out.println("Connected to MongoDB");
 		System.out.println("Found "+pList.size() + " records that need to by added.");
 		for (Problem problem : pList) {
 			try {
@@ -64,6 +87,9 @@ public class Main implements CommandLineRunner {
 				airProblem.setDetails(problem.getProblemDetails());
 				airProblem.setYesno(problem.getYesno());
 				airProblem.setTopic(problem.getTopic());
+				airProblem.setPII(problem.getPersonalInfoYN());
+				airProblem.setPIIType(problem.getPersonalInfoTypes());
+				airProblem.setTags(String.join(",",problem.getTags()));
 				airProblem.setId(null);
 				problemTable.create(airProblem);
 				problem.setAirTableSync("true");

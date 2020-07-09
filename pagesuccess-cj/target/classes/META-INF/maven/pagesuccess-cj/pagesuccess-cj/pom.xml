@@ -22,6 +22,11 @@
 	</repositories>
 	<dependencies>
 		<dependency>
+			<groupId>ca.gc.tbs</groupId>
+			<artifactId>PageSuccess</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>com.sybit</groupId>
 			<artifactId>airtable.java</artifactId>
 			<version>0.2.0</version>
