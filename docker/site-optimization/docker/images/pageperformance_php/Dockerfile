@@ -13,6 +13,7 @@ COPY docker/images/pageperformance_php/php.ini /usr/local/etc/php/php.ini
 COPY docker/images/pageperformance_php/www.conf /usr/local/etc/php-fpm.d
 RUN yes | rm -R /var/www/html
 WORKDIR /var/www/html
+RUN echo "New4"
 RUN git clone https://github.com/amonsour/analytics-api.git .
 COPY docker/images/pageperformance_php/secrets/php/config.php /var/www/html/php/config.php
 COPY docker/images/pageperformance_php/secrets/keys /var/www/html/keys
