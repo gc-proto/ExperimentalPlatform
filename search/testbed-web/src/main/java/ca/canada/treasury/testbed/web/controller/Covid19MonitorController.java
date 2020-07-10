@@ -4,11 +4,13 @@ import static ca.canada.treasury.testbed.web.service.impl.SolrUtil.COLLECTION_CO
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,6 +19,10 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections4.map.ListOrderedMap;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
@@ -54,6 +60,8 @@ import ca.canada.treasury.testbed.web.view.UITools;
 public class Covid19MonitorController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Covid19MonitorController.class);
+	
+	
 
 	@Autowired
 	private ISearchService searchService;
@@ -130,17 +138,8 @@ public class Covid19MonitorController {
 		
 		q.setQuery("*:*");
 		String fields = "*";
-		if (StringUtils.isNotBlank(fields)) {
-			List<String> flds = new ArrayList<>();
-			if ("*".equals(fields)) {
-				flds.addAll(CSV_FLD_ALIASES.keySet());
-			} else {
-				flds.addAll(Arrays.asList(fields.split("\\s*,\\s*")));
-			}
-			for (String fl : flds) {
-				q.addField(fl + ":" + CSV_FLD_ALIASES.get(fl));
-			}
-		}
+		q.setFields(fields);
+		
 
 		String fileLang = "";
 		if (StringUtils.isNotBlank(lang)) {
@@ -164,7 +163,30 @@ public class Covid19MonitorController {
 		NoOpResponseParser responseParser = new NoOpResponseParser();
 		responseParser.setWriterType("csv");
 		solrReq.setResponseParser(responseParser);
-		return (String) solr.request(solrReq).get("response");
+		String csv = (String) solr.request(solrReq).get("response");
+		Reader reader = new StringReader(csv);
+        CSVParser csvParser = new CSVParser(reader, CSVFormat.EXCEL
+                .withFirstRecordAsHeader()
+                .withIgnoreHeaderCase().withEscape('\\').withTrim());
+                
+        StringWriter writer = new StringWriter();
+
+        List<String> outputHeader = new ArrayList<String>();
+        for (String key : XLSX_COLS.keySet()) {
+        	outputHeader.add(XLSX_COLS.get(key).name);
+        }
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
+                .withHeader(outputHeader.toArray(new String[outputHeader.size()])));
+        for (CSVRecord csvRecord : csvParser) {
+           List<String> record = new ArrayList<String>();
+           for (String key : XLSX_COLS.keySet()) {
+           	record.add(csvRecord.get(key));
+           }
+           csvPrinter.printRecord(record);
+        }
+        csvParser.close();
+        csvPrinter.close();
+		return writer.toString();
 	}
 
 	@CrossOrigin(origins = "*")
