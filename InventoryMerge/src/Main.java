@@ -35,14 +35,17 @@ import org.apache.commons.codec.Charsets;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -85,8 +88,12 @@ public class Main {
 
 	public static String[] MATCH_KEYWORDS = { "Canada Emergency Response Benefit", "Prestation canadienne d’urgence",
 			"COVID", "Coronavirus", "PPE", "ÉPI", "CEWS", "SSUC", "CERB", "PCU", "CEBA", "CUEA", "Travel restrictions",
-			"Restrictions de voyage", "Temporary Wage Subsidy", "Subvention salariale temporaire",
-			"CERCA", "AUCLC", "Reopening","reouverture","CESB","PCUE" };
+			"Restrictions de voyage", "Temporary Wage Subsidy", "Subvention salariale temporaire", "CERCA", "AUCLC",
+			"Reopening", "reouverture", "CESB", "PCUE" };
+
+	// filetype bc2_url audience keywords bc2_name lastcrawled subject author
+	// bc3_name language h2 bc3_url title content bc4_name _version_ alert
+	// lastmodified domain id category desc bc4_url
 
 	public String[] OUTPUT_HEADERS_FR = {};
 
@@ -171,6 +178,8 @@ public class Main {
 	public static void main(String args[]) throws Exception {
 
 		Main main = new Main(args[0]);
+		downloadCSVDump("en",args[0]);
+		downloadCSVDump("fr",args[0]);
 		downloadGCSearchDump(DATE_FORMAT.format(DATE_FORMAT.parse(args[0])));
 		downloadAEMDump(AEM_DATE_FORMAT.format(DATE_FORMAT.parse(args[0])));
 		main.calculateDates();
@@ -192,6 +201,20 @@ public class Main {
 
 	public Main(String date) throws Exception {
 		this.importDate = date;
+	}
+
+	private static void downloadCSVDump(String lang, String importDate) throws Exception {
+		File csvFile = new File("import/covid19-" + importDate + "_" + lang + ".csv");
+
+		if (!csvFile.exists()) {
+			HttpClient client = HttpClients.createDefault();
+			HttpResponse response = client
+					.execute(new HttpGet("http://testbed.tbs.alpha.canada.ca/testbed/covid19/rest/csv?start=0&rows=20000&lang=" + lang));
+			HttpEntity entity = response.getEntity();
+			String responseString = EntityUtils.toString(entity, "UTF-8");
+			FileUtils.writeStringToFile(new File("import/covid19-" + importDate + "_" + lang + ".csv"), responseString,
+					Charset.forName("UTF-8"));
+		}
 	}
 
 	private static void downloadAEMDump(String date) throws GeneralSecurityException, IOException {
