@@ -2,6 +2,10 @@ secrets/
 **/*.log
 requests/
 **/*.mysql
+**/application.properties
+**/application*.properties
 EPRequest/.attach*
 .DS_Store
-
+tokens/
+**/*.class
+**/*.jar
