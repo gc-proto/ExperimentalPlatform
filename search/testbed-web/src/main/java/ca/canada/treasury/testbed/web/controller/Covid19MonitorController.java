@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -126,7 +126,7 @@ public class Covid19MonitorController {
 	private SolrClient solr;
 
 	@GetMapping(value = "/covid19/rest/csv", produces = "text/csv")
-	public @ResponseBody String restCSV(@RequestParam(required = false) String lang,
+	public @ResponseBody void restCSV(@RequestParam(required = false) String lang,
 			@RequestParam(required = false, defaultValue = "0") int start,
 			@RequestParam(required = false, defaultValue = "100") int rows, HttpServletResponse response)
 			throws IOException, SolrServerException {
@@ -169,7 +169,7 @@ public class Covid19MonitorController {
                 .withFirstRecordAsHeader()
                 .withIgnoreHeaderCase().withEscape('\\').withTrim());
                 
-        StringWriter writer = new StringWriter();
+        Writer writer = response.getWriter();
 
         List<String> outputHeader = new ArrayList<String>();
         for (String key : XLSX_COLS.keySet()) {
@@ -186,7 +186,7 @@ public class Covid19MonitorController {
         }
         csvParser.close();
         csvPrinter.close();
-		return writer.toString();
+		writer.close();
 	}
 
 	@CrossOrigin(origins = "*")
