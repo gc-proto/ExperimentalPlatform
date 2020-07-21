@@ -1,7 +1,9 @@
 package ca.gc.tbs;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,6 +82,23 @@ public class Main implements CommandLineRunner {
 		this.autoTag();
 		this.airTableSync();
 		this.completeProcessing();
+
+	}
+
+	public void syncDataAfter(String date) throws ParseException {
+		Date afterDate = DATE_FORMAT.parse(date);
+		List<Problem> pList = this.problemRepository.findByAirTableSync("true");
+		for (Problem problem : pList) {
+			try {
+				Date problemDate = INPUT_FORMAT.parse(problem.getProblemDate());
+				if (problemDate.after(afterDate)) {
+					problem.setAirTableSync("false");
+					this.problemRepository.save(problem);
+				}
+			} catch (Exception e) {
+				System.out.println("Could not process: " + problem.getId() + ":" + problem.getProblemDate());
+			}
+		}
 	}
 
 	public void flagAlreadyAddedData() {
@@ -96,6 +115,19 @@ public class Main implements CommandLineRunner {
 		}
 	}
 
+	public void resetEverything() {
+		List<Problem> pList = this.problemRepository.findAll();
+		for (Problem problem : pList) {
+			// exclude health for right now
+			if (!problem.getTitle().contains("Symptoms") || !problem.getTitle().contains("Prevention+risks")) {
+				problem.setAutoTagProcessed("true");
+				problem.setAirTableSync("false");
+				problem.setPersonalInfoProcessed("false");
+				problem.setProcessed("false");
+			}
+		}
+	}
+
 	public void autoTag() {
 		List<Problem> pList = this.problemRepository.findByAutoTagProcessed("false");
 		pList.addAll(this.problemRepository.findByAutoTagProcessed(null));
@@ -106,18 +138,19 @@ public class Main implements CommandLineRunner {
 					lang = "fr";
 				}
 				String text = URLEncoder.encode(problem.getProblemDetails(), StandardCharsets.UTF_8.name());
-				Document doc = Jsoup
-						.connect(
-								"https://suggestion.tbs.alpha.canada.ca/suggestCategory?lang=" + lang + "&text=" + text)
-						.maxBodySize(0).get();
-				String tags = doc.select("body").html();
-				System.out.println("Text:" + text + " : " + tags);
-				String splitTags[] = tags.split(",");
-				problem.getTags().addAll(Arrays.asList(splitTags));
+				String section = problem.getSection();
+				if (section != null && !section.equals("")) {
+					Document doc = Jsoup.connect("https://suggestion.tbs.alpha.canada.ca/suggestCategory?lang=" + lang
+							+ "&text=" + text + "&section=" + section).maxBodySize(0).get();
+					String tags = doc.select("body").html();
+					System.out.println("Text:" + text + " : " + tags);
+					String splitTags[] = tags.split(",");
+					problem.getTags().addAll(Arrays.asList(splitTags));
+				}
 				problem.setAutoTagProcessed("true");
 				this.problemRepository.save(problem);
 			} catch (Exception e) {
-				System.out.println("Could not auto tag because:" + e.getMessage());
+				System.out.println("Could not auto tag because:" + e.getMessage() + problem.getSection());
 			}
 		}
 	}
@@ -215,8 +248,8 @@ public class Main implements CommandLineRunner {
 					airProblem.setTheme(problem.getTheme());
 					airProblem.setId(null);
 					problemTable.create(airProblem);
-					// problem.setAirTableSync("true");
-					// this.problemRepository.save(problem);
+					problem.setAirTableSync("true");
+					this.problemRepository.save(problem);
 				}
 			} catch (Exception e) {
 				System.out.println(
