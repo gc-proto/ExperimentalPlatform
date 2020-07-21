@@ -147,11 +147,11 @@ public class Main implements CommandLineRunner {
 					String splitTags[] = tags.split(",");
 					problem.getTags().addAll(Arrays.asList(splitTags));
 				}
-				problem.setAutoTagProcessed("true");
-				this.problemRepository.save(problem);
 			} catch (Exception e) {
 				System.out.println("Could not auto tag because:" + e.getMessage() + problem.getSection());
 			}
+			problem.setAutoTagProcessed("true");
+			this.problemRepository.save(problem);
 		}
 	}
 
@@ -254,6 +254,7 @@ public class Main implements CommandLineRunner {
 			} catch (Exception e) {
 				System.out.println(
 						e.getMessage() + " Could not process record: " + problem.getId() + " URL:" + problem.getUrl());
+				
 			}
 		}
 
