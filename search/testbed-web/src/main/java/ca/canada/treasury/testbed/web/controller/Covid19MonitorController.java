@@ -2,6 +2,7 @@ package ca.canada.treasury.testbed.web.controller;
 
 import static ca.canada.treasury.testbed.web.service.impl.SolrUtil.COLLECTION_COVID19;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections4.map.ListOrderedMap;
@@ -67,27 +66,7 @@ public class Covid19MonitorController {
 	private ISearchService searchService;
 
 	// alias name + solr name
-	private static final Map<String, String> CSV_FLD_ALIASES = new TreeMap<>();
-	static {
-		CSV_FLD_ALIASES.put(CovidDoc.ID, "URL");
-		CSV_FLD_ALIASES.put(CovidDoc.LANGUAGE, "Language");
-		CSV_FLD_ALIASES.put(CovidDoc.TITLE, "Title");
-		CSV_FLD_ALIASES.put(CovidDoc.HAS_ALERT, "Has Alert");
-		CSV_FLD_ALIASES.put(CovidDoc.H2, "H2");
-		CSV_FLD_ALIASES.put(CovidDoc.BC2_NAME, "Breadcrumb LVL2 Name");
-		CSV_FLD_ALIASES.put(CovidDoc.BC2_URL, "Breadcrumb LVL2 URL");
-		CSV_FLD_ALIASES.put(CovidDoc.BC3_NAME, "Breadcrumb LVL3 Name");
-		CSV_FLD_ALIASES.put(CovidDoc.BC3_URL, "Breadcrumb LVL3 URL");
-		CSV_FLD_ALIASES.put(CovidDoc.BC4_NAME, "Breadcrumb LVL4 Name");
-		CSV_FLD_ALIASES.put(CovidDoc.BC4_URL, "Breadcrumb LVL4 URL");
-		CSV_FLD_ALIASES.put(CovidDoc.LAST_MODIFIED, "Last Modified");
-		CSV_FLD_ALIASES.put(CovidDoc.LAST_CRAWLED, "Last Crawled");
-		CSV_FLD_ALIASES.put(CovidDoc.AUTHOR, "Author");
-		CSV_FLD_ALIASES.put(CovidDoc.SUBJECT, "dcterms.subject");
-		CSV_FLD_ALIASES.put(CovidDoc.AUDIENCE, "dcterms.audience");
-		CSV_FLD_ALIASES.put(CovidDoc.CATEGORY, "dcterms.type");
-		CSV_FLD_ALIASES.put(CovidDoc.DESC, "desc");
-	}
+	
 	private static final Map<String, Col> XLSX_COLS = new ListOrderedMap<>();
 	static {
 		// Max width is 255 (characters)
@@ -109,6 +88,7 @@ public class Covid19MonitorController {
 		XLSX_COLS.put(CovidDoc.AUDIENCE, new Col("dcterms.audience", 25));
 		XLSX_COLS.put(CovidDoc.CATEGORY, new Col("dcterms.type", 30));
 		XLSX_COLS.put(CovidDoc.DESC, new Col("desc", 100));
+		XLSX_COLS.put(CovidDoc.KEYWORDS, new Col("keywords",100));
 	}
 
 	private static class Col {
@@ -169,7 +149,7 @@ public class Covid19MonitorController {
                 .withFirstRecordAsHeader()
                 .withIgnoreHeaderCase().withEscape('\\').withTrim());
                 
-        Writer writer = response.getWriter();
+        Writer writer = new BufferedWriter(response.getWriter());
 
         List<String> outputHeader = new ArrayList<String>();
         for (String key : XLSX_COLS.keySet()) {
