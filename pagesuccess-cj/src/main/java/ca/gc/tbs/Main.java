@@ -62,7 +62,7 @@ public class Main implements CommandLineRunner {
 
 	private HashMap<String, String> pageTitleIds = new HashMap<String, String>();
 	private HashMap<String, String> mlTagIds = new HashMap<String, String>();
-
+	
 	public static void main(String args[]) throws Exception {
 		new SpringApplicationBuilder(Main.class).web(WebApplicationType.NONE) // .REACTIVE, .SERVLET
 				.run(args);
@@ -242,7 +242,7 @@ public class Main implements CommandLineRunner {
 					airProblem.setActionable(null);
 					airProblem.setMainSection(problem.getSection());
 					airProblem.setYesno(problem.getYesno());
-					airProblem.setStatus(null);
+					airProblem.setStatus("New");
 					airProblem.setLookupTags(null);
 					airProblem.setInstitution(problem.getInstitution());
 					airProblem.setTheme(problem.getTheme());
@@ -254,7 +254,7 @@ public class Main implements CommandLineRunner {
 			} catch (Exception e) {
 				System.out.println(
 						e.getMessage() + " Could not process record: " + problem.getId() + " URL:" + problem.getUrl());
-				
+
 			}
 		}
 
@@ -279,6 +279,8 @@ public class Main implements CommandLineRunner {
 			this.mlTagIds.put(tag.getTag().trim().toUpperCase(), tag.getId());
 		}
 	}
+
+
 
 	private void createPageTitleEntry(String title) throws Exception {
 		@SuppressWarnings("unchecked")
