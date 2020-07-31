@@ -1,0 +1,107 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  creationTimestamp: "2020-07-06T20:51:25Z"
+  labels:
+    app.kubernetes.io/instance: hc-drupal
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: drupal
+    helm.sh/chart: drupal-0.2.0
+  name: hc-drupal-drupal-cron
+  namespace: hc-drupal
+  resourceVersion: "49556972"
+  selfLink: /apis/batch/v1beta1/namespaces/hc-drupal/cronjobs/hc-drupal-drupal-cron
+  uid: dfb2a96b-016b-4f5f-9985-4fb01b295805
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app.kubernetes.io/instance: hc-drupal
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: drupal
+            helm.sh/chart: drupal-0.2.0
+        spec:
+          containers:
+          - command:
+            - /bin/sh
+            - -c
+            - |
+              # Errors should fail the job
+              set -e
+
+              # Wait for MySQL to be available
+              until drush sql:query 'SHOW TABLES;'; do echo Waiting for MySQL; sleep 3; done
+              echo MySQL available
+
+              # Check Drush status
+              drush status
+
+              # Run cron
+              drush -y core-cron
+            env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: mysql-password
+                  name: hc-drupal-mysql
+            - name: DRUPAL_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: hc-drupal
+            image: ryanhyma/pilot-web:1.0.0
+            imagePullPolicy: Always
+            name: drush
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /var/www/html/sites/default/settings.php
+              name: cm-drupal
+              readOnly: true
+              subPath: settings.php
+            - mountPath: /var/www/html/sites/default/extra.settings.php
+              name: cm-drupal
+              readOnly: true
+              subPath: extra.settings.php
+            - mountPath: /cache/twig
+              name: twig-cache
+            - mountPath: /config/sync
+              name: config-sync
+            - mountPath: /var/www/html/sites/default/files
+              name: files
+              subPath: public
+            - mountPath: /var/www/private
+              name: files
+              subPath: private
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          securityContext:
+            fsGroup: 82
+            runAsGroup: 82
+            runAsUser: 82
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - configMap:
+              defaultMode: 420
+              name: hc-drupal
+            name: cm-drupal
+          - emptyDir: {}
+            name: twig-cache
+          - emptyDir: {}
+            name: config-sync
+          - emptyDir: {}
+            name: files
+  schedule: 0 * * * *
+  successfulJobsHistoryLimit: 3
+  suspend: false
+status:
+  lastScheduleTime: "2020-07-21T17:00:00Z"
