@@ -1,3 +1,4 @@
+source /Users/ryanhyma/.basheditor/remote-debugging-v1.sh localhost 33333 #BASHEDITOR-TMP-REMOTE-DEBUGGING-END|Origin line:
 FROM ubuntu:bionic
 
 # Add SOLR_URL can be pass using -e in docker run to be specific

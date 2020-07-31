@@ -25,8 +25,6 @@
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=AUCLC&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Temporary Wage Subsidy&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Subvention salariale temporaire&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
-		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=Reopening&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
-		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=reouverture&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=CESB&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		<url>https://www.canada.ca/${lang}/sr/srb/sra.html?_charset_=UTF-8&amp;allq=PCUE&amp;exctq=&amp;anyq=&amp;noneq=&amp;fqupdate=dateModified_dt%3A[NOW-1YEAR+TO+NOW]&amp;dmn=&amp;fqocct=#wb-land</url>
 		
@@ -50,8 +48,6 @@
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=AUCLC</url>
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Temporary Wage Subsidy</url>
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Subvention salariale temporaire</url>
-		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=Reopening</url>
-		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=reouverture</url>
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=CESB</url>
 		<url>https://www.canada.ca/${lang}/sr/srb.html?_charset_=UTF-8&amp;q=PCUE</url>
 	</startURLs>
