@@ -7,32 +7,36 @@ import org.springframework.data.annotation.Id;
 
 public class Problem {
 	@Id
-	private String id;
-	private String url;
-	private String problem;
-	private String problemDetails;
-	private String department;
-	private String language;
-	private String resolutionDate;
-	private String resolution;
-	private String topic;
-	private String problemDate;
-	private String title;
-	private String yesno;
+	private String id="";
+	private String url="";
+	private String problem="";
+	private String problemDetails="";
+	private String language="";
+	private String resolutionDate="";
+	private String resolution="";
+	private String topic="";
+	private String problemDate="";
+	private String title="";
+	private String yesno="";
+	private String dataOrigin="";
+	private List<String> tags = new ArrayList<String>();
+	public String institution="";
+	public String theme="";
+	public String section="";
+
+	// pipeline fields
 	private String processed;
 	private String airTableSync;
-	private String personalInfoYN;
-	private String personalInfoTypes;
-	private String dataOrigin;
+	private String personalInfoProcessed;
+	private String autoTagProcessed;
 	
-	private List<String> tags = new ArrayList<String>();
-
 	public Problem() {
 
 	}
 
-	public Problem(String id, String url, String problemDate, String problem, String problemDetails, String department,
-			String language, String resolutionDate, String resolution, String topic, String title) {
+	public Problem(String id, String url, String problemDate, String problem, String problemDetails, String language,
+			String resolutionDate, String resolution, String topic, String title, String yesno, String institution,
+			String theme, String section) {
 		super();
 		this.id = id;
 		this.url = url;
@@ -42,9 +46,12 @@ public class Problem {
 		this.resolutionDate = resolutionDate;
 		this.resolution = resolution;
 		this.topic = topic;
-		this.department = department;
 		this.language = language;
 		this.title = title;
+		this.yesno = yesno;
+		this.institution = institution;
+		this.theme = theme;
+		this.section = section;
 	}
 
 	public String getId() {
@@ -77,14 +84,6 @@ public class Problem {
 
 	public void setProblemDetails(String problemDetails) {
 		this.problemDetails = problemDetails;
-	}
-
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
 	}
 
 	public String getLanguage() {
@@ -167,27 +166,51 @@ public class Problem {
 		this.airTableSync = airTableSync;
 	}
 
-	public String getPersonalInfoYN() {
-		return personalInfoYN;
-	}
-
-	public void setPersonalInfoYN(String personalInfoYN) {
-		this.personalInfoYN = personalInfoYN;
-	}
-
-	public String getPersonalInfoTypes() {
-		return personalInfoTypes;
-	}
-
-	public void setPersonalInfoTypes(String personalInfoTypes) {
-		this.personalInfoTypes = personalInfoTypes;
-	}
-
 	public String getDataOrigin() {
 		return dataOrigin;
 	}
 
 	public void setDataOrigin(String dataOrigin) {
 		this.dataOrigin = dataOrigin;
+	}
+
+	public String getPersonalInfoProcessed() {
+		return personalInfoProcessed;
+	}
+
+	public void setPersonalInfoProcessed(String personalInfoProcessed) {
+		this.personalInfoProcessed = personalInfoProcessed;
+	}
+
+	public String getAutoTagProcessed() {
+		return autoTagProcessed;
+	}
+
+	public void setAutoTagProcessed(String autoTagProcessed) {
+		this.autoTagProcessed = autoTagProcessed;
+	}
+
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+
+	public String getTheme() {
+		return theme;
+	}
+
+	public void setTheme(String theme) {
+		this.theme = theme;
+	}
+
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
 	}
 }

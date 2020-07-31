@@ -26,7 +26,6 @@ import ca.gc.tbs.domain.OriginalProblem;
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.OriginalProblemRepository;
 import ca.gc.tbs.repository.ProblemRepository;
-import ca.gc.tbs.service.ContentService;
 
 @Controller
 public class ProblemController {
@@ -42,21 +41,19 @@ public class ProblemController {
 	@Autowired
 	private OriginalProblemRepository originalProblemRepository;
 
-	@Autowired
-	private ContentService contentService;
-
 	@CrossOrigin(origins = "*")
 	@PostMapping(value = "/addProblem")
 	public View addProblem(HttpServletRequest request) {
 
 		try {
 			String problemDetails = request.getParameter("problemDetails");
-			problemDetails = this.contentService.cleanContent(problemDetails);
 			Problem problem = new Problem(System.currentTimeMillis() + "", request.getParameter("url"),
-					DATE_FORMAT.format(new Date()), request.getParameter("problem"), problemDetails, "Health Canada",
-					request.getParameter("language"), "", "", "", "Test");
+					DATE_FORMAT.format(new Date()), request.getParameter("problem"), problemDetails,
+					request.getParameter("language"), "", "", "", "Test", "No", request.getParameter("institution"),
+					request.getParameter("theme"), request.getParameter("section"));
+			problem.setProblemDate(INPUT_FORMAT.format(new Date()));
 			problemRepository.save(problem);
-			return new RedirectView("/dashboard");
+			return new RedirectView("/problemDashboard");
 		} catch (Exception e) {
 			return new RedirectView("/error");
 		}
@@ -131,11 +128,14 @@ public class ProblemController {
 		String returnData = "";
 
 		StringBuilder finalBuilder = new StringBuilder();
-		List<Problem> problems = this.problemRepository.findAll();
+		List<Problem> problems = this.problemRepository.findByProcessed("true");
 		for (Problem problem : problems) {
 			try {
 				StringBuilder builder = new StringBuilder();
-				builder.append("<tr><td>" + problem.getDepartment() + "</td>");
+				builder.append("<tr>");
+				builder.append("<td>" + problem.getInstitution() + "</td>");
+				builder.append("<td>"+problem.getSection()+"</td>");
+				builder.append("<td>"+problem.getTheme()+"</td>");
 				builder.append("<td>" + problem.getLanguage() + "</td>");
 				builder.append("<td>" + problem.getUrl() + "</td>");
 				builder.append("<td>" + problem.getYesno() + "</td>");

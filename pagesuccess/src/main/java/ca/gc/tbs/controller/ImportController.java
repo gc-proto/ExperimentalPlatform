@@ -58,16 +58,16 @@ public class ImportController {
 					}
 					problem.setResolution("");
 					problem.setResolutionDate("");
-					problem.setDepartment("Health");
+					problem.setInstitution("Health");
 					if (problem.getUrl().contains("/en/")) {
 						problem.setLanguage("en");
 					} else {
 						problem.setLanguage("fr");
 					}
-					problem.setPersonalInfoYN(record.get("Personal info (Y/N)"));
-					problem.setPersonalInfoTypes(record.get("Type of personal info"));
 					problem.setProcessed("false");
 					problem.setAirTableSync("false");
+					problem.setAutoTagProcessed("false");
+					problem.setPersonalInfoProcessed("false");
 					problem.setDataOrigin("Health CSV");
 					this.problemRepository.save(problem);
 					this.originalProblemRespository.save(problem);

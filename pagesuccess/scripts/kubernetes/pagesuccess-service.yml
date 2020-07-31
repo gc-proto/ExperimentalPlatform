@@ -1,21 +1,25 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: pagesuccess-ingress
   annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"pagesuccess","namespace":"pagesuccess"},"spec":{"ports":[{"port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"app":"pagesuccess-app"},"sessionAffinity":"None","type":"ClusterIP"},"status":{"loadBalancer":{}}}
+  creationTimestamp: "2020-05-28T13:49:27Z"
+  name: pagesuccess
+  namespace: pagesuccess
+  resourceVersion: "32845827"
+  selfLink: /api/v1/namespaces/pagesuccess/services/pagesuccess
+  uid: 2b61747b-156d-4d46-89af-03fbc8a78e47
 spec:
-  tls:
-  - hosts:
-    - pagesuccess.tbs.alpha.canada.ca
-    secretName: pagesuccess-tls-secret-staging
-  rules:
-  - host: pagesuccess.tbs.alpha.canada.ca
-    http:
-      paths:
-      - backend:
-          serviceName: pagesuccess
-          servicePort: 8080
-        path: /
+  clusterIP: 10.0.41.88
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: pagesuccess-app
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
       
