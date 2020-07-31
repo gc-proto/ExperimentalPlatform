@@ -23,8 +23,8 @@ public class Main {
 	public static int TIMEOUT = 1000 * 60 * 10;
 	// public static final String PAGE_PERFORMANCE_URL =
 	// "http://pageperformance-nginx/php/process-cj.php";
-	public static final String PAGE_PERFORMANCE_URL = "https://pageperformance.alpha.canada.ca/php/process-cj.php";
-	public static int NUM_THREADS = 3;
+	public static final String PAGE_PERFORMANCE_URL = "https://performance.alpha.canada.ca/php/process-cj.php";
+	public static int NUM_THREADS = 6;
 	private ExecutorService executor = null;
 	public static AtomicInteger numCached = new AtomicInteger(0);
 
@@ -41,14 +41,14 @@ public class Main {
 
 	public void cachePages() {
 		for (String url : links) {
-			if (url.contains("www.canada.ca")) {
-				Runnable cacher = new PageCacher(url);
-				try {
-					this.executor.execute(cacher);
-				} catch (Exception e) {
 
-				}
+			Runnable cacher = new PageCacher(url);
+			try {
+				this.executor.execute(cacher);
+			} catch (Exception e) {
+
 			}
+
 		}
 		this.executor.shutdown();
 		while (!this.executor.isTerminated()) {
@@ -78,7 +78,7 @@ public class Main {
 						.println("Finished caching: " + pageURL + " Output:" + doc.outerHtml().replaceAll("\\s+", ""));
 				Thread.sleep(WAIT_TIME);
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				System.out.println("Page could not be cached because:" + e.getMessage());
 			}
 		}
 	}
@@ -90,9 +90,6 @@ public class Main {
 		links.addAll(this.parseDocument(doc));
 		doc = Jsoup.connect("https://covid-19inventory.tbs.alpha.canada.ca/covid19_en.html").maxBodySize(0).get();
 		links.addAll(this.parseDocument(doc));
-		for (String link : links) {
-			System.out.println(link);
-		}
 		System.out.println("End of links: " + links.size());
 	}
 
@@ -103,7 +100,9 @@ public class Main {
 		System.out.println("Elements: " + elements.size());
 		for (Element element : elements) {
 			String url = element.attr("href");
-			list.add(url);
+			if (url.toLowerCase().contains("www.canada.ca")) {
+				list.add(url);
+			}
 		}
 		return list;
 	}
