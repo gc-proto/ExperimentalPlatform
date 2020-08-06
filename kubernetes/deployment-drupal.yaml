@@ -113,7 +113,10 @@ spec:
           name: files-public
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
+      securityContext:
+        fsGroup: 82
+        runAsUser: 82
+        runAsGroup: 82
       terminationGracePeriodSeconds: 30
       volumes:
       - configMap:
