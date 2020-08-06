@@ -36,6 +36,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -634,7 +635,7 @@ public class Main {
 		});
 
 		for (String theme : new LinkedHashSet<String>(themes)) {
-			themeList += "<option value='" + theme + "'>" + theme + "</option>";
+			themeList += "<option value='" + this.escapeCharacters(theme) + "'>" + this.escapeCharacters(theme) + "</option>";
 		}
 		template = template.replace("<!-- THEMES -->", themeList);
 
@@ -657,7 +658,7 @@ public class Main {
 		});
 
 		for (String dept : new LinkedHashSet<String>(depts)) {
-			deptList += "<option value='" + dept + "'>" + dept + "</option>";
+			deptList += "<option value='" + this.escapeCharacters(dept) + "'>" + this.escapeCharacters(dept) + "</option>";
 		}
 		template = template.replace("<!-- DEPARTMENTS -->", deptList);
 
@@ -669,9 +670,9 @@ public class Main {
 		}
 		for (int i = 0; i < headers.length; i++) {
 			if (i == (headers.length - 1)) {
-				labelList += "<th class='export'>" + headers[i] + "</th>";
+				labelList += "<th class='export'>" + this.escapeCharacters(headers[i]) + "</th>";
 			} else {
-				labelList += "<th>" + headers[i] + "</th>";
+				labelList += "<th>" + this.escapeCharacters(headers[i]) + "</th>";
 			}
 		}
 		template = template.replace("<!-- LABELS -->", labelList);
@@ -682,7 +683,7 @@ public class Main {
 			if (i > 2) {
 				togglecolumns += "<label for='toggle" + i + "'>"
 						+ "<input type='checkbox' CHECKED class='toggle-vis' name='toggle" + i + "' id='toggle" + i
-						+ "' data-column='" + i + "' />&nbsp;<span>" + headers[i] + "</span></label>&nbsp;";
+						+ "' data-column='" + i + "' />&nbsp;<span>" + this.escapeCharacters(headers[i]) + "</span></label>&nbsp;";
 			}
 		}
 		template = template.replace("<!-- TOGGLE COLUMNS -->", togglecolumns);
@@ -697,7 +698,7 @@ public class Main {
 				for (int i = 0; i < list.size(); i++) {
 					if (i != (list.size() - 1)) {
 						String elem = list.get(i);
-						html += "<td>" + elem + "</td>";
+						html += "<td>" + this.escapeCharacters(elem) + "</td>";
 					} else {
 						if (lang.contains("en")) {
 							html += "<td><button class='btn'>Submit</button></td>";
@@ -713,6 +714,10 @@ public class Main {
 
 		writeToFile(template,
 				"../docker/site-optimization/docker/images/covid19inv_nginx/covid19_" + outputLang + ".html");
+	}
+	
+	public String escapeCharacters(String text) {
+		return StringEscapeUtils.escapeHtml(text);
 	}
 
 	public String contentTypeContent(Map<String, String> record, String url) {
