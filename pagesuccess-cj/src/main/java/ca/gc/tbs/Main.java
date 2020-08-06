@@ -62,7 +62,7 @@ public class Main implements CommandLineRunner {
 
 	private HashMap<String, String> pageTitleIds = new HashMap<String, String>();
 	private HashMap<String, String> mlTagIds = new HashMap<String, String>();
-	
+
 	public static void main(String args[]) throws Exception {
 		new SpringApplicationBuilder(Main.class).web(WebApplicationType.NONE) // .REACTIVE, .SERVLET
 				.run(args);
@@ -248,8 +248,8 @@ public class Main implements CommandLineRunner {
 					airProblem.setTheme(problem.getTheme());
 					airProblem.setId(null);
 					problemTable.create(airProblem);
-					problem.setAirTableSync("true");
-					this.problemRepository.save(problem);
+					// problem.setAirTableSync("true");
+					// this.problemRepository.save(problem);
 				}
 			} catch (Exception e) {
 				System.out.println(
@@ -276,11 +276,15 @@ public class Main implements CommandLineRunner {
 		System.out.println("Connected to Airtable Stats");
 		List<AirTableMLTag> tags = tagsTable.select();
 		for (AirTableMLTag tag : tags) {
-			this.mlTagIds.put(tag.getTag().trim().toUpperCase(), tag.getId());
+			try {
+				String tagName = tag.getTag().trim().toUpperCase();
+				String id = tag.getId();
+				this.mlTagIds.put(tagName, id);
+			} catch (Exception e) {
+				System.out.println("Could not add ML tag because:" + e.getMessage());
+			}
 		}
 	}
-
-
 
 	private void createPageTitleEntry(String title) throws Exception {
 		@SuppressWarnings("unchecked")
