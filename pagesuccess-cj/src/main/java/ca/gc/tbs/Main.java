@@ -133,19 +133,21 @@ public class Main implements CommandLineRunner {
 		pList.addAll(this.problemRepository.findByAutoTagProcessed(null));
 		for (Problem problem : pList) {
 			try {
-				String lang = "en";
-				if (problem.getLanguage().toLowerCase().equals("fr")) {
-					lang = "fr";
-				}
-				String text = URLEncoder.encode(problem.getProblemDetails(), StandardCharsets.UTF_8.name());
-				String section = problem.getSection();
-				if (section != null && !section.equals("")) {
-					Document doc = Jsoup.connect("https://suggestion.tbs.alpha.canada.ca/suggestCategory?lang=" + lang
-							+ "&text=" + text + "&section=" + section).maxBodySize(0).get();
-					String tags = doc.select("body").html();
-					System.out.println("Text:" + text + " : " + tags);
-					String splitTags[] = tags.split(",");
-					problem.getTags().addAll(Arrays.asList(splitTags));
+				if (problem.getYesno().toUpperCase().equals("NO")) {
+					String lang = "en";
+					if (problem.getLanguage().toLowerCase().equals("fr")) {
+						lang = "fr";
+					}
+					String text = URLEncoder.encode(problem.getProblemDetails(), StandardCharsets.UTF_8.name());
+					String section = problem.getSection();
+					if (section != null && !section.equals("")) {
+						Document doc = Jsoup.connect("https://suggestion.tbs.alpha.canada.ca/suggestCategory?lang="
+								+ lang + "&text=" + text + "&section=" + section).maxBodySize(0).get();
+						String tags = doc.select("body").html();
+						System.out.println("Text:" + text + " : " + tags);
+						String splitTags[] = tags.split(",");
+						problem.getTags().addAll(Arrays.asList(splitTags));
+					}
 				}
 			} catch (Exception e) {
 				System.out.println("Could not auto tag because:" + e.getMessage() + problem.getSection());
