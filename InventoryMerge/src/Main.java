@@ -3,13 +3,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -120,12 +120,14 @@ public class Main {
 			List<String> list = new ArrayList<String>();
 			list.add(theme);
 			list.add(department);
-			list.add("<a href=\"" + URL + "\">" + title + "</a>");
+			list.add("<a href=\"" + StringEscapeUtils.escapeHtml(URL) + "\">" + StringEscapeUtils.escapeHtml(title)
+					+ "</a>");
 			list.add(this.uniqueVisitors);
 			list.add(language);
 			list.add(modifiedDate);
 			list.add(lastPublishedDate);
-			list.add("<a href=\"" + URL + "\">" + URL + "</a>");
+			list.add("<a href=\"" + StringEscapeUtils.escapeHtml(URL) + "\">" + StringEscapeUtils.escapeHtml(URL)
+					+ "</a>");
 			list.add(h2);
 			list.add(description);
 			list.add(keywords);
@@ -133,8 +135,9 @@ public class Main {
 			list.add(AEMContentType);
 			list.add(audience);
 			if (URL.contains("www.canada.ca")) {
-				list.add("<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + URL + "&start="
-						+ Main.sevenDaysAgo + "&end=" + Main.today + "\">" + title + "</a>");
+				list.add(
+						"<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + StringEscapeUtils.escapeHtml(URL)
+								+ "&start=" + Main.sevenDaysAgo + "&end=" + Main.today + "\">" + title + "</a>");
 			} else {
 				list.add("");
 			}
@@ -318,7 +321,7 @@ public class Main {
 
 	public String determineUniqueVisits(String url) throws IOException {
 
-		if (url.contains("www.canada.ca")) {
+		if (url.contains("xxxwww.canada.ca")) {
 			String json = null;
 			JsonObject obj = null;
 			JsonObject summary = null;
@@ -607,7 +610,7 @@ public class Main {
 	}
 
 	public void writeToFile(String content, String fileName) throws IOException {
-		FileWriter fileWriter = new FileWriter(fileName);
+		Writer fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8);
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		printWriter.print(content);
 		printWriter.close();
@@ -635,7 +638,10 @@ public class Main {
 		});
 
 		for (String theme : new LinkedHashSet<String>(themes)) {
-			themeList += "<option value='" + this.escapeCharacters(theme) + "'>" + this.escapeCharacters(theme) + "</option>";
+			if (!theme.trim().equals("")) {
+				themeList += "<option value=\"" + this.escapeCharacters(theme) + "\">" + this.escapeCharacters(theme)
+						+ "</option>";
+			}
 		}
 		template = template.replace("<!-- THEMES -->", themeList);
 
@@ -658,7 +664,10 @@ public class Main {
 		});
 
 		for (String dept : new LinkedHashSet<String>(depts)) {
-			deptList += "<option value='" + this.escapeCharacters(dept) + "'>" + this.escapeCharacters(dept) + "</option>";
+			if (!dept.trim().equals("")) {
+				deptList += "<option value=\"" + this.escapeCharacters(dept) + "\">" + this.escapeCharacters(dept)
+						+ "</option>";
+			}
 		}
 		template = template.replace("<!-- DEPARTMENTS -->", deptList);
 
@@ -683,7 +692,8 @@ public class Main {
 			if (i > 2) {
 				togglecolumns += "<label for='toggle" + i + "'>"
 						+ "<input type='checkbox' CHECKED class='toggle-vis' name='toggle" + i + "' id='toggle" + i
-						+ "' data-column='" + i + "' />&nbsp;<span>" + this.escapeCharacters(headers[i]) + "</span></label>&nbsp;";
+						+ "' data-column='" + i + "' />&nbsp;<span>" + this.escapeCharacters(headers[i])
+						+ "</span></label>&nbsp;";
 			}
 		}
 		template = template.replace("<!-- TOGGLE COLUMNS -->", togglecolumns);
@@ -698,7 +708,11 @@ public class Main {
 				for (int i = 0; i < list.size(); i++) {
 					if (i != (list.size() - 1)) {
 						String elem = list.get(i);
-						html += "<td>" + this.escapeCharacters(elem) + "</td>";
+						if (i != 2 && i != 7) {
+							html += "<td>" + this.escapeCharacters(elem) + "</td>";
+						} else {
+							html += "<td>" + elem + "</td>";
+						}
 					} else {
 						if (lang.contains("en")) {
 							html += "<td><button class='btn'>Submit</button></td>";
@@ -715,7 +729,7 @@ public class Main {
 		writeToFile(template,
 				"../docker/site-optimization/docker/images/covid19inv_nginx/covid19_" + outputLang + ".html");
 	}
-	
+
 	public String escapeCharacters(String text) {
 		return StringEscapeUtils.escapeHtml(text);
 	}
@@ -1015,14 +1029,18 @@ public class Main {
 
 	public void loadGCSearchData() throws Exception {
 
-		Reader in4 = new FileReader("./import/covid-inventory-" + this.importDate + "_EN.json");
+		Reader in4 = new InputStreamReader(
+				new FileInputStream("./import/covid-inventory-" + this.importDate + "_EN.json"),
+				StandardCharsets.UTF_8);
 		@SuppressWarnings("rawtypes")
 		java.lang.reflect.Type mapType = new TypeToken<Map<String, List>>() {
 		}.getType();
 		Map<String, List<Map<String, String>>> son = new Gson().fromJson(in4, mapType);
 		List<Map<String, String>> listen = son.get("docs");
 
-		Reader in5 = new FileReader("./import/covid-inventory-" + this.importDate + "_FR.json");
+		Reader in5 = new InputStreamReader(
+				new FileInputStream("./import/covid-inventory-" + this.importDate + "_FR.json"),
+				StandardCharsets.UTF_8);
 		Map<String, List<Map<String, String>>> son2 = new Gson().fromJson(in5, mapType);
 		List<Map<String, String>> listfr = son2.get("docs");
 
@@ -1030,7 +1048,7 @@ public class Main {
 		list.addAll(listen);
 		list.addAll(listfr);
 
-		//System.out.println("GC Search Count:" + list.size());
+		// System.out.println("GC Search Count:" + list.size());
 
 		for (Map<String, String> record : list) {
 			OutputData outputData = new OutputData();
@@ -1074,7 +1092,9 @@ public class Main {
 	}
 
 	public void loadCustomSearchData(String lang) throws Exception {
-		Reader in2 = new FileReader("./import/covid19-" + this.importDate + "_" + lang + ".csv");
+		Reader in2 = new InputStreamReader(
+				new FileInputStream("./import/covid19-" + this.importDate + "_" + lang + ".csv"),
+				StandardCharsets.UTF_8);
 		Iterable<CSVRecord> records2 = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in2);
 		for (CSVRecord record : records2) {
 			OutputData outputData = new OutputData();
@@ -1117,8 +1137,9 @@ public class Main {
 	}
 
 	public void loadAEMData() throws Exception {
-		Reader in = new FileReader(
-				"./import/gcPageReport-publish-" + AEM_DATE_FORMAT.format(DATE_FORMAT.parse(this.importDate)) + ".csv");
+		Reader in = new InputStreamReader(new FileInputStream(
+				"./import/gcPageReport-publish-" + AEM_DATE_FORMAT.format(DATE_FORMAT.parse(this.importDate)) + ".csv"),
+				StandardCharsets.UTF_8);
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
 		for (CSVRecord record : records) {
 			OutputData outputData = new OutputData();
