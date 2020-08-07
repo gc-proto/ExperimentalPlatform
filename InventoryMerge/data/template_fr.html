@@ -104,7 +104,7 @@ select {
 				});
 	</script>
 
-	<main role="main" property="mainContentOfPage"
+	<main property="mainContentOfPage"
 		class="container-fluid wb-prettify all-pre">
 		<br />
 		<div class="row">
@@ -118,14 +118,16 @@ select {
 						résultats dans le tableau de données</p>
 					<form class="wb-tables-filter" data-bind-to="dataset-filter">
 						<div class="form-group">
-							<label for="dt_theme">Thème</label> <select class="form-control"
+							<label for="dt_theme">Thème</label> 
+							<select class="form-control"
 								id="dt_theme" name="dt_theme" data-column="0">
 								<option value="">Tous</option>
 								<!-- THEMES -->
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="dt_department">Ministère</label> <select
+							<label for="dt_department">Ministère</label>
+							 <select
 								class="form-control" id="dt_department" name="dt_department" data-column="1">
 								<option value="">Tous</option>
 								<!-- DEPARTMENTS -->
@@ -166,7 +168,7 @@ select {
 			</div>
 			<div class="col-md-9">
 				<p>
-					<a href="https://wiki.gccollab.ca/COVID-19_Content_inventory_tool" aria-controls="helpWindow"
+					<a href="https://wiki.gccollab.ca/COVID-19_Content_inventory_tool" 
 						class="btn btn-default" role="button">Outil
 						d’inventaire du contenu Web – Instructions <span
 						class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
@@ -418,143 +420,6 @@ select {
 						value="Submit" />
 				</form>
 			</div>
-		</div>
-	</section>
-	<section id="helpWindow"
-		class="wb-overlay modal-content overlay-def wb-popup-mid">
-		<header class="modal-header">
-			<h2 class="modal-title">Outil d’inventaire du contenu Web –
-				Instructions</h2>
-		</header>
-		<div class="modal-body">
-			<p>Les données figurant dans l’outil d’inventaire du contenu Web
-				de la COVID-19 proviennent des deux sources suivantes :</p>
-			<ul>
-				<li>résultats de recherches effectuées dans canada.ca;</li>
-				<li>indexation Web réalisée à l’aide d’AEM.</li>
-			</ul>
-
-			<p>Notre objectif est de mettre l’outil à jour quotidiennement.</p>
-
-			<p>L’outil peut être utilisé pour valider et améliorer les
-				métadonnées. En outre, il permet de repérer :</p>
-			<ul>
-				<li>le contenu relatif à la COVID-19 se rapportant à un thème
-					ou à un service particulier;</li>
-				<li>les doublons et les recoupements;</li>
-				<li>les données périmées.</li>
-			</ul>
-
-			<h2>Exemples d’utilisation de l’outil</h2>
-			<p>Les exemples ci-dessous illustrent des usages précis de
-				l’outil en ce qui concerne la validation du contenu et la mise à
-				jour des métadonnées.</p>
-
-			<p>
-				<strong>Le responsable du thème « Prestations » souhaite
-					vérifier qu’il n’y a pas d’alertes périmées</strong>
-			</p>
-			<ul>
-				<li>Dans la partie gauche de la page, sélectionner «
-					Prestations » dans le menu déroulant « Thème ».</li>
-				<li>Cocher la case « Contient une alerte Covid ».</li>
-				<li>Cliquer sur le bouton « Filtrer » pour afficher les
-					résultats.</li>
-				<li>Cliquer sur l’en-tête de la colonne « URL », maintenir
-					enfoncé le bouton de la souris, puis repositionner cette colonne à
-					gauche de la colonne « Titre ».</li>
-				<li>Sélectionner chaque adresse Internet pour vérifier que les
-					alertes sont toujours pertinentes.</li>
-			</ul>
-
-
-			<p>
-				<strong>Le ministère des Finances veut s’assurer que ses
-					pages relatives à la COVID 19 respectent les lignes directrices
-					concernant les titres dans les métadonnées</strong>
-			<p>
-			<ul>
-				<li>Dans la partie gauche de la page, sélectionner le ministère
-					des Finances dans la liste des ministères.</li>
-				<li>Cliquer sur le bouton « Filtrer » pour afficher les
-					résultats.</li>
-				<li>Cliquer sur l’en-tête de la colonne « Titre », maintenir
-					enfoncé le bouton de la souris, puis repositionner cette colonne à
-					droite de la colonne « Ministère ».</li>
-				<li>Les résultats indiquent que COVID apparaît dans certains
-					cas, mais pas dans tous.</li>
-				<li>Cliquer sur le bouton « Excel » en haut de la page pour
-					télécharger les résultats sous forme de feuille de calcul.</li>
-				<li>Cette feuille de calcul peut être utilisée pour transmettre
-					des consignes claires au gestionnaire de contenu du ministère.</li>
-			</ul>
-			<h2>Remarques</h2>
-			<ul>
-
-				<li>L’outil est disponible en français et en anglais.</li>
-				<li>Dans la partie gauche de la page se trouvent les principaux
-					filtres du site, à savoir « Thème », « Ministère », ainsi que ceux
-					permettant de limiter la recherche aux quatre types de contenu
-					suivants :
-					<ul>
-						<li>contenu principal Covid - pages comportant des
-							informations importantes concernant la santé, l’économie, les
-							restrictions, etc. En général, les pages accessibles depuis
-							canada.ca constituent du « contenu principal Covid »;
-						<li>alertes Covid - pages comportant une alerte visuelle et
-							textuelle liée à la COVID 19 et faisant habituellement état d’une
-							interruption de service;
-						<li>liens vers des pages Covid - pages où se trouve un lien
-							vers une page présentant du contenu lié la COVID-19;</li>
-						<li>nouvelles - 5 types de communiqués et d’annonces, à
-							savoir :
-							<ul>
-								<li>documents d’information,</li>
-								<li>avis aux médias,</li>
-								<li>communiqués de presse,</li>
-								<li>discours,</li>
-								<li>déclarations.</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-				<li>Pour réorganiser les colonnes, cliquer sur le titre de la
-					colonne à déplacer, maintenir enfoncé le bouton de la souris, et
-					déplacer la colonne vers la position désirée.</li>
-				<li>Les options qui se trouvent en haut de la page permettent
-					de choisir les éléments qui s’affichent.</li>
-				<li>Si les résultats qui s’affichent ne correspondent pas à
-					ceux souhaités, cliquer sur le bouton « Réinitialiser les
-					paramètres ».</li>
-			</ul>
-
-			<h2>Générer un rapport Excel à des fins d’utilisation interne</h2>
-			<p>Pour générer un rapport Excel :</p>
-			<ul>
-				<li>utiliser les filtres pour obtenir les résultats désirés;</li>
-				<li>cliquer sur le bouton « Excel »;</li>
-				<li>utiliser la colonne « Commentaires » du rapport Excel pour
-					indiquer les modifications souhaitées ou les questions destinées à
-					l’équipe Web, au secteur de programme concerné ou à l’équipe des
-					communications.</li>
-			</ul>
-			<p>Le rapport Excel peut être utilisé pour :
-			<ul>
-				<li>les corrections;</li>
-				<li>le retrait ou l’archivage de pages;</li>
-				<li>l’ajout de nouvelles pages au regroupement de services.</li>
-			</ul>
-			<h2>Transmettre des commentaires au Bureau de la transformation
-				numérique (BTN)</h2>
-			<p>Pour transmettre au BTN des commentaires au sujet d’une page
-				en particulier, cliquer sur le bouton « Soumettre » correspondant à
-				la page en question dans la colonne « Commentaires » de l’outil
-				d’inventaire. Les commentaires seront envoyés à
-				dto.btn@tbs-sct.gc.ca.</p>
-			<p>Vos commentaires nous permettront de mener à bien le processus
-				d’assurance de la qualité de l’outil. En effet, ce dernier est
-				actuellement considéré comme une version alpha, car des
-				améliorations et des corrections devront y être apportées.</p>
 		</div>
 	</section>
 </body>
