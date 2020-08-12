@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +23,10 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import ca.gc.tbs.domain.OriginalProblem;
 import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.domain.User;
 import ca.gc.tbs.repository.OriginalProblemRepository;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.service.UserService;
 
 @Controller
 public class ProblemController {
@@ -41,6 +42,9 @@ public class ProblemController {
 	@Autowired
 	private OriginalProblemRepository originalProblemRepository;
 
+	@Autowired
+	private UserService userService;
+
 	@CrossOrigin(origins = "*")
 	@PostMapping(value = "/addProblem")
 	public View addProblem(HttpServletRequest request) {
@@ -52,6 +56,7 @@ public class ProblemController {
 					request.getParameter("language"), "", "", "", "Test", "No", request.getParameter("institution"),
 					request.getParameter("theme"), request.getParameter("section"));
 			problem.setProblemDate(INPUT_FORMAT.format(new Date()));
+			problem.setProcessed("true");
 			problemRepository.save(problem);
 			return new RedirectView("/problemDashboard");
 		} catch (Exception e) {
@@ -128,14 +133,20 @@ public class ProblemController {
 		String returnData = "";
 
 		StringBuilder finalBuilder = new StringBuilder();
-		List<Problem> problems = this.problemRepository.findByProcessed("true");
+		User user = this.userService.getCurrentUser();
+		List<Problem> problems = null;
+		if (this.userService.isAdmin(user)) {
+			problems = this.problemRepository.findByProcessed("true");
+		} else {
+			problems = this.problemRepository.findByProcessedAndInstitution("true", user.getInstitution());
+		}
 		for (Problem problem : problems) {
 			try {
 				StringBuilder builder = new StringBuilder();
 				builder.append("<tr>");
 				builder.append("<td>" + problem.getInstitution() + "</td>");
-				builder.append("<td>"+problem.getSection()+"</td>");
-				builder.append("<td>"+problem.getTheme()+"</td>");
+				builder.append("<td>" + problem.getSection() + "</td>");
+				builder.append("<td>" + problem.getTheme() + "</td>");
 				builder.append("<td>" + problem.getLanguage() + "</td>");
 				builder.append("<td>" + problem.getUrl() + "</td>");
 				builder.append("<td>" + problem.getYesno() + "</td>");
@@ -210,5 +221,13 @@ public class ProblemController {
 	@GetMapping(value = "/testForm")
 	public String testForm() {
 		return "testForm";
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 }

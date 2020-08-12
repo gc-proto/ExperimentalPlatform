@@ -1,6 +1,5 @@
 
 package ca.gc.tbs.domain;
-
 import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -13,7 +12,7 @@ public class User {
 	private String id;
 	private String email;
 	private String password;
-	private String department;
+	private String institution;
 	private boolean enabled;
 
 	private String dateCreated;
@@ -53,14 +52,6 @@ public class User {
 		this.password = password;
 	}
 
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String fullname) {
-		this.department = fullname;
-	}
-
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -75,6 +66,14 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
 	}
 
 }

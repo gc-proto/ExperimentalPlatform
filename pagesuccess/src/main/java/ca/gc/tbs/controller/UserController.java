@@ -40,7 +40,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/u/delete")
-	public @ResponseBody String deleteProblem(HttpServletRequest request) {
+	public @ResponseBody String deleteUser(HttpServletRequest request) {
 		try {
 			this.service.deleteUserById(request.getParameter("id"));
 			return "deleted";
@@ -51,7 +51,7 @@ public class UserController {
 
 	/* TODO check for prod environment and disable */
 	@GetMapping(value = "/enableAdmin")
-	public View deleteProblem(HttpServletRequest request, RedirectAttributes atts) {
+	public View enableAdmin(HttpServletRequest request, RedirectAttributes atts) {
 		try {
 			this.service.enableAdmin(request.getParameter("email"));
 			atts.addFlashAttribute("successMessage", "User has been enabled and admin");
@@ -71,7 +71,7 @@ public class UserController {
 			for (User user : users) {
 				builder.append("<tr><td>" + user.getEmail() + "</td>");
 
-				builder.append("<td>" + user.getDepartment() + "</td>");
+				builder.append("<td>" + user.getInstitution() + "</td>");
 				List<String> roles = user.getRoles().stream().map(role -> role.getRole()).collect(Collectors.toList());
 
 				builder.append("<td>" + roles + "</td>");

@@ -16,6 +16,7 @@ public class ContentService {
 			content = newContent;
 			System.out.println("Postal code cleaned" + content);
 		}
+		System.out.println("Checking phone number...");
 		newContent = this.cleanPhoneNumber(content);
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
@@ -43,7 +44,9 @@ public class ContentService {
 	}
 
 	private String cleanPhoneNumber(String content) {
-		return content.replaceAll("(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}", "# ### ### ###");
+		content = content.replaceAll("(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}", "# ### ### ###");
+		content = content.replaceAll("(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?", "# ### ### ###");
+		return content;
 	}
 
 	private String cleanEmailAddress(String content) {

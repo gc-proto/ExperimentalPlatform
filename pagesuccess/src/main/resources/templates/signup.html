@@ -16,10 +16,11 @@
 				placeholder="Password" required="required" />
 		</div>
 		<div class="form-group">
-			<label for="department">Department</label> <input type="text"
-				name="department" id="department" class="form-control"
-				placeholder="Department" list="departments" required="required" />
-			<div th:replace="department_datalist"></div>
+			<label for="department">Institution</label> 
+			<select class="form-control" name="institution" id="institution">
+				<option th:each="inst : ${institutions}" th:value="${inst}"
+					th:text="${inst}"></option>
+			</select>
 		</div>
 		<button class="btn btn-primary" type="submit">Sign Up</button>
 	</form>
