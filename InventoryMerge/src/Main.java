@@ -321,7 +321,7 @@ public class Main {
 
 	public String determineUniqueVisits(String url) throws IOException {
 
-		if (url.contains("xxxwww.canada.ca")) {
+		if (url.contains("www.canada.ca")) {
 			String json = null;
 			JsonObject obj = null;
 			JsonObject summary = null;
@@ -708,7 +708,7 @@ public class Main {
 				for (int i = 0; i < list.size(); i++) {
 					if (i != (list.size() - 1)) {
 						String elem = list.get(i);
-						if (i != 2 && i != 7) {
+						if (i != 2 && i != 7 && i !=14) {
 							html += "<td>" + this.escapeCharacters(elem) + "</td>";
 						} else {
 							html += "<td>" + elem + "</td>";
