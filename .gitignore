@@ -9,3 +9,4 @@ EPRequest/.attach*
 tokens/
 **/*.class
 **/*.jar
+**/credentials.json

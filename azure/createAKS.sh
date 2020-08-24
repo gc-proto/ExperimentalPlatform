@@ -11,7 +11,7 @@ az aks create \
             --location canadacentral \
             --resource-group $1-rg \
             --enable-cluster-autoscaler \
-            --kubernetes-version 1.15.5 \
+            --kubernetes-version 1.16.13 \
             --load-balancer-sku basic \
             --max-count 5 \
             --min-count 1 \
