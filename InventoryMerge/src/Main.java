@@ -137,7 +137,7 @@ public class Main {
 			if (URL.contains("www.canada.ca")) {
 				list.add(
 						"<a href=\"https://pageperformance.tbs.alpha.canada.ca?url=" + StringEscapeUtils.escapeHtml(URL)
-								+ "&start=" + Main.sevenDaysAgo + "&end=" + Main.today + "\">" + title + "</a>");
+								+ "&start=" + Main.SEVENDAYSAGO + "&end=" + Main.TODAY + "\">" + title + "</a>");
 			} else {
 				list.add("");
 			}
@@ -166,10 +166,10 @@ public class Main {
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	public static final DateFormat AEM_DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
 	public String importDate = "";
-	public static String today;
-	// private String yesterday;
-	public static String sevenDaysAgo;
-	// private String thirtyDaysAgo;
+	public static String TODAY;
+	public static String TWODAYSAGO;
+	public static String SEVENDAYSAGO;
+
 	private String datePostFix = "T00:00:00.000";
 
 	public String[] IGNORE_LIST = { "https://achatsetventes.gc.ca" };
@@ -177,21 +177,11 @@ public class Main {
 	public Date AFTER_DATE = DATE_FORMAT.parse("2019-01-01");
 
 	public static void main(String args[]) throws Exception {
-		long start = System.currentTimeMillis();
-		Main main = new Main(args[0]);
-		downloadCSVDump("en", args[0]);
-		downloadCSVDump("fr", args[0]);
-		downloadGCSearchDump(DATE_FORMAT.format(DATE_FORMAT.parse(args[0])));
-		downloadAEMDump(AEM_DATE_FORMAT.format(DATE_FORMAT.parse(args[0])));
-		main.calculateDates();
-		main.loadFrenchOutputHeaders();
-		main.loadThemes();
-		main.loadDepartments();
-		main.loadData();
-		main.outputDataHTML("en");
-		main.outputDataHTML("fr");
-		main.dumpDepartments();
-		System.out.println("Total processing time:" + (System.currentTimeMillis() - start) / 1000 / 60);
+		if (args.length > 0) {
+			new Main(args[0]);
+		} else {
+			new Main(null);
+		}
 	}
 
 	public class BiLang {
@@ -201,16 +191,36 @@ public class Main {
 	}
 
 	public Main(String date) throws Exception {
-		this.importDate = date;
+		calculateDates();
+		if (date == null) {
+			this.importDate = TWODAYSAGO;
+		} else {
+			this.importDate = date;
+		}
+
+		long start = System.currentTimeMillis();
+		downloadGCSearchDump(DATE_FORMAT.format(DATE_FORMAT.parse(this.importDate)));
+		downloadAEMDump(AEM_DATE_FORMAT.format(DATE_FORMAT.parse(this.importDate)));
+		downloadCSVDump("en", this.importDate);
+		downloadCSVDump("fr", this.importDate);
+
+		loadFrenchOutputHeaders();
+		loadThemes();
+		loadDepartments();
+		loadData();
+		outputDataHTML("en");
+		outputDataHTML("fr");
+		dumpDepartments();
+		System.out.println("Total processing time:" + (System.currentTimeMillis() - start) / 1000 / 60);
 	}
 
-	private static void downloadCSVDump(String lang, String importDate) throws Exception {
+	private void downloadCSVDump(String lang, String importDate) throws Exception {
 		File csvFile = new File("import/covid19-" + importDate + "_" + lang + ".csv");
 
 		if (!csvFile.exists()) {
 			HttpClient client = HttpClients.createDefault();
 			HttpResponse response = client.execute(new HttpGet(
-					"http://testbed.tbs.alpha.canada.ca/testbed/covid19/rest/csv?start=0&rows=15000&lang=" + lang));
+					"http://testbed.tbs.alpha.canada.ca/testbed/covid19/rest/csv?start=0&rows=10000&lang=" + lang));
 			HttpEntity entity = response.getEntity();
 			String responseString = EntityUtils.toString(entity, "UTF-8");
 			FileUtils.writeStringToFile(new File("import/covid19-" + importDate + "_" + lang + ".csv"), responseString,
@@ -218,7 +228,7 @@ public class Main {
 		}
 	}
 
-	private static void downloadAEMDump(String date) throws GeneralSecurityException, IOException {
+	private void downloadAEMDump(String date) throws GeneralSecurityException, IOException {
 		File aemFile = new File("import/gcPageReport-publish-" + date + ".csv");
 		if (!aemFile.exists()) {
 			final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -250,7 +260,7 @@ public class Main {
 		}
 	}
 
-	private static void downloadGCSearchDump(String date) throws GeneralSecurityException, IOException {
+	private void downloadGCSearchDump(String date) throws GeneralSecurityException, IOException {
 		File gcFileEN = new File("import/covid-inventory-" + date + "_EN.json");
 		File gcFileFR = new File("import/covid-inventory-" + date + "_FR.json");
 		if (!gcFileEN.exists() || !gcFileFR.exists()) {
@@ -279,7 +289,7 @@ public class Main {
 		}
 	}
 
-	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+	private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
 		InputStream in = new FileInputStream(new File(CREDENTIALS_FILE_PATH));
 		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
@@ -294,9 +304,9 @@ public class Main {
 	}
 
 	public void calculateDates() {
-		today = this.calculateDays(-1);
-		// this.yesterday = this.calculateDays(-1);
-		sevenDaysAgo = this.calculateDays(-7);
+		TODAY = this.calculateDays(-1);
+		TWODAYSAGO = this.calculateDays(-2);
+		SEVENDAYSAGO = this.calculateDays(-7);
 		// this.thirtyDaysAgo = this.calculateDays(-30);
 	}
 
@@ -321,7 +331,7 @@ public class Main {
 
 	public String determineUniqueVisits(String url) throws IOException {
 
-		if (url.contains("www.canada.ca")) {
+		if (url.toLowerCase().contains("www.canada.ca")) {
 			String json = null;
 			JsonObject obj = null;
 			JsonObject summary = null;
@@ -331,8 +341,8 @@ public class Main {
 				pojo1.type = "metrics";
 				pojo1.oUrl = url.replace("http://", "").replace("https://", "");
 				pojo1.url = url.replace("http://", "").replace("https://", "");
-				pojo1.dates[0] = sevenDaysAgo + this.datePostFix;
-				pojo1.dates[1] = today + this.datePostFix;
+				pojo1.dates[0] = SEVENDAYSAGO + this.datePostFix;
+				pojo1.dates[1] = TODAY + this.datePostFix;
 
 				String postUrl = "https://performance.alpha.canada.ca/php/process.php?mode=update";
 				// String postUrl = "http://localhost:8282/php/process.php?mode=update";
@@ -708,7 +718,7 @@ public class Main {
 				for (int i = 0; i < list.size(); i++) {
 					if (i != (list.size() - 1)) {
 						String elem = list.get(i);
-						if (i != 2 && i != 7 && i !=14) {
+						if (i != 2 && i != 7 && i != 14) {
 							html += "<td>" + this.escapeCharacters(elem) + "</td>";
 						} else {
 							html += "<td>" + elem + "</td>";
